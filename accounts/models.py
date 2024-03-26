@@ -119,6 +119,8 @@ class EducationalAssistant(models.Model):
                                                  verbose_name='نوع کاربر')
     assistant = models.OneToOneField(Professor, on_delete=models.CASCADE, related_name='EducationalAssistant_assistant',
                                      verbose_name='معاون آموزشی')
+    faculty = models.OneToOneField(Faculty, on_delete=models.CASCADE, related_name='educational_assistant_faculty',
+                                   verbose_name='انتخاب دانشکده')
 
     def __str__(self):
         return f"{self.educational_assistant.role}"

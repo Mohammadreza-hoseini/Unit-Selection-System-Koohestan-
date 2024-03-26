@@ -46,12 +46,15 @@ class Professor(models.Model):
     firstname = models.CharField(max_length=256, verbose_name='نام')
     lastname = models.CharField(max_length=256, verbose_name='نام خانوادگی')
     professor_number = models.CharField(max_length=256, unique=True, verbose_name='شماره استادی')
+    password = models.CharField(max_length=256, verbose_name='رمز عبور')
+    email = models.EmailField(unique=True, verbose_name='ایمیل')
     national_code = models.CharField(max_length=11, unique=True, verbose_name='کد ملی')
-    faculty = models.ManyToManyField(Faculty, related_name='professor_faculty', verbose_name='انتخاب دانشکده')
-    field = models.CharField(max_length=256, verbose_name='رشته')
+    faculty = models.ForeignKey(Faculty, on_delete=models.CASCADE, related_name='professor_faculty',
+                                verbose_name='انتخاب دانشکده')
+    major = models.OneToOneField(Major, on_delete=models.CASCADE, related_name='professor_major', verbose_name='رشته')
     expertise = models.CharField(max_length=256, verbose_name='تخصص')
     degree = models.CharField(max_length=256, verbose_name='مرتبه یا درجه')
-    past_teaching_lessons = models.ManyToManyField(Course, verbose_name='دروس تدریس شده')
+    past_teaching_lessons = models.ManyToManyField(Course, verbose_name='دروس تدریس شده', null=True, blank=True)
 
     def __str__(self):
         return f"{self.national_code}"
@@ -65,7 +68,7 @@ class Student(models.Model):
     lastname = models.CharField(max_length=256, verbose_name='نام خانوادگی')
     student_number = models.CharField(max_length=256, unique=True, verbose_name='شماره دانشجویی')
     password = models.CharField(max_length=256, verbose_name='رمز عبور')
-    avatar = models.URLField(max_length=256, verbose_name='تصویر پروفایل')
+    avatar = models.URLField(max_length=256, verbose_name='تصویر پروفایل', null=True, blank=True)
     email = models.EmailField(unique=True, verbose_name='ایمیل')
     phone = models.CharField(max_length=11, unique=True, verbose_name='شماره تلفن')
     national_code = models.CharField(max_length=11, unique=True, verbose_name='کد ملی')
@@ -77,18 +80,18 @@ class Student(models.Model):
     incoming_semester = models.PositiveSmallIntegerField(
         default=ChooseSemester.first, choices=ChooseSemester.choices, verbose_name='ترم ورودی'
     )
-    average = models.FloatField(verbose_name='معدل')
+    average = models.FloatField(verbose_name='معدل', null=True, blank=True)
     faculty = models.ForeignKey(Faculty, on_delete=models.CASCADE, related_name='student_faculty',
                                 verbose_name='انتخاب دانشکده')
     major = models.ForeignKey(Major, on_delete=models.CASCADE, related_name='student_major',
                               verbose_name='انتخاب رشته تحصیلی')
-    passed_lessons = models.ManyToManyField(Course, verbose_name='دروس پاس شده')
-    lessons_in_progress = models.ManyToManyField(Course, verbose_name='دروس در حال گذراندن')
+    passed_lessons = models.ManyToManyField(Course, verbose_name='دروس پاس شده', null=True, blank=True)
+    lessons_in_progress = models.ManyToManyField(Course, verbose_name='دروس در حال گذراندن', null=True, blank=True)
     supervisor = models.OneToOneField(Professor, on_delete=models.CASCADE, related_name='student_supervisor',
                                       verbose_name='انتخاب استاد راهنما')
     military_service_status = models.PositiveSmallIntegerField(choices=ChooseGender.choices,
                                                                verbose_name='وضعیت نظام وظیفه')
-    years = models.IntegerField(default=0, verbose_name='سنوات')
+    years = models.IntegerField(default=1, verbose_name='سنوات')
 
     def __str__(self):
         return f"{self.student_number}"
@@ -101,6 +104,8 @@ class ITManager(models.Model):
     firstname = models.CharField(max_length=256, verbose_name='نام')
     lastname = models.CharField(max_length=256, verbose_name='نام خانوادگی')
     it_manager_number = models.CharField(max_length=256, unique=True, verbose_name='شماره منیجر آیتی')
+    password = models.CharField(max_length=256, verbose_name='رمز عبور')
+    email = models.EmailField(unique=True, verbose_name='ایمیل')
     national_code = models.CharField(max_length=11, unique=True, verbose_name='کد ملی')
 
     def __str__(self):
@@ -112,17 +117,27 @@ class EducationalAssistant(models.Model):
     educational_assistant = models.OneToOneField(UserRole, on_delete=models.CASCADE,
                                                  related_name='EducationalAssistant_user_role',
                                                  verbose_name='نوع کاربر')
-    firstname = models.CharField(max_length=256, verbose_name='نام')
-    lastname = models.CharField(max_length=256, verbose_name='نام خانوادگی')
-    employee_number = models.CharField(max_length=256, unique=True, verbose_name='شماره کارمندی')
-    national_code = models.CharField(max_length=11, unique=True, verbose_name='کد ملی')
-    faculty = models.ForeignKey(Faculty, on_delete=models.CASCADE, related_name='educational_assistant_faculty',
-                                verbose_name='انتخاب دانشکده')
-    major = models.OneToOneField(Major, on_delete=models.CASCADE, related_name='educational_assistant_major',
-                                 verbose_name='انتخاب رشته تحصیلی')
-
-    class Meta:
-        unique_together = ('faculty', 'major',)
+    assistant = models.OneToOneField(Professor, on_delete=models.CASCADE, related_name='EducationalAssistant_assistant',
+                                     verbose_name='معاون آموزشی')
 
     def __str__(self):
-        return f"{self.employee_number}"
+        return f"{self.educational_assistant.role}"
+
+
+class University(models.Model):
+    id = models.CharField(default=uuid.uuid4, editable=False, primary_key=True)
+    address = models.TextField(verbose_name='آدرس دانشگاه')
+    phone = models.CharField(verbose_name='شماره تماس')
+    email = models.EmailField(unique=True, verbose_name='ایمیل')
+    educational_assistant = models.OneToOneField(Professor, on_delete=models.CASCADE,
+                                                 related_name='university_educational_assistant',
+                                                 verbose_name='معاون آموزشی دانشگاه')
+    university_president = models.ForeignKey(Professor, on_delete=models.CASCADE,
+                                             related_name='university_university_president',
+                                             verbose_name='رئیس دانشگاه')
+
+    class Meta:
+        unique_together = ('educational_assistant', 'university_president',)
+
+    def __str__(self):
+        return f"{self.phone}"

@@ -1,18 +1,16 @@
 from django.db import models
 import uuid
 
-from accounts.models import Student, Professor
-from course.models import Course
-
 
 class Term(models.Model):
     id = models.CharField(default=uuid.uuid4, editable=False, primary_key=True)
     name = models.CharField(max_length=256, verbose_name='نام ترم')
-    students = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='term_students',
+    students = models.ForeignKey("accounts.Student", on_delete=models.CASCADE, related_name='term_students',
                                  verbose_name='دانشجوها')
-    professors = models.ForeignKey(Professor, on_delete=models.CASCADE, related_name='term_professor',
+    professors = models.ForeignKey("accounts.Professor", on_delete=models.CASCADE, related_name='term_professor',
                                    verbose_name='اساتید')
-    course_lists = models.ManyToManyField(Course, verbose_name='لیست دروس ترمی')
+    course_lists = models.ManyToManyField("course.Course", verbose_name='لیست دروس ترمی',
+                                          related_name='term_course_lists')
     start_selection_time = models.DateTimeField(verbose_name='زمان شروع انتخاب واحد')
     end_selection_time = models.DateTimeField(verbose_name='زمان پایان انتخاب واحد')
     class_start_time = models.DateTimeField(verbose_name='زمان شروع کلاس ها')

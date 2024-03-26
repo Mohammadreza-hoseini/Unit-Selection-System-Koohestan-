@@ -2,9 +2,6 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 import uuid
 
-from course.models import Course
-from faculty.models import Faculty, Major
-
 
 class ChooseUserRole(models.IntegerChoices):
     student = 1, "student"
@@ -49,12 +46,14 @@ class Professor(models.Model):
     password = models.CharField(max_length=256, verbose_name='رمز عبور')
     email = models.EmailField(unique=True, verbose_name='ایمیل')
     national_code = models.CharField(max_length=11, unique=True, verbose_name='کد ملی')
-    faculty = models.ForeignKey(Faculty, on_delete=models.CASCADE, related_name='professor_faculty',
+    faculty = models.ForeignKey("faculty.Faculty", on_delete=models.CASCADE, related_name='professor_faculty',
                                 verbose_name='انتخاب دانشکده')
-    major = models.OneToOneField(Major, on_delete=models.CASCADE, related_name='professor_major', verbose_name='رشته')
+    major = models.OneToOneField("faculty.Major", on_delete=models.CASCADE, related_name='professor_major',
+                                 verbose_name='رشته')
     expertise = models.CharField(max_length=256, verbose_name='تخصص')
     degree = models.CharField(max_length=256, verbose_name='مرتبه یا درجه')
-    past_teaching_lessons = models.ManyToManyField(Course, verbose_name='دروس تدریس شده', null=True, blank=True)
+    past_teaching_lessons = models.ManyToManyField("course.Course", verbose_name='دروس تدریس شده', null=True,
+                                                   blank=True, related_name='professor_past_teaching_lessons')
 
     def __str__(self):
         return f"{self.national_code}"
@@ -81,12 +80,14 @@ class Student(models.Model):
         default=ChooseSemester.first, choices=ChooseSemester.choices, verbose_name='ترم ورودی'
     )
     average = models.FloatField(verbose_name='معدل', null=True, blank=True)
-    faculty = models.ForeignKey(Faculty, on_delete=models.CASCADE, related_name='student_faculty',
+    faculty = models.ForeignKey("faculty.Faculty", on_delete=models.CASCADE, related_name='student_faculty',
                                 verbose_name='انتخاب دانشکده')
-    major = models.ForeignKey(Major, on_delete=models.CASCADE, related_name='student_major',
+    major = models.ForeignKey("faculty.Major", on_delete=models.CASCADE, related_name='student_major',
                               verbose_name='انتخاب رشته تحصیلی')
-    passed_lessons = models.ManyToManyField(Course, verbose_name='دروس پاس شده', null=True, blank=True)
-    lessons_in_progress = models.ManyToManyField(Course, verbose_name='دروس در حال گذراندن', null=True, blank=True)
+    passed_lessons = models.ManyToManyField("course.Course", verbose_name='دروس پاس شده', null=True, blank=True,
+                                            related_name='student_passed_lessons')
+    lessons_in_progress = models.ManyToManyField("course.Course", verbose_name='دروس در حال گذراندن', null=True,
+                                                 blank=True, related_name='student_lessons_in_progress')
     supervisor = models.OneToOneField(Professor, on_delete=models.CASCADE, related_name='student_supervisor',
                                       verbose_name='انتخاب استاد راهنما')
     military_service_status = models.PositiveSmallIntegerField(choices=ChooseGender.choices,
@@ -119,8 +120,8 @@ class EducationalAssistant(models.Model):
                                                  verbose_name='نوع کاربر')
     assistant = models.OneToOneField(Professor, on_delete=models.CASCADE, related_name='EducationalAssistant_assistant',
                                      verbose_name='معاون آموزشی')
-    faculty = models.OneToOneField(Faculty, on_delete=models.CASCADE, related_name='educational_assistant_faculty',
-                                   verbose_name='انتخاب دانشکده')
+    faculty = models.OneToOneField("faculty.Faculty", on_delete=models.CASCADE,
+                                   related_name='educational_assistant_faculty', verbose_name='انتخاب دانشکده')
 
     def __str__(self):
         return f"{self.educational_assistant.role}"

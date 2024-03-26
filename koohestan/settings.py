@@ -87,7 +87,7 @@ WSGI_APPLICATION = "koohestan.wsgi.application"
 # connect to database with url
 DATABASES = {
     "default": dj_database_url.config(
-        default="postgresql://root:UT5aqC8LyfyapR5YFoHAVQ0h@cho-oyu.liara.cloud:31142/postgres"
+        default="postgresql://root:5yyFDUPobdR4EccbVfQdpn8T@cho-oyu.liara.cloud:32095/postgres"
     ),
 }
 

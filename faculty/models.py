@@ -1,16 +1,13 @@
 from django.db import models
 import uuid
 
-# Create your models here.
-from accounts.models import University
-
 
 class Faculty(models.Model):
     id = models.CharField(default=uuid.uuid4, editable=False, primary_key=True)
     name = models.CharField(max_length=256, verbose_name='نام دانشکده')
     phone = models.CharField(max_length=256, unique=True, verbose_name='شماره دانشکده')
     address = models.TextField(verbose_name='آدرس دانشکده')
-    university = models.ForeignKey(University, on_delete=models.CASCADE, related_name='faculty_university',
+    university = models.ForeignKey("accounts.University", on_delete=models.CASCADE, related_name='faculty_university',
                                    verbose_name='انتخاب دانشگاه')
 
     def __str__(self):

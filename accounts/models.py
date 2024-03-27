@@ -144,3 +144,11 @@ class University(models.Model):
 
     def __str__(self):
         return f"{self.phone}"
+
+    class OTPCode(models.Model):
+        id = models.CharField(default=uuid.uuid4, editable=False, primary_key=True)
+        code = models.CharField(max_length=6, verbose_name='کد یکبار مصرف')
+        email = models.EmailField(verbose_name='ایمیل')
+
+        def __str__(self):
+            return f"{self.email}"

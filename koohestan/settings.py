@@ -37,6 +37,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "rest_framework",
+    "rest_framework_simplejwt",
+    'drf_yasg',
     "accounts",
     "faculty",
     "course",
@@ -131,3 +134,13 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = "accounts.UserRole"
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'koohestan.dev@gmail.com'
+EMAIL_HOST_PASSWORD = 'oxqh jwdm auty quix'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema'
+}

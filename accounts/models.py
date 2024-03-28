@@ -13,11 +13,13 @@ class ChooseUserRole(models.IntegerChoices):
 class UserRole(AbstractUser):
     id = models.CharField(default=uuid.uuid4, editable=False, primary_key=True)
     role = models.PositiveSmallIntegerField(
-        default=ChooseUserRole.student, choices=ChooseUserRole.choices, verbose_name="سطح دسترسی"
+        default=ChooseUserRole.student,
+        choices=ChooseUserRole.choices,
+        verbose_name="سطح دسترسی",
     )
 
     def __str__(self):
-        return f"{self.role}"
+        return f"{self.username}"
 
 
 class ChooseGender(models.IntegerChoices):
@@ -38,109 +40,199 @@ class ChooseMilitaryServiceStatus(models.IntegerChoices):
 
 class Professor(models.Model):
     id = models.CharField(default=uuid.uuid4, editable=False, primary_key=True)
-    professor = models.OneToOneField(UserRole, on_delete=models.CASCADE, related_name='professor_user_role',
-                                     verbose_name='نوع کاربر')
-    firstname = models.CharField(max_length=256, verbose_name='نام')
-    lastname = models.CharField(max_length=256, verbose_name='نام خانوادگی')
-    professor_number = models.CharField(max_length=256, unique=True, verbose_name='شماره استادی')
-    password = models.CharField(max_length=256, verbose_name='رمز عبور')
-    email = models.EmailField(unique=True, verbose_name='ایمیل')
-    national_code = models.CharField(max_length=11, unique=True, verbose_name='کد ملی')
-    faculty = models.ForeignKey("faculty.Faculty", on_delete=models.CASCADE, related_name='professor_faculty',
-                                verbose_name='انتخاب دانشکده')
-    major = models.OneToOneField("faculty.Major", on_delete=models.CASCADE, related_name='professor_major',
-                                 verbose_name='رشته')
-    expertise = models.CharField(max_length=256, verbose_name='تخصص')
-    degree = models.CharField(max_length=256, verbose_name='مرتبه یا درجه')
-    past_teaching_lessons = models.ManyToManyField("course.Course", verbose_name='دروس تدریس شده', null=True,
-                                                   blank=True, related_name='professor_past_teaching_lessons')
+
+    # change name of field#TODO
+    professor = models.OneToOneField(
+        UserRole,
+        on_delete=models.CASCADE,
+        related_name="professor_user_role",
+        verbose_name="نام کاربری",
+    )
+    firstname = models.CharField(max_length=256, verbose_name="نام")
+    lastname = models.CharField(max_length=256, verbose_name="نام خانوادگی")
+    professor_number = models.CharField(
+        max_length=256, unique=True, verbose_name="شماره استادی"
+    )
+    password = models.CharField(max_length=256, verbose_name="رمز عبور")
+    email = models.EmailField(unique=True, verbose_name="ایمیل")
+    national_code = models.CharField(max_length=11, unique=True, verbose_name="کد ملی")
+    faculty = models.ForeignKey(
+        "faculty.Faculty",
+        on_delete=models.CASCADE,
+        related_name="professor_faculty",
+        verbose_name="انتخاب دانشکده",
+    )
+    major = models.OneToOneField(
+        "faculty.Major",
+        on_delete=models.CASCADE,
+        related_name="professor_major",
+        verbose_name="رشته",
+    )
+    expertise = models.CharField(max_length=256, verbose_name="تخصص")
+    degree = models.CharField(max_length=256, verbose_name="مرتبه یا درجه")
+    past_teaching_lessons = models.ManyToManyField(
+        "course.Course",
+        verbose_name="دروس تدریس شده",
+        null=True,
+        blank=True,
+        related_name="professor_past_teaching_lessons",
+    )
 
     def __str__(self):
-        return f"{self.national_code}"
+        return f"{self.professor.username}"
 
 
 class Student(models.Model):
     id = models.CharField(default=uuid.uuid4, editable=False, primary_key=True)
-    student = models.OneToOneField(UserRole, on_delete=models.CASCADE, related_name='student_user_role',
-                                   verbose_name='نوع کاربر')
-    firstname = models.CharField(max_length=256, verbose_name='نام')
-    lastname = models.CharField(max_length=256, verbose_name='نام خانوادگی')
-    student_number = models.CharField(max_length=256, unique=True, verbose_name='شماره دانشجویی')
-    password = models.CharField(max_length=256, verbose_name='رمز عبور')
-    avatar = models.URLField(max_length=256, verbose_name='تصویر پروفایل', null=True, blank=True)
-    email = models.EmailField(unique=True, verbose_name='ایمیل')
-    phone = models.CharField(max_length=11, unique=True, verbose_name='شماره تلفن')
-    national_code = models.CharField(max_length=11, unique=True, verbose_name='کد ملی')
+
+    # change name of field#TODO
+    student = models.OneToOneField(
+        UserRole,
+        on_delete=models.CASCADE,
+        related_name="student_user_role",
+        verbose_name="نام کاربری",
+    )
+    firstname = models.CharField(max_length=256, verbose_name="نام")
+    lastname = models.CharField(max_length=256, verbose_name="نام خانوادگی")
+    student_number = models.CharField(
+        max_length=256, unique=True, verbose_name="شماره دانشجویی"
+    )
+    password = models.CharField(max_length=256, verbose_name="رمز عبور")
+    avatar = models.URLField(
+        max_length=256, verbose_name="تصویر پروفایل", null=True, blank=True
+    )
+    email = models.EmailField(unique=True, verbose_name="ایمیل")
+    phone = models.CharField(max_length=11, unique=True, verbose_name="شماره تلفن")
+    national_code = models.CharField(max_length=11, unique=True, verbose_name="کد ملی")
     gender = models.PositiveSmallIntegerField(
-        default=ChooseGender.male, choices=ChooseGender.choices, verbose_name='جنسیت'
+        default=ChooseGender.male, choices=ChooseGender.choices, verbose_name="جنسیت"
     )
-    birth_date = models.DateField(verbose_name='تاریخ تولد')
-    entry_year = models.DateField(verbose_name='سال ورودی')
+    birth_date = models.DateField(verbose_name="تاریخ تولد")
+    entry_year = models.DateField(verbose_name="سال ورودی")
     incoming_semester = models.PositiveSmallIntegerField(
-        default=ChooseSemester.first, choices=ChooseSemester.choices, verbose_name='ترم ورودی'
+        default=ChooseSemester.first,
+        choices=ChooseSemester.choices,
+        verbose_name="ترم ورودی",
     )
-    average = models.FloatField(verbose_name='معدل', null=True, blank=True)
-    faculty = models.ForeignKey("faculty.Faculty", on_delete=models.CASCADE, related_name='student_faculty',
-                                verbose_name='انتخاب دانشکده')
-    major = models.ForeignKey("faculty.Major", on_delete=models.CASCADE, related_name='student_major',
-                              verbose_name='انتخاب رشته تحصیلی')
-    passed_lessons = models.ManyToManyField("course.Course", verbose_name='دروس پاس شده', null=True, blank=True,
-                                            related_name='student_passed_lessons')
-    lessons_in_progress = models.ManyToManyField("course.Course", verbose_name='دروس در حال گذراندن', null=True,
-                                                 blank=True, related_name='student_lessons_in_progress')
-    supervisor = models.OneToOneField(Professor, on_delete=models.CASCADE, related_name='student_supervisor',
-                                      verbose_name='انتخاب استاد راهنما')
-    military_service_status = models.PositiveSmallIntegerField(choices=ChooseMilitaryServiceStatus.choices,
-                                                               verbose_name='وضعیت نظام وظیفه')
-    years = models.IntegerField(default=1, verbose_name='سنوات')
+    average = models.FloatField(verbose_name="معدل", null=True, blank=True)
+    faculty = models.ForeignKey(
+        "faculty.Faculty",
+        on_delete=models.CASCADE,
+        related_name="student_faculty",
+        verbose_name="انتخاب دانشکده",
+    )
+    major = models.ForeignKey(
+        "faculty.Major",
+        on_delete=models.CASCADE,
+        related_name="student_major",
+        verbose_name="انتخاب رشته تحصیلی",
+    )
+    passed_lessons = models.ManyToManyField(
+        "course.Course",
+        verbose_name="دروس پاس شده",
+        null=True,
+        blank=True,
+        related_name="student_passed_lessons",
+    )
+    lessons_in_progress = models.ManyToManyField(
+        "course.Course",
+        verbose_name="دروس در حال گذراندن",
+        null=True,
+        blank=True,
+        related_name="student_lessons_in_progress",
+    )
+    supervisor = models.OneToOneField(
+        Professor,
+        on_delete=models.CASCADE,
+        related_name="student_supervisor",
+        verbose_name="انتخاب استاد راهنما",
+    )
+    military_service_status = models.PositiveSmallIntegerField(
+        choices=ChooseMilitaryServiceStatus.choices, verbose_name="وضعیت نظام وظیفه"
+    )
+    years = models.IntegerField(default=1, verbose_name="سنوات")
 
     def __str__(self):
-        return f"{self.student_number}"
+        return f"{self.student.username}"
 
 
 class ITManager(models.Model):
     id = models.CharField(default=uuid.uuid4, editable=False, primary_key=True)
-    IT_manager = models.OneToOneField(UserRole, on_delete=models.CASCADE, related_name='ITManager_user_role',
-                                      verbose_name='نوع کاربر')
-    firstname = models.CharField(max_length=256, verbose_name='نام')
-    lastname = models.CharField(max_length=256, verbose_name='نام خانوادگی')
-    it_manager_number = models.CharField(max_length=256, unique=True, verbose_name='شماره منیجر آیتی')
-    password = models.CharField(max_length=256, verbose_name='رمز عبور')
-    email = models.EmailField(unique=True, verbose_name='ایمیل')
-    national_code = models.CharField(max_length=11, unique=True, verbose_name='کد ملی')
+
+    # change name of field#TODO
+    IT_manager = models.OneToOneField(
+        UserRole,
+        on_delete=models.CASCADE,
+        related_name="ITManager_user_role",
+        verbose_name="نام کاربری",
+    )
+    firstname = models.CharField(max_length=256, verbose_name="نام")
+    lastname = models.CharField(max_length=256, verbose_name="نام خانوادگی")
+    it_manager_number = models.CharField(
+        max_length=256, unique=True, verbose_name="شماره منیجر آیتی"
+    )
+    password = models.CharField(max_length=256, verbose_name="رمز عبور")
+    email = models.EmailField(unique=True, verbose_name="ایمیل")
+    national_code = models.CharField(max_length=11, unique=True, verbose_name="کد ملی")
 
     def __str__(self):
-        return f"{self.it_manager_number}"
+        return f"{self.IT_manager.username}"
 
 
 class EducationalAssistant(models.Model):
     id = models.CharField(default=uuid.uuid4, editable=False, primary_key=True)
-    educational_assistant = models.OneToOneField(UserRole, on_delete=models.CASCADE,
-                                                 related_name='EducationalAssistant_user_role',
-                                                 verbose_name='نوع کاربر')
-    assistant = models.OneToOneField(Professor, on_delete=models.CASCADE, related_name='EducationalAssistant_assistant',
-                                     verbose_name='معاون آموزشی')
-    faculty = models.OneToOneField("faculty.Faculty", on_delete=models.CASCADE,
-                                   related_name='educational_assistant_faculty', verbose_name='انتخاب دانشکده')
+
+    # change name of field#TODO
+    educational_assistant = models.OneToOneField(
+        UserRole,
+        on_delete=models.CASCADE,
+        related_name="EducationalAssistant_user_role",
+        verbose_name="نام کاربری",
+    )
+    assistant = models.OneToOneField(
+        Professor,
+        on_delete=models.CASCADE,
+        related_name="EducationalAssistant_assistant",
+        verbose_name="معاون آموزشی",
+    )
+    faculty = models.OneToOneField(
+        "faculty.Faculty",
+        on_delete=models.CASCADE,
+        related_name="educational_assistant_faculty",
+        verbose_name="انتخاب دانشکده",
+    )
 
     def __str__(self):
-        return f"{self.assistant.national_code}"
+        return f"{self.educational_assistant.username}"
 
 
 class University(models.Model):
     id = models.CharField(default=uuid.uuid4, editable=False, primary_key=True)
-    address = models.TextField(verbose_name='آدرس دانشگاه')
-    phone = models.CharField(verbose_name='شماره تماس')
-    email = models.EmailField(unique=True, verbose_name='ایمیل')
-    educational_assistant = models.OneToOneField(Professor, on_delete=models.CASCADE,
-                                                 related_name='university_educational_assistant',
-                                                 verbose_name='معاون آموزشی دانشگاه', null=True, blank=True)
-    university_president = models.ForeignKey(Professor, on_delete=models.CASCADE,
-                                             related_name='university_university_president',
-                                             verbose_name='رئیس دانشگاه', null=True, blank=True)
+    address = models.TextField(verbose_name="آدرس دانشگاه")
+    phone = models.CharField(verbose_name="شماره تماس")
+    email = models.EmailField(unique=True, verbose_name="ایمیل")
+    educational_assistant = models.OneToOneField(
+        Professor,
+        on_delete=models.CASCADE,
+        related_name="university_educational_assistant",
+        verbose_name="معاون آموزشی دانشگاه",
+        null=True,
+        blank=True,
+    )
+    university_president = models.ForeignKey(
+        Professor,
+        on_delete=models.CASCADE,
+        related_name="university_university_president",
+        verbose_name="رئیس دانشگاه",
+        null=True,
+        blank=True,
+    )
 
     class Meta:
-        unique_together = ('educational_assistant', 'university_president',)
+        unique_together = (
+            "educational_assistant",
+            "university_president",
+        )
 
     def __str__(self):
         return f"{self.phone}"
@@ -148,8 +240,8 @@ class University(models.Model):
 
 class OTPCode(models.Model):
     id = models.CharField(default=uuid.uuid4, editable=False, primary_key=True)
-    code = models.CharField(max_length=6, verbose_name='کد یکبار مصرف')
-    email = models.EmailField(verbose_name='ایمیل')
+    code = models.CharField(max_length=6, verbose_name="کد یکبار مصرف")
+    email = models.EmailField(verbose_name="ایمیل")
 
     def __str__(self):
         return f"{self.email}"

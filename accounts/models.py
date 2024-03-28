@@ -90,7 +90,7 @@ class Student(models.Model):
                                                  blank=True, related_name='student_lessons_in_progress')
     supervisor = models.OneToOneField(Professor, on_delete=models.CASCADE, related_name='student_supervisor',
                                       verbose_name='انتخاب استاد راهنما')
-    military_service_status = models.PositiveSmallIntegerField(choices=ChooseGender.choices,
+    military_service_status = models.PositiveSmallIntegerField(choices=ChooseMilitaryServiceStatus.choices,
                                                                verbose_name='وضعیت نظام وظیفه')
     years = models.IntegerField(default=1, verbose_name='سنوات')
 
@@ -124,7 +124,7 @@ class EducationalAssistant(models.Model):
                                    related_name='educational_assistant_faculty', verbose_name='انتخاب دانشکده')
 
     def __str__(self):
-        return f"{self.educational_assistant.role}"
+        return f"{self.assistant.national_code}"
 
 
 class University(models.Model):
@@ -134,10 +134,10 @@ class University(models.Model):
     email = models.EmailField(unique=True, verbose_name='ایمیل')
     educational_assistant = models.OneToOneField(Professor, on_delete=models.CASCADE,
                                                  related_name='university_educational_assistant',
-                                                 verbose_name='معاون آموزشی دانشگاه')
+                                                 verbose_name='معاون آموزشی دانشگاه', null=True, blank=True)
     university_president = models.ForeignKey(Professor, on_delete=models.CASCADE,
                                              related_name='university_university_president',
-                                             verbose_name='رئیس دانشگاه')
+                                             verbose_name='رئیس دانشگاه', null=True, blank=True)
 
     class Meta:
         unique_together = ('educational_assistant', 'university_president',)
@@ -145,10 +145,11 @@ class University(models.Model):
     def __str__(self):
         return f"{self.phone}"
 
-    class OTPCode(models.Model):
-        id = models.CharField(default=uuid.uuid4, editable=False, primary_key=True)
-        code = models.CharField(max_length=6, verbose_name='کد یکبار مصرف')
-        email = models.EmailField(verbose_name='ایمیل')
 
-        def __str__(self):
-            return f"{self.email}"
+class OTPCode(models.Model):
+    id = models.CharField(default=uuid.uuid4, editable=False, primary_key=True)
+    code = models.CharField(max_length=6, verbose_name='کد یکبار مصرف')
+    email = models.EmailField(verbose_name='ایمیل')
+
+    def __str__(self):
+        return f"{self.email}"

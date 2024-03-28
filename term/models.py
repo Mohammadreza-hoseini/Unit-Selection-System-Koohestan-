@@ -6,11 +6,11 @@ class Term(models.Model):
     id = models.CharField(default=uuid.uuid4, editable=False, primary_key=True)
     name = models.CharField(max_length=256, verbose_name='نام ترم')
     students = models.ForeignKey("accounts.Student", on_delete=models.CASCADE, related_name='term_students',
-                                 verbose_name='دانشجوها')
+                                 verbose_name='دانشجوها', null=True, blank=True)
     professors = models.ForeignKey("accounts.Professor", on_delete=models.CASCADE, related_name='term_professor',
                                    verbose_name='اساتید')
     course_lists = models.ManyToManyField("course.Course", verbose_name='لیست دروس ترمی',
-                                          related_name='term_course_lists')
+                                          related_name='term_course_lists', null=True, blank=True)
     start_selection_time = models.DateTimeField(verbose_name='زمان شروع انتخاب واحد')
     end_selection_time = models.DateTimeField(verbose_name='زمان پایان انتخاب واحد')
     class_start_time = models.DateTimeField(verbose_name='زمان شروع کلاس ها')

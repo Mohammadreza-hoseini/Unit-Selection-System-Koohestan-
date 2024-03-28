@@ -14,7 +14,7 @@ from rest_framework import status
 
 from course.models import Course
 from faculty.models import Faculty, Major
-from .models import Student, Professor, UserRole
+from .models import Student, Professor, UserRole, EducationalAssistant
 
 
 class StudentSerializer(serializers.Serializer):
@@ -146,24 +146,55 @@ class EducationalAssistantSerializer(serializers.Serializer):
         if not faculty_obj:
             raise ValidationError("Faculty doesn't exist")
 
-        if user_obj.role == 4:
-            raise ValidationError("User is already an educational_assistant")
-
-        if user_obj.role != 2:
-            raise ValidationError("User isn't a professor")
-
-        if prof_obj.faculty != faculty_id:
-            raise ValidationError("Professor and Faculty don't match")
-
         return data
 
     # TODO
     # which fields to show (for example name, ....)
 
     def create(self, validated_data):
-        ...
-        # return super().create(validated_data)
+
+        # DRY principle #TODO
+        user_id = validated_data["educational_assistant"]
+        A_id = validated_data["assistant"]
+        faculty_id = validated_data["faculty"]
+
+        user_obj = UserRole.objects.filter(pk=user_id).first()
+        prof_obj = Professor.objects.filter(pk=A_id).first()
+        faculty_obj = Faculty.objects.filter(pk=faculty_id).first()
+
+        if user_obj.role == 4:
+            raise ValidationError("User is already an educational_assistant")
+
+        if user_obj.role != 2:
+            raise ValidationError("User isn't a professor")
+
+        if prof_obj.faculty_id != str(faculty_id):
+            raise ValidationError("Professor and Faculty don't match")
+
+        user_obj.role = 4
+        user_obj.save()
+
+        EA_object = EducationalAssistant.objects.create(
+            educational_assistant=user_obj, assistant=prof_obj, faculty=faculty_obj
+        )
+
+        return EA_object
 
     def update(self, instance, validated_data):
-        ...
-        # return super().update(instance, validated_data)
+        # make scenario -> what can be updated exactly? #QUESTION
+
+        # DRY principle #TODO
+        user_id = validated_data["educational_assistant"]
+        A_id = validated_data["assistant"]
+        faculty_id = validated_data["faculty"]
+
+        user_obj = UserRole.objects.filter(pk=user_id).first()
+        prof_obj = Professor.objects.filter(pk=A_id).first()
+        faculty_obj = Faculty.objects.filter(pk=faculty_id).first()
+
+        if user_obj.role != 4:
+            raise ValidationError("User is not an educational_assistant")
+
+        # other validations ... #TODO
+
+        # update ... #TODO

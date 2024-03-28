@@ -14,8 +14,10 @@ class Subject(models.Model):
     provider_faculty = models.ForeignKey("faculty.Faculty", on_delete=models.CASCADE,
                                          related_name='subject_faculty',
                                          verbose_name='دانشکده ارائه دهنده')
-    prerequisite = models.ManyToManyField('self', verbose_name='دروس پیش نیاز', related_name='subject_prerequisite')
-    corequisite = models.ManyToManyField('self', verbose_name='دروس همنیاز', related_name='subject_corequisite')
+    prerequisite = models.ManyToManyField('self', verbose_name='دروس پیش نیاز', related_name='subject_prerequisite',
+                                          null=True, blank=True)
+    corequisite = models.ManyToManyField('self', verbose_name='دروس همنیاز', related_name='subject_corequisite',
+                                         null=True, blank=True)
     number_of_course = models.PositiveIntegerField(verbose_name='تعداد واحد درس')
     course_type = models.PositiveSmallIntegerField(
         default=ChooseCourseType.basic, choices=ChooseCourseType.choices, verbose_name="نوع درس"

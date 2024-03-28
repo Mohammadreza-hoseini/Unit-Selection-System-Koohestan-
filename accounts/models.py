@@ -17,7 +17,7 @@ class UserRole(AbstractUser):
     )
 
     def __str__(self):
-        return str(self.role)
+        return f"{self.role}"
 
 
 class ChooseGender(models.IntegerChoices):

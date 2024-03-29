@@ -17,77 +17,77 @@ from faculty.models import Faculty, Major
 from .models import Student, Professor, UserRole, EducationalAssistant
 
 
+def validate_phone(value):
+    pattern = '^(\+98|0)?9\d{9}$'
+    result = re.match(pattern, value)
+    if not result:
+        raise ValidationError("phone number format is wrong")
+    elif Student.objects.filter(phone=value).first():
+        raise ValidationError("This phone exist")
+
+
+def validate_email(value):
+    pattern = re.compile(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")
+    result = bool(pattern.match(value))
+    if result is False:
+        raise ValidationError("email format is wrong")
+    elif Student.objects.filter(email=value).first():
+        raise ValidationError("This email exist")
+
+
+def validate_national_code(value):
+    val_str = str(value)
+    if len(str(val_str)) != 10:
+        raise ValidationError('national code is 10 digits')
+    s = sum([int(val_str[i]) * (10 - i) for i in range(9)])
+    d, m = divmod(s, 11)
+    if m < 2:
+        if int(val_str[-1]) != m:
+            raise ValidationError('invalid national code')
+    else:
+        if int(val_str[-1]) != 11 - m:
+            raise ValidationError('invalid national code')
+
+
+def validate_faculty(value):
+    check_faculty_exist = Faculty.objects.filter(id=value).first()
+    if not check_faculty_exist:
+        raise ValidationError('This faculty does not exist')
+
+
+def validate_major(value):
+    check_major_exist = Major.objects.filter(id=value).first()
+    if not check_major_exist:
+        raise ValidationError('This major does not exist')
+
+
+def validate_supervisor(value):
+    check_supervisor_exist = Professor.objects.filter(id=value).first()
+    if not check_supervisor_exist:
+        raise ValidationError('This professor does not exist')
+
+
 class StudentSerializer(serializers.Serializer):
     id = serializers.CharField(read_only=True)
-    firstname = serializers.CharField(required=True)
-    lastname = serializers.CharField(required=True)
+    firstname = serializers.CharField()
+    lastname = serializers.CharField()
     student_number = serializers.CharField(read_only=True)
     password = serializers.CharField(read_only=True)
-    email = serializers.EmailField(required=True)
-    phone = serializers.CharField(required=True)
-    national_code = serializers.CharField(required=True)
-    gender = serializers.ChoiceField(required=True, choices=[1, 2])
-    birth_date = serializers.DateField(required=True)
-    entry_year = serializers.DateField(required=True)
+    email = serializers.EmailField(validators=[validate_email])
+    phone = serializers.CharField(validators=[validate_phone])
+    national_code = serializers.CharField(validators=[validate_national_code])
+    gender = serializers.ChoiceField(choices=[1, 2])
+    birth_date = serializers.DateField()
+    entry_year = serializers.DateField()
     incoming_semester = serializers.ChoiceField(choices=[1, 2], default=1)
     average = serializers.FloatField(read_only=True)
-    faculty = serializers.UUIDField(required=True)
-    major = serializers.UUIDField(required=True)
+    faculty = serializers.UUIDField(validators=[validate_faculty])
+    major = serializers.UUIDField(validators=[validate_major])
     passed_lessons = serializers.ListField(required=False)
-    lessons_in_progress = serializers.ListField(required=True)
-    supervisor = serializers.UUIDField(required=True)
+    lessons_in_progress = serializers.ListField()
+    supervisor = serializers.UUIDField(validators=[validate_supervisor])
     military_service_status = serializers.ChoiceField(choices=[1, 2, 3])
     years = serializers.IntegerField(default=1, required=False)
-
-    def validate_phone(self, value):
-        pattern = "^(\+98|0)?9\d{9}$"
-        result = re.match(pattern, value)
-        if not result:
-            raise ValidationError("phone number format is wrong")
-        elif Student.objects.filter(phone=value).first():
-            raise ValidationError("This phone exist")
-        return value
-
-    def validate_email(self, value):
-        pattern = re.compile(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")
-        result = bool(pattern.match(value))
-        if result is False:
-            raise ValidationError("email format is wrong")
-        elif Student.objects.filter(email=value).first():
-            raise ValidationError("This email exist")
-        return value
-
-    def validate_national_code(self, value):
-        val_str = str(value)
-        if len(str(val_str)) != 10:
-            raise ValidationError("national code is 10 digits")
-        s = sum([int(val_str[i]) * (10 - i) for i in range(9)])
-        d, m = divmod(s, 11)
-        if m < 2:
-            if int(val_str[-1]) != m:
-                raise ValidationError("invalid national code")
-        else:
-            if int(val_str[-1]) != 11 - m:
-                raise ValidationError("invalid national code")
-        return value
-
-    def validate_faculty(self, value):
-        check_faculty_exist = Faculty.objects.filter(id=value).first()
-        if not check_faculty_exist:
-            raise ValidationError("This faculty does not exist")
-        return value
-
-    def validate_major(self, value):
-        check_major_exist = Major.objects.filter(id=value).first()
-        if not check_major_exist:
-            raise ValidationError("This major does not exist")
-        return value
-
-    def validate_supervisor(self, value):
-        check_supervisor_exist = Professor.objects.filter(id=value).first()
-        if not check_supervisor_exist:
-            raise ValidationError("This professor does not exist")
-        return value
 
     def create(self, validated_data):
         create_role = UserRole.objects.create(role=1)
@@ -119,6 +119,18 @@ class StudentSerializer(serializers.Serializer):
             create_student.lessons_in_progress.add(check_lessons_exist)
             create_student.save()
         return create_student
+
+    def update(self, instance, validated_data):
+        ...
+#         add update student
+
+
+class StudentGetDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Student
+        fields = (
+        'id', 'firstname', 'lastname', 'student_number', 'email', 'phone', 'national_code', 'gender', 'birth_date',
+        'entry_year', 'incoming_semester', 'average',)
         print(validated_data)
 
 

@@ -131,7 +131,7 @@ class StudentGetDataSerializer(serializers.ModelSerializer):
         fields = (
         'id', 'firstname', 'lastname', 'student_number', 'email', 'phone', 'national_code', 'gender', 'birth_date',
         'entry_year', 'incoming_semester', 'average',)
-        print(validated_data)
+        
 
 
 class EducationalAssistantSerializer(serializers.Serializer):

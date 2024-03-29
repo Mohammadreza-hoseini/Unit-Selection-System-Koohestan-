@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import StudentGetCreate, StudentGetUpdateDelete, EducationalAssistantView
+from .views import StudentGetCreate, StudentGetUpdateDelete, EducationalAssistantView, EducationalAssistantWithPK
 
 app_name = 'accounts'
 urlpatterns = [
@@ -8,4 +8,8 @@ urlpatterns = [
     path(
         "assistants/", EducationalAssistantView.as_view(), name="educationalAssistant"
     ),
+    path(
+        "assistants/<uuid:pk>", EducationalAssistantWithPK.as_view(), name="EA_withPK"
+    ),
+    
 ]

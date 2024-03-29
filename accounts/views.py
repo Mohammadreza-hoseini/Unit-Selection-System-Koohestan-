@@ -67,3 +67,4 @@ class StudentGetUpdateDelete(APIView):
             return Response('This student does not exist', status=status.HTTP_400_BAD_REQUEST)
         get_student.student.delete()
         return Response('Successfully delete', status=status.HTTP_200_OK)
+

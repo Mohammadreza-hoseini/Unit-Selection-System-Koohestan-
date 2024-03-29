@@ -106,7 +106,7 @@ class EducationalAssistantView(APIView):
         """
         EAs = EducationalAssistant.objects.all()
         serializer = EducationalAssistantSerializer(EAs, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class EducationalAssistantWithPK(APIView):
@@ -136,7 +136,7 @@ class EducationalAssistantWithPK(APIView):
         serializer = EducationalAssistantSerializer(request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.update(instance=EA_obj, validated_data=serializer)
-            return Response(status=status.HTTP_200_OK)
+            return Response("Invalid data", status=status.HTTP_200_OK)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         

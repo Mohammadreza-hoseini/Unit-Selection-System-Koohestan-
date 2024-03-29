@@ -18,7 +18,7 @@ class StudentGetCreate(APIView):
         serializer = StudentSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
-            return Response(status=status.HTTP_201_CREATED)
+            return Response('Successfully create', status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request, format=None):
@@ -56,6 +56,17 @@ class StudentGetUpdateDelete(APIView):
             return Response('This student does not exist', status=status.HTTP_400_BAD_REQUEST)
         get_student_serializer = StudentGetDataSerializer(get_student)
         return Response(get_student_serializer.data, status=status.HTTP_200_OK)
+
+    def delete(self, request, pk):
+        """
+        Delete a student.
+        """
+        try:
+            get_student = Student.objects.get(id=pk)
+        except ObjectDoesNotExist:
+            return Response('This student does not exist', status=status.HTTP_400_BAD_REQUEST)
+        get_student.student.delete()
+        return Response('Successfully delete', status=status.HTTP_200_OK)
 
 
 class EducationalAssistantView(APIView):

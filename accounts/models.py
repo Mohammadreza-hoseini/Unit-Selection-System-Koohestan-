@@ -88,8 +88,8 @@ class Student(models.Model):
                                             related_name='student_passed_lessons')
     lessons_in_progress = models.ManyToManyField("course.Course", verbose_name='دروس در حال گذراندن', null=True,
                                                  blank=True, related_name='student_lessons_in_progress')
-    supervisor = models.OneToOneField(Professor, on_delete=models.CASCADE, related_name='student_supervisor',
-                                      verbose_name='انتخاب استاد راهنما')
+    supervisor = models.ForeignKey(Professor, on_delete=models.CASCADE, related_name='student_supervisor',
+                                   verbose_name='انتخاب استاد راهنما')
     military_service_status = models.PositiveSmallIntegerField(choices=ChooseMilitaryServiceStatus.choices,
                                                                verbose_name='وضعیت نظام وظیفه')
     years = models.IntegerField(default=1, verbose_name='سنوات')

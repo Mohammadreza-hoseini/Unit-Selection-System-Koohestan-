@@ -133,32 +133,28 @@ class StudentGetDataSerializer(serializers.ModelSerializer):
         'entry_year', 'incoming_semester', 'average',)
         
 
+def validate_educational_assistant(value):
+    user_obj = UserRole.objects.filter(pk=value).first()
+    if not user_obj:
+        raise ValidationError("User doesn't exist")    
+
+
+def validate_assistant(value):
+    prof_obj = Professor.objects.filter(pk=value).first()
+    if not prof_obj:
+        raise ValidationError("Professor doesn't exist")
+
+def validate_faculty(value):
+    faculty_obj = Faculty.objects.filter(pk=value).first()
+    if not faculty_obj:
+        raise ValidationError("Faculty doesn't exist")
+
 
 class EducationalAssistantSerializer(serializers.Serializer):
 
-    educational_assistant = serializers.UUIDField(required=True)
-    assistant = serializers.UUIDField(required=True)
-    faculty = serializers.UUIDField(required=True)
-
-    def validate(self, data):
-        user_id = data["educational_assistant"]
-        A_id = data["assistant"]
-        faculty_id = data["faculty"]
-
-        user_obj = UserRole.objects.filter(pk=user_id).first()
-        prof_obj = Professor.objects.filter(pk=A_id).first()
-        faculty_obj = Faculty.objects.filter(pk=faculty_id).first()
-
-        if not user_obj:
-            raise ValidationError("User doesn't exist")
-
-        if not prof_obj:
-            raise ValidationError("Professor doesn't exist")
-
-        if not faculty_obj:
-            raise ValidationError("Faculty doesn't exist")
-
-        return data
+    educational_assistant = serializers.UUIDField(validators = [validate_educational_assistant],required=True)
+    assistant = serializers.UUIDField(validators = [validate_assistant],required=True)
+    faculty = serializers.UUIDField(validators = [validate_faculty], required=True)
 
     # TODO
     # which fields to show (for example name, ....)

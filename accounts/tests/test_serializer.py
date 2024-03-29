@@ -8,6 +8,7 @@ class AssistantSerializerTest(TestCase):
     fixtures = ["data.json"]
 
     def test_valid_data(self):
+        #TODO
         data = ...
         serializer = EducationalAssistantSerializer(data, many=True)
         self.assertTrue(serializer.is_valid)

@@ -36,6 +36,9 @@ def validate_email(value):
 
 
 def validate_national_code(value):
+    check_national_code_unique = Student.objects.filter(national_code=value).first()
+    if check_national_code_unique:
+        raise ValidationError('This national code exist')
     val_str = str(value)
     if len(str(val_str)) != 10:
         raise ValidationError('national code is 10 digits')
@@ -90,7 +93,9 @@ class StudentSerializer(serializers.Serializer):
     years = serializers.IntegerField(default=1, required=False)
 
     def create(self, validated_data):
-        create_role = UserRole.objects.create(role=1)
+        create_role = UserRole.objects.create(role=1, username=f"st_{validated_data['national_code']}",
+                                              password=make_password(validated_data['national_code']),
+                                              email=validated_data['email'])
         create_student = Student()
         create_student.student = create_role
         create_student.firstname = validated_data['firstname']
@@ -120,6 +125,8 @@ class StudentSerializer(serializers.Serializer):
 
     def update(self, instance, validated_data):
         ...
+
+
 #         add update student
 
 
@@ -127,5 +134,5 @@ class StudentGetDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
         fields = (
-        'id', 'firstname', 'lastname', 'student_number', 'email', 'phone', 'national_code', 'gender', 'birth_date',
-        'entry_year', 'incoming_semester', 'average',)
+            'id', 'firstname', 'lastname', 'student_number', 'email', 'phone', 'national_code', 'gender', 'birth_date',
+            'entry_year', 'incoming_semester', 'average',)

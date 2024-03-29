@@ -5,7 +5,7 @@ from accounts.models import UserRole, Student, ITManager, University, Professor
 
 class CustomUserAdmin(UserAdmin):
     list_display = (
-        'username', 'email', 'first_name', 'last_name', 'is_staff'
+        'username', 'email', 'first_name', 'last_name', 'is_staff', 'role'
     )
 
     fieldsets = (

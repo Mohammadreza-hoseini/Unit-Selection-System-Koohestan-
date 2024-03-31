@@ -51,7 +51,7 @@ class StudentGetUpdateDelete(APIView):
             get_student_serializer.update(
                 instance=get_student, validated_data=get_student_serializer
             )
-            return Response(status=status.HTTP_200_OK)
+            return Response(get_student_serializer.data, status=status.HTTP_200_OK)
         return Response(
             get_student_serializer.errors, status=status.HTTP_400_BAD_REQUEST
         )
@@ -137,9 +137,9 @@ class EducationalAssistantWithPK(APIView):
         if serializer.is_valid(raise_exception=True):
             serializer.update(instance=EA_obj, validated_data=serializer)
             return Response("Invalid data", status=status.HTTP_200_OK)
-        
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
+
     def delete(self, request, pk):
         """
         Delete an EA
@@ -148,8 +148,8 @@ class EducationalAssistantWithPK(APIView):
             EA_obj = EducationalAssistant.objects.get(id=pk)
         except ObjectDoesNotExist:
             return Response("This EA doesn't exist", status=status.HTTP_400_BAD_REQUEST)
-        
+
         # change user's role back to 'professor' #TODO
         EA_obj.delete()
-        
+
         return Response('Successfully deleted', status=status.HTTP_200_OK)

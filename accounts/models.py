@@ -95,7 +95,7 @@ class Student(models.Model):
     years = models.IntegerField(default=1, verbose_name='سنوات')
 
     def __str__(self):
-        return f"st_{self.student_number}"
+        return f"st_{self.national_code}"
 
 
 class ITManager(models.Model):
@@ -110,7 +110,7 @@ class ITManager(models.Model):
     national_code = models.CharField(max_length=11, unique=True, verbose_name='کد ملی')
 
     def __str__(self):
-        return f"IT_{self.it_manager_number}"
+        return f"IT_{self.national_code}"
 
 
 class EducationalAssistant(models.Model):

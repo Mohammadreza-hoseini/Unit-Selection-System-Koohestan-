@@ -2,6 +2,10 @@ from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from django_filters import rest_framework as filters
+from rest_framework.generics import ListAPIView
+
+from .FilterSet import StudentModelFilter
 from .models import Student, EducationalAssistant
 from .serializers import (
     StudentSerializer,
@@ -10,7 +14,7 @@ from .serializers import (
 )
 
 
-class StudentGetCreate(APIView):
+class StudentCreate(APIView):
     """
     API endpoint that allows student to be created.
     """
@@ -25,13 +29,15 @@ class StudentGetCreate(APIView):
             return Response("Successfully create", status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def get(self, request, format=None):
-        """
-        Return a list of all students.
-        """
-        students = Student.objects.all()
-        serializer = StudentGetDataSerializer(students, many=True)
-        return Response(serializer.data)
+
+class GetAllStudents(ListAPIView):
+    """
+    Return a list of all students.
+    """
+    serializer_class = StudentGetDataSerializer
+    queryset = Student.objects.all()
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = StudentModelFilter
 
 
 class StudentGetUpdateDelete(APIView):

@@ -17,7 +17,7 @@ class UserRole(AbstractUser):
     )
 
     def __str__(self):
-        return f"{self.role}"
+        return f"{self.username}"
 
 
 class ChooseGender(models.IntegerChoices):
@@ -56,7 +56,7 @@ class Professor(models.Model):
                                                    blank=True, related_name='professor_past_teaching_lessons')
 
     def __str__(self):
-        return f"{self.national_code}"
+        return f"pr_{self.national_code}"
 
 
 class Student(models.Model):
@@ -95,7 +95,7 @@ class Student(models.Model):
     years = models.IntegerField(default=1, verbose_name='سنوات')
 
     def __str__(self):
-        return f"{self.student_number}"
+        return f"st_{self.student_number}"
 
 
 class ITManager(models.Model):
@@ -110,21 +110,18 @@ class ITManager(models.Model):
     national_code = models.CharField(max_length=11, unique=True, verbose_name='کد ملی')
 
     def __str__(self):
-        return f"{self.it_manager_number}"
+        return f"IT_{self.it_manager_number}"
 
 
 class EducationalAssistant(models.Model):
     id = models.CharField(default=uuid.uuid4, editable=False, primary_key=True)
-    educational_assistant = models.OneToOneField(UserRole, on_delete=models.CASCADE,
-                                                 related_name='EducationalAssistant_user_role',
-                                                 verbose_name='نوع کاربر')
     assistant = models.OneToOneField(Professor, on_delete=models.CASCADE, related_name='EducationalAssistant_assistant',
-                                     verbose_name='معاون آموزشی')
+                                     verbose_name='آیدی استاد')
     faculty = models.OneToOneField("faculty.Faculty", on_delete=models.CASCADE,
                                    related_name='educational_assistant_faculty', verbose_name='انتخاب دانشکده')
 
     def __str__(self):
-        return f"{self.assistant.national_code}"
+        return f"EA_{self.assistant.national_code}"
 
 
 class University(models.Model):
@@ -143,7 +140,7 @@ class University(models.Model):
         unique_together = ('educational_assistant', 'university_president',)
 
     def __str__(self):
-        return f"{self.phone}"
+        return f"Uni_{self.phone}"
 
 
 class OTPCode(models.Model):

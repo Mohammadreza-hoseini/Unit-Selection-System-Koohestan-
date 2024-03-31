@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from accounts.models import UserRole, Student, ITManager, University, Professor
+from accounts.models import UserRole, Student, ITManager, University, Professor, EducationalAssistant
 
 
 class CustomUserAdmin(UserAdmin):
@@ -56,3 +56,4 @@ admin.site.register(Student)
 admin.site.register(ITManager)
 admin.site.register(University)
 admin.site.register(Professor)
+admin.site.register(EducationalAssistant)

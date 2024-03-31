@@ -2,6 +2,10 @@ from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from django_filters import rest_framework as filters
+from rest_framework.generics import ListAPIView
+
+from .FilterSet import StudentModelFilter
 from .models import Student, EducationalAssistant
 from .serializers import (
     StudentSerializer,
@@ -10,7 +14,7 @@ from .serializers import (
 )
 
 
-class StudentGetCreate(APIView):
+class StudentCreate(APIView):
     """
     API endpoint that allows student to be created.
     """
@@ -25,13 +29,15 @@ class StudentGetCreate(APIView):
             return Response("Successfully create", status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def get(self, request, format=None):
-        """
-        Return a list of all students.
-        """
-        students = Student.objects.all()
-        serializer = StudentGetDataSerializer(students, many=True)
-        return Response(serializer.data)
+
+class GetAllStudents(ListAPIView):
+    """
+    Return a list of all students.
+    """
+    serializer_class = StudentGetDataSerializer
+    queryset = Student.objects.all()
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = StudentModelFilter
 
 
 class StudentGetUpdateDelete(APIView):
@@ -51,7 +57,7 @@ class StudentGetUpdateDelete(APIView):
             get_student_serializer.update(
                 instance=get_student, validated_data=get_student_serializer
             )
-            return Response(status=status.HTTP_200_OK)
+            return Response(get_student_serializer.data, status=status.HTTP_200_OK)
         return Response(
             get_student_serializer.errors, status=status.HTTP_400_BAD_REQUEST
         )
@@ -137,9 +143,9 @@ class EducationalAssistantWithPK(APIView):
         if serializer.is_valid(raise_exception=True):
             serializer.update(instance=EA_obj, validated_data=serializer)
             return Response("Invalid data", status=status.HTTP_200_OK)
-        
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
+
     def delete(self, request, pk):
         """
         Delete an EA
@@ -148,8 +154,8 @@ class EducationalAssistantWithPK(APIView):
             EA_obj = EducationalAssistant.objects.get(id=pk)
         except ObjectDoesNotExist:
             return Response("This EA doesn't exist", status=status.HTTP_400_BAD_REQUEST)
-        
+
         # change user's role back to 'professor' #TODO
         EA_obj.delete()
-        
+
         return Response('Successfully deleted', status=status.HTTP_200_OK)

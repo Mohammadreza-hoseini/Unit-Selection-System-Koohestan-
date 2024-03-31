@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework_simplejwt",
     "drf_yasg",
+    "django_dump_load_utf8",
     # internal apps
     "accounts",
     "faculty",

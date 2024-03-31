@@ -14,7 +14,7 @@ from rest_framework import status
 
 from course.models import Course
 from faculty.models import Faculty, Major
-from .models import Student, Professor, UserRole
+from .models import Student, Professor, UserRole, EducationalAssistant
 
 
 def validate_phone(value):
@@ -98,27 +98,29 @@ class StudentSerializer(serializers.Serializer):
                                               email=validated_data['email'])
         create_student = Student()
         create_student.student = create_role
-        create_student.firstname = validated_data['firstname']
-        create_student.lastname = validated_data['lastname']
+        create_student.firstname = validated_data["firstname"]
+        create_student.lastname = validated_data["lastname"]
         create_student.student_number = f"st_{validated_data['national_code']}"
-        create_student.password = make_password(validated_data['national_code'])
-        create_student.email = validated_data['email']
-        create_student.phone = validated_data['phone']
-        create_student.national_code = validated_data['national_code']
-        create_student.gender = validated_data['gender']
-        create_student.birth_date = validated_data['birth_date']
-        create_student.entry_year = validated_data['entry_year']
-        create_student.incoming_semester = validated_data['incoming_semester']
-        create_student.faculty_id = validated_data['faculty']
-        create_student.major_id = validated_data['major']
-        create_student.supervisor_id = validated_data['supervisor']
-        create_student.military_service_status = validated_data['military_service_status']
-        create_student.years = validated_data['years']
+        create_student.password = make_password(validated_data["national_code"])
+        create_student.email = validated_data["email"]
+        create_student.phone = validated_data["phone"]
+        create_student.national_code = validated_data["national_code"]
+        create_student.gender = validated_data["gender"]
+        create_student.birth_date = validated_data["birth_date"]
+        create_student.entry_year = validated_data["entry_year"]
+        create_student.incoming_semester = validated_data["incoming_semester"]
+        create_student.faculty_id = validated_data["faculty"]
+        create_student.major_id = validated_data["major"]
+        create_student.supervisor_id = validated_data["supervisor"]
+        create_student.military_service_status = validated_data[
+            "military_service_status"
+        ]
+        create_student.years = validated_data["years"]
         create_student.save()
-        for item in validated_data['lessons_in_progress']:
+        for item in validated_data["lessons_in_progress"]:
             check_lessons_exist = Course.objects.filter(id=item).first()
             if not check_lessons_exist:
-                raise ValidationError('This lesson is not exist')
+                raise ValidationError("This lesson is not exist")
             create_student.lessons_in_progress.add(check_lessons_exist)
             create_student.save()
         return create_student
@@ -136,3 +138,78 @@ class StudentGetDataSerializer(serializers.ModelSerializer):
         fields = (
             'id', 'firstname', 'lastname', 'student_number', 'email', 'phone', 'national_code', 'gender', 'birth_date',
             'entry_year', 'incoming_semester', 'average',)
+        
+
+def validate_educational_assistant(value):
+    user_obj = UserRole.objects.filter(pk=value).first()
+    if not user_obj:
+        raise ValidationError("User doesn't exist")    
+
+
+def validate_assistant(value):
+    prof_obj = Professor.objects.filter(pk=value).first()
+    if not prof_obj:
+        raise ValidationError("Professor doesn't exist")
+
+def validate_faculty(value):
+    faculty_obj = Faculty.objects.filter(pk=value).first()
+    if not faculty_obj:
+        raise ValidationError("Faculty doesn't exist")
+
+
+class EducationalAssistantSerializer(serializers.Serializer):
+
+    educational_assistant = serializers.UUIDField(validators = [validate_educational_assistant],required=True)
+    assistant = serializers.UUIDField(validators = [validate_assistant],required=True)
+    faculty = serializers.UUIDField(validators = [validate_faculty], required=True)
+
+    # TODO
+    # which fields to show (for example name, ....)
+
+    def create(self, validated_data):
+
+        # DRY principle #TODO
+        user_id = validated_data["educational_assistant"]
+        A_id = validated_data["assistant"]
+        faculty_id = validated_data["faculty"]
+
+        user_obj = UserRole.objects.filter(pk=user_id).first()
+        prof_obj = Professor.objects.filter(pk=A_id).first()
+        faculty_obj = Faculty.objects.filter(pk=faculty_id).first()
+
+        if user_obj.role == 4:
+            raise ValidationError("User is already an educational_assistant")
+
+        if user_obj.role != 2:
+            raise ValidationError("User isn't a professor")
+
+        if prof_obj.faculty_id != str(faculty_id):
+            raise ValidationError("Professor and Faculty don't match")
+
+        user_obj.role = 4
+        user_obj.save()
+
+        EA_object = EducationalAssistant.objects.create(
+            educational_assistant=user_obj, assistant=prof_obj, faculty=faculty_obj
+        )
+
+        return EA_object
+
+    def update(self, instance, validated_data):
+        # make scenario -> what can be updated exactly? #QUESTION
+
+        # DRY principle #TODO
+        user_id = validated_data["educational_assistant"]
+        A_id = validated_data["assistant"]
+        faculty_id = validated_data["faculty"]
+
+        user_obj = UserRole.objects.filter(pk=user_id).first()
+        prof_obj = Professor.objects.filter(pk=A_id).first()
+        faculty_obj = Faculty.objects.filter(pk=faculty_id).first()
+
+        if user_obj.role != 4:
+            raise ValidationError("User is not an educational_assistant")
+
+        # other validations ... #TODO
+
+        # update ... #TODO

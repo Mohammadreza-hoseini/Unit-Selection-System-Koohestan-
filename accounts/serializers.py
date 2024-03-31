@@ -144,18 +144,21 @@ class StudentGetDataSerializer(serializers.ModelSerializer):
             'entry_year', 'incoming_semester', 'average', 'faculty', 'major', 'passed_lessons', 'lessons_in_progress',
             'supervisor', 'military_service_status', 'years',)
 
+class UserRoleGetDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserRole
+        fields = ('id', 'username', 'role')
 
-def validate_educational_assistant(value):
-    user_obj = UserRole.objects.filter(pk=value).first()
-    if not user_obj:
-        raise ValidationError("User doesn't exist")
-
+class ProfessorGetDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Professor
+        # TO DO : ask required fields from leader
+        fields = '__all__'
 
 def validate_assistant(value):
     prof_obj = Professor.objects.filter(pk=value).first()
     if not prof_obj:
         raise ValidationError("Professor doesn't exist")
-
 
 def validate_faculty(value):
     faculty_obj = Faculty.objects.filter(pk=value).first()
@@ -164,9 +167,11 @@ def validate_faculty(value):
 
 
 class EducationalAssistantSerializer(serializers.Serializer):
-    educational_assistant = serializers.UUIDField(validators=[validate_educational_assistant], required=True)
-    assistant = serializers.UUIDField(validators=[validate_assistant], required=True)
-    faculty = serializers.UUIDField(validators=[validate_faculty], required=True)
+ 
+    # add more fields #TODO:  
+
+    assistant = serializers.UUIDField(validators = [validate_assistant],required=True)
+    faculty = serializers.UUIDField(validators = [validate_faculty], required=True)
 
     # TODO
     # which fields to show (for example name, ....)
@@ -174,13 +179,13 @@ class EducationalAssistantSerializer(serializers.Serializer):
     def create(self, validated_data):
 
         # DRY principle #TODO
-        user_id = validated_data["educational_assistant"]
         A_id = validated_data["assistant"]
         faculty_id = validated_data["faculty"]
 
-        user_obj = UserRole.objects.filter(pk=user_id).first()
         prof_obj = Professor.objects.filter(pk=A_id).first()
         faculty_obj = Faculty.objects.filter(pk=faculty_id).first()
+        
+        user_obj = prof_obj.professor
 
         if user_obj.role == 4:
             raise ValidationError("User is already an educational_assistant")
@@ -195,7 +200,7 @@ class EducationalAssistantSerializer(serializers.Serializer):
         user_obj.save()
 
         EA_object = EducationalAssistant.objects.create(
-            educational_assistant=user_obj, assistant=prof_obj, faculty=faculty_obj
+            assistant=prof_obj, faculty=faculty_obj
         )
 
         return EA_object
@@ -204,17 +209,31 @@ class EducationalAssistantSerializer(serializers.Serializer):
         # make scenario -> what can be updated exactly? #QUESTION
 
         # DRY principle #TODO
-        user_id = validated_data["educational_assistant"]
         A_id = validated_data["assistant"]
         faculty_id = validated_data["faculty"]
-
-        user_obj = UserRole.objects.filter(pk=user_id).first()
+        
+        
         prof_obj = Professor.objects.filter(pk=A_id).first()
         faculty_obj = Faculty.objects.filter(pk=faculty_id).first()
 
+        user_obj = prof_obj.professor
+
+        
         if user_obj.role != 4:
             raise ValidationError("User is not an educational_assistant")
 
         # other validations ... #TODO
 
         # update ... #TODO
+
+class EA_GetDataSerializer(serializers.ModelSerializer):
+    
+    #TODO
+    
+    professor_detail = ProfessorGetDataSerializer(source='assistant')
+    
+    class Meta:
+        model = EducationalAssistant
+        
+        #TODO
+        fields = ('id', 'professor_detail')

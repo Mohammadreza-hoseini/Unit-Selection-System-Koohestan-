@@ -141,7 +141,8 @@ class StudentGetDataSerializer(serializers.ModelSerializer):
         model = Student
         fields = (
             'id', 'firstname', 'lastname', 'student_number', 'email', 'phone', 'national_code', 'gender', 'birth_date',
-            'entry_year', 'incoming_semester', 'average',)
+            'entry_year', 'incoming_semester', 'average', 'faculty', 'major', 'passed_lessons', 'lessons_in_progress',
+            'supervisor', 'military_service_status', 'years',)
 
 
 def validate_educational_assistant(value):

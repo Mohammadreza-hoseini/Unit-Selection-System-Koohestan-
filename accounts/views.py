@@ -51,7 +51,7 @@ class StudentGetUpdateDelete(APIView):
             get_student_serializer.update(
                 instance=get_student, validated_data=get_student_serializer
             )
-            return Response(status=status.HTTP_200_OK)
+            return Response(get_student_serializer.data, status=status.HTTP_200_OK)
         return Response(
             get_student_serializer.errors, status=status.HTTP_400_BAD_REQUEST
         )

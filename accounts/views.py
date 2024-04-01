@@ -5,7 +5,7 @@ from rest_framework import status
 from django_filters import rest_framework as filters
 from rest_framework.generics import ListAPIView
 
-from .FilterSet import StudentModelFilter
+from .FilterSet import StudentModelFilter, EA_ModelFilter
 from .models import Student, EducationalAssistant, UserRole
 from .serializers import (
     StudentSerializer,
@@ -93,11 +93,6 @@ class StudentGetUpdateDelete(APIView):
 
 class EducationalAssistantView(APIView):
     
-    #TODO
-    # filter_backends = [DjangoFilterBackend]
-    # filter_fields = []
-
-    
     def post(self, request):
         """
         Create a new EA -> Select from Professors
@@ -111,15 +106,16 @@ class EducationalAssistantView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def get(self, request):
-        """
+class GetAll_EAs(ListAPIView):
+    """
         Return list of all EAs
-        """
-        EAs = EducationalAssistant.objects.all()
-        
-        
-        serializer = EA_GetDataSerializer(EAs, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    """
+    
+    serializer_class = EA_GetDataSerializer
+    queryset = EducationalAssistant.objects.all()
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = EA_ModelFilter
+    
 
 class EducationalAssistantWithPK(APIView):
 

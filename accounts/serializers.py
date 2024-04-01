@@ -152,7 +152,7 @@ class UserRoleGetDataSerializer(serializers.ModelSerializer):
 class ProfessorGetDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = Professor
-        # TO DO : ask required fields from leader
+        #TODO : ask required fields from leader
         fields = '__all__'
 
 def validate_assistant(value):
@@ -167,15 +167,12 @@ def validate_faculty(value):
 
 
 class EducationalAssistantSerializer(serializers.Serializer):
- 
-    # add more fields #TODO:  
-
+    
     assistant = serializers.UUIDField(validators = [validate_assistant],required=True)
     faculty = serializers.UUIDField(validators = [validate_faculty], required=True)
 
-    # TODO
-    # which fields to show (for example name, ....)
 
+    @transaction.atomic
     def create(self, validated_data):
 
         # DRY principle #TODO
@@ -205,35 +202,46 @@ class EducationalAssistantSerializer(serializers.Serializer):
 
         return EA_object
 
+
+    @transaction.atomic
     def update(self, instance, validated_data):
-        # make scenario -> what can be updated exactly? #QUESTION
-
-        # DRY principle #TODO
-        A_id = validated_data["assistant"]
-        faculty_id = validated_data["faculty"]
+        
+        # NOTE//////////////////////
+        # possible #BUG
+        
+        A_id = validated_data.data.get("assistant", instance.assistant)
+        faculty_id = validated_data.data.get("faculty", instance.faculty)
         
         
-        prof_obj = Professor.objects.filter(pk=A_id).first()
-        faculty_obj = Faculty.objects.filter(pk=faculty_id).first()
-
-        user_obj = prof_obj.professor
-
-        
-        if user_obj.role != 4:
-            raise ValidationError("User is not an educational_assistant")
-
-        # other validations ... #TODO
-
-        # update ... #TODO
+        # if the professor changes and faculty remains the same
+        if A_id != instance.assistant:
+            new_EA_candidate = Professor.objects.get(pk=A_id)
+            
+            if new_EA_candidate.faculty.id != faculty_id:
+                raise ValidationError("Professor and Faculty don't match")
+            
+            
+            # change role of previous EA to 'professor'
+            user_of_preEA = instance.assistant.professor
+            user_of_preEA.role = 2
+            user_of_preEA.save()
+            
+            
+            # delete the previous EA
+            instance.delete()
+            
+            
+            data_for_newEA = {'assistant': A_id, "faculty": faculty_id}
+            
+            return data_for_newEA
+            
+        else:
+            raise ValidationError('Assistant_id should be different.')
+    
 
 class EA_GetDataSerializer(serializers.ModelSerializer):
-    
-    #TODO
-    
     professor_detail = ProfessorGetDataSerializer(source='assistant')
     
     class Meta:
         model = EducationalAssistant
-        
-        #TODO
         fields = ('id', 'professor_detail')

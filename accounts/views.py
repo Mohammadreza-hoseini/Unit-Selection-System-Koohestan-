@@ -142,7 +142,8 @@ class EducationalAssistantWithPK(APIView):
         Update an EA
         """
 
-        #TODO
+        # NOTE
+        # possible #BUG
 
         try:
             EA_obj = EducationalAssistant.objects.get(id=pk)
@@ -151,25 +152,19 @@ class EducationalAssistantWithPK(APIView):
 
         serializer = EducationalAssistantSerializer(request.data)
         if serializer.is_valid(raise_exception=True):
+            
             serializer.update(instance=EA_obj, validated_data=serializer)
             return Response("Invalid data", status=status.HTTP_200_OK)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     def delete(self, request, pk):
-        #TODO
-        # delete from userrole
-        
         """
         Delete an EA
         """
         try:
             EA_obj = EducationalAssistant.objects.get(id=pk)
             user_obj = UserRole.objects.get(id=EA_obj.assistant.professor.id)
-            
-            #BUG:
-            #rename some model fields (especially EA model)
-            #change __str__ methods in model
             
         except ObjectDoesNotExist:
             return Response("This EA doesn't exist", status=status.HTTP_400_BAD_REQUEST)

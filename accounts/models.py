@@ -49,7 +49,7 @@ class Professor(models.Model):
     faculty = models.ForeignKey("faculty.Faculty", on_delete=models.CASCADE, related_name='professor_faculty',
                                 verbose_name='انتخاب دانشکده')
     major = models.OneToOneField("faculty.Major", on_delete=models.CASCADE, related_name='professor_major',
-                                 verbose_name='رشته')
+                                 verbose_name='رشته') #BUG
     expertise = models.CharField(max_length=256, verbose_name='تخصص')
     degree = models.CharField(max_length=256, verbose_name='مرتبه یا درجه')
     past_teaching_lessons = models.ManyToManyField("course.Course", verbose_name='دروس تدریس شده', null=True,

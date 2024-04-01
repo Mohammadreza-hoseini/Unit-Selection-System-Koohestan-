@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import StudentCreate, StudentGetUpdateDelete, EducationalAssistantView, EducationalAssistantWithPK, \
-    GetAllStudents
+    GetAllStudents, GetAll_EAs
 
 app_name = 'accounts'
 urlpatterns = [
@@ -10,8 +10,8 @@ urlpatterns = [
     path(
         "assistants/", EducationalAssistantView.as_view(), name="educationalAssistant"
     ),
+    path('assistants_get_all/', GetAll_EAs.as_view(), name = "assistants_get_all"),
     path(
         "assistants/<uuid:pk>", EducationalAssistantWithPK.as_view(), name="EA_withPK"
-    ),
-
+    )
 ]

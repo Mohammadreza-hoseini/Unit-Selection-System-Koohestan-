@@ -1,0 +1,56 @@
+from wsgiref.validate import validator
+from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
+
+from django.db import transaction
+
+from .models import Term
+
+from accounts.models import Student, Professor
+
+
+def validate_times(attrs):
+    true_order = (attrs['start_selection_time'] < attrs['end_selection_time']
+            < attrs['class_start_time'] < attrs['doped_added_start_time']
+            < attrs['doped_added_end_time'] < attrs['emergency_removal_end_time']
+            < attrs['class_end_time'] < attrs['exam_start_time']
+            < attrs['term_end_time'])
+    if not true_order:
+        raise ValidationError("Order of times should be: \
+                            start_selection_time <  end_selection_time \
+                            < class_start_time < doped_added_start_time \
+                            < doped_added_end_time < emergency_removal_end_time \
+                            < class_end_time < exam_start_time \
+                            < term_end_time)")
+
+class TermSerializer(serializers.Serializer):
+    name = serializers.CharField()
+    students = serializers.PrimaryKeyRelatedField(queryset=Student.objects.all())
+    professors = serializers.PrimaryKeyRelatedField(queryset=Professor.objects.all())
+    course_lists = serializers.ListField()
+    start_selection_time = serializers.DateTimeField()
+    end_selection_time = serializers.DateTimeField()
+    class_start_time = serializers.DateTimeField()
+    class_end_time = serializers.DateTimeField()
+    doped_added_start_time = serializers.DateTimeField()
+    doped_added_end_time = serializers.DateTimeField()
+    emergency_removal_end_time = serializers.DateTimeField()
+    exam_start_time = serializers.DateTimeField()
+    term_end_time = serializers.DateTimeField()
+    
+    
+    def validate(self, attrs):
+        """
+        Object-level validation
+        """
+        validate_times(attrs)
+    
+    @transaction.atomic
+    def create(self, validated_data):
+        #TODO
+        ...
+    
+    @transaction.atomic
+    def update(self, instance, validated_data):
+        # TODO
+        ...

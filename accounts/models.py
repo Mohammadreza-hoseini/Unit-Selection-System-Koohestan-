@@ -46,10 +46,12 @@ class Professor(models.Model):
     password = models.CharField(max_length=256, verbose_name='رمز عبور')
     email = models.EmailField(unique=True, verbose_name='ایمیل')
     national_code = models.CharField(max_length=11, unique=True, verbose_name='کد ملی')
+    term = models.ForeignKey("term.Term", on_delete=models.CASCADE, related_name='professor_term',
+                             verbose_name='ترم جاری')
     faculty = models.ForeignKey("faculty.Faculty", on_delete=models.CASCADE, related_name='professor_faculty',
                                 verbose_name='انتخاب دانشکده')
-    major = models.OneToOneField("faculty.Major", on_delete=models.CASCADE, related_name='professor_major',
-                                 verbose_name='رشته') #BUG
+    major = models.ForeignKey("faculty.Major", on_delete=models.CASCADE, related_name='professor_major',
+                              verbose_name='رشته')
     expertise = models.CharField(max_length=256, verbose_name='تخصص')
     degree = models.CharField(max_length=256, verbose_name='مرتبه یا درجه')
     past_teaching_lessons = models.ManyToManyField("course.Course", verbose_name='دروس تدریس شده', null=True,
@@ -80,6 +82,8 @@ class Student(models.Model):
         default=ChooseSemester.first, choices=ChooseSemester.choices, verbose_name='ترم ورودی'
     )
     average = models.FloatField(verbose_name='معدل', null=True, blank=True)
+    term = models.ForeignKey("term.Term", on_delete=models.CASCADE, related_name='student_term',
+                             verbose_name='ترم جاری')
     faculty = models.ForeignKey("faculty.Faculty", on_delete=models.CASCADE, related_name='student_faculty',
                                 verbose_name='انتخاب دانشکده')
     major = models.ForeignKey("faculty.Major", on_delete=models.CASCADE, related_name='student_major',
@@ -147,6 +151,7 @@ class OTPCode(models.Model):
     id = models.CharField(default=uuid.uuid4, editable=False, primary_key=True)
     code = models.CharField(max_length=6, verbose_name='کد یکبار مصرف')
     email = models.EmailField(verbose_name='ایمیل')
+    code_expire = models.DateTimeField(blank=True, null=True, verbose_name='زمان منقضی شدن کد یکبار مصرف')
 
     def __str__(self):
         return f"{self.email}"

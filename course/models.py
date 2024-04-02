@@ -50,7 +50,7 @@ class Course(models.Model):
     professor = models.ForeignKey("accounts.Professor", on_delete=models.CASCADE, related_name='course_professor',
                                   verbose_name='استاد')
     capacity = models.PositiveIntegerField(verbose_name='ظرفیت')
-    term = models.ForeignKey("term.Term", on_delete=models.CASCADE, related_name='course_term', verbose_name='ترم')
+    term = models.ForeignKey("term.Term", on_delete=models.CASCADE, related_name='course_term', verbose_name='ترم جاری')
     exam_time = models.DateTimeField(verbose_name='تاریخ و زمان امتحان')
     exam_class_id = models.PositiveIntegerField(verbose_name='شماره کلاس امتحان')
 

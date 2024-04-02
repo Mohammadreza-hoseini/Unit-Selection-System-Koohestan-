@@ -88,9 +88,9 @@ class Student(models.Model):
                                 verbose_name='انتخاب دانشکده')
     major = models.ForeignKey("faculty.Major", on_delete=models.CASCADE, related_name='student_major',
                               verbose_name='انتخاب رشته تحصیلی')
-    passed_lessons = models.ManyToManyField("course.Course", verbose_name='دروس پاس شده', null=True, blank=True,
+    passed_lessons = models.ManyToManyField("course.Subject", verbose_name='دروس پاس شده', null=True, blank=True,
                                             related_name='student_passed_lessons')
-    lessons_in_progress = models.ManyToManyField("course.Course", verbose_name='دروس در حال گذراندن', null=True,
+    lessons_in_progress = models.ManyToManyField("course.Subject", verbose_name='دروس در حال گذراندن', null=True,
                                                  blank=True, related_name='student_lessons_in_progress')
     supervisor = models.ForeignKey(Professor, on_delete=models.CASCADE, related_name='student_supervisor',
                                    verbose_name='انتخاب استاد راهنما')
@@ -154,4 +154,4 @@ class OTPCode(models.Model):
     code_expire = models.DateTimeField(blank=True, null=True, verbose_name='زمان منقضی شدن کد یکبار مصرف')
 
     def __str__(self):
-        return f"{self.email}"
+        return f"{self.email} - {self.code} - {self.code_expire}"

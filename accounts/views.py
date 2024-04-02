@@ -13,7 +13,7 @@ from .serializers import (
     StudentSerializer,
     StudentGetDataSerializer,
     EducationalAssistantSerializer,
-    EA_GetDataSerializer, RequestOTPSerializer
+    EA_GetDataSerializer, RequestOTPSerializer, ChangePasswordAction
 )
 
 
@@ -104,6 +104,18 @@ class RequestOTPView(CreateAPIView):
 
     def perform_create(self, serializer):
         pass
+
+
+class ChangePassword(APIView):
+    def post(self, request, format=None):
+        """
+        API endpoint that change password action.
+        """
+        serializer = ChangePasswordAction(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response("Your password has been successfully changed", status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 # End code of Mohammadreza hoseini

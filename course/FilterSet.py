@@ -1,10 +1,11 @@
 import django_filters
-from .models import Term
+from .models import Course
 
 
 #TODO:
 
-class TermModelFilter(django_filters.FilterSet):
+class CourseModelFilter(django_filters.FilterSet):
     class Meta:
-        model = Term
-        fields = ["name", ]
+        #TODO
+        model = Course
+        fields = "__all__"

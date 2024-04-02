@@ -16,12 +16,8 @@ def validate_times(attrs):
             < attrs['class_end_time'] < attrs['exam_start_time']
             < attrs['term_end_time'])
     if not true_order:
-        raise ValidationError("Order of times should be: \
-                            start_selection_time <  end_selection_time \
-                            < class_start_time < doped_added_start_time \
-                            < doped_added_end_time < emergency_removal_end_time \
-                            < class_end_time < exam_start_time \
-                            < term_end_time)")
+        raise ValidationError("""Order of times should be: \
+                            start_selection_time <  end_selection_time < class_start_time < doped_added_start_time < doped_added_end_time < emergency_removal_end_time < class_end_time < exam_start_time < term_end_time)""")
 
 class TermSerializer(serializers.Serializer):
     name = serializers.CharField()
@@ -47,7 +43,7 @@ class TermSerializer(serializers.Serializer):
     
     @transaction.atomic
     def create(self, validated_data):
-        return super().create(validated_data) 
+        return Term.objects.create(**validated_data)
     
     @transaction.atomic
     def update(self, instance, validated_data):

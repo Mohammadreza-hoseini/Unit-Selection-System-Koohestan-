@@ -1,6 +1,7 @@
 import random
 import re
 from django.contrib.auth.hashers import make_password
+from django.utils import timezone
 from django.conf.global_settings import EMAIL_HOST
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import update_last_login
@@ -15,9 +16,10 @@ from django.db import transaction
 from course.models import Course
 from faculty.models import Faculty, Major
 from term.models import Term
-from .models import Student, Professor, UserRole, EducationalAssistant
+from .models import Student, Professor, UserRole, EducationalAssistant, OTPCode
 
 
+# Start code of Mohammadreza hoseini
 class StudentSerializer(serializers.Serializer):
     id = serializers.CharField(read_only=True)
     firstname = serializers.CharField()
@@ -151,6 +153,36 @@ class StudentGetDataSerializer(serializers.ModelSerializer):
             'lessons_in_progress',
             'supervisor', 'military_service_status', 'years',)
 
+
+class RequestOTPSerializer(serializers.Serializer):
+    email = serializers.EmailField(write_only=True)
+
+    def _generate_otp(self):
+        return ''.join([str(random.randint(0, 9)) for _ in range(6)])
+
+    def _generate_expire_time(self):
+        return timezone.now() + timezone.timedelta(seconds=30)
+
+    def validate(self, attrs):
+        email = attrs['email']
+        if not UserRole.objects.filter(email=email).exists():
+            raise ValidationError('User does not exist')
+
+        code = self._generate_otp()
+        expire_time = self._generate_expire_time()
+        OTPCode.objects.create(code=code, email=email, code_expire=expire_time)
+
+        # send email
+        send_mail(
+            'Change Password OTP Code',
+            f'Dear user,\nyour otp to login is {code}',
+            from_email=EMAIL_HOST,
+            recipient_list=[email]
+        )
+        return attrs
+
+
+# End code of Mohammadreza hoseini
 
 class UserRoleGetDataSerializer(serializers.ModelSerializer):
     class Meta:

@@ -42,16 +42,18 @@ def validate_professorFaculty_subject(attrs):
 def validate_exam_time(attrs):
     exam_time = attrs['exam_time']
     exams_start_time = attrs['term'].exam_start_time
-    exams_end_time = attrs['term'].exam_end_time
+    term_end_time = attrs['term'].term_end_time
 
-    if not exams_start_time <= exam_time <= exams_end_time:
-        raise ValidationError("Times should be: term.exams_start_time <= exam_time <= term.exams_end_time")
+    if not exams_start_time <= exam_time <= term_end_time:
+        raise ValidationError("Times should be: term.exams_start_time <= exam_time <= term.term_end_time")
 
 class CourseSerializer(serializers.Serializer):
     subject = serializers.PrimaryKeyRelatedField(queryset=Subject.objects.all())
     term = serializers.PrimaryKeyRelatedField(queryset=Term.objects.all())
     professor = serializers.PrimaryKeyRelatedField(queryset=Professor.objects.all())
+    
     # class_id -> new table for class? #TODO
+    class_id = serializers.IntegerField()
     
     day = serializers.IntegerField()
     time = serializers.TimeField()
@@ -64,11 +66,13 @@ class CourseSerializer(serializers.Serializer):
     #TODO
     def validate(self, attrs):
         
-        validate_time(attrs)
+        #NOTE
+        # validate_time(attrs)
         
         validate_professorFaculty_subject(attrs)
         
-        validate_exam_time(attrs)
+        #NOTE
+        # validate_exam_time(attrs)
         
         
         return attrs
@@ -78,13 +82,13 @@ class CourseSerializer(serializers.Serializer):
     def create(self, validated_data):
         # "only IT_Manager & related_EA can create a course -> in view?"
         
-        return Term.objects.create(**validated_data)
+        return Course.objects.create(**validated_data)
     
     #TODO
     @transaction.atomic
     def update(self, instance, validated_data):
-        ...
-        
+        #TODO
+        #IMPORTANT
         return instance
     
 class CourseGetDataSerializer(serializers.ModelSerializer):

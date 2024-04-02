@@ -46,6 +46,8 @@ class Professor(models.Model):
     password = models.CharField(max_length=256, verbose_name='رمز عبور')
     email = models.EmailField(unique=True, verbose_name='ایمیل')
     national_code = models.CharField(max_length=11, unique=True, verbose_name='کد ملی')
+    term = models.ForeignKey("term.Term", on_delete=models.CASCADE, related_name='professor_term',
+                             verbose_name='ترم جاری')
     faculty = models.ForeignKey("faculty.Faculty", on_delete=models.CASCADE, related_name='professor_faculty',
                                 verbose_name='انتخاب دانشکده')
     major = models.ForeignKey("faculty.Major", on_delete=models.CASCADE, related_name='professor_major',
@@ -80,6 +82,8 @@ class Student(models.Model):
         default=ChooseSemester.first, choices=ChooseSemester.choices, verbose_name='ترم ورودی'
     )
     average = models.FloatField(verbose_name='معدل', null=True, blank=True)
+    term = models.ForeignKey("term.Term", on_delete=models.CASCADE, related_name='student_term',
+                             verbose_name='ترم جاری')
     faculty = models.ForeignKey("faculty.Faculty", on_delete=models.CASCADE, related_name='student_faculty',
                                 verbose_name='انتخاب دانشکده')
     major = models.ForeignKey("faculty.Major", on_delete=models.CASCADE, related_name='student_major',

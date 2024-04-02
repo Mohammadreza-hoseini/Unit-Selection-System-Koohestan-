@@ -7,71 +7,73 @@ from rest_framework.views import APIView
 
 from django_filters import rest_framework as filters
 
-from .FilterSet import TermModelFilter
-from .models import Term
-from .serializers import TermSerializer, TermGetDataSerializer
+import course
+from course.models import Course
+
+from .FilterSet import CourseModelFilter
+from .serializers import CourseSerializer, CourseGetDataSerializer
 
 
-class TermView(APIView):
+class CourseView(APIView):
     """
-    Create new Term
+    Create new course
     """
     
     def post(self, request):
-        serializer = TermSerializer(data=request.data)
+        serializer = CourseSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-class GetAll_terms(ListAPIView):
+class GetAll_courses(ListAPIView):
     """
-        Return list of all terms
+        Return list of all courses
     """
     
-    serializer_class = TermGetDataSerializer
-    queryset = Term.objects.all()
+    serializer_class = CourseGetDataSerializer
+    queryset = Course.objects.all()
     filter_backends = (filters.DjangoFilterBackend,)
-    filterset_class = TermModelFilter
+    filterset_class = CourseModelFilter
 
-class TermWithPK(APIView):
+class CourseWithPK(APIView):
     def get(self, request, pk):
         """
-        Return a term
+        Return a course
         """
         try:
-            term_obj = Term.objects.get(id=pk)
+            course_obj = Course.objects.get(id=pk)
         except ObjectDoesNotExist:
-            return Response("This Term doesn't exist", status=status.HTTP_400_BAD_REQUEST)
-        serializer = TermGetDataSerializer(term_obj)
+            return Response("This course doesn't exist", status=status.HTTP_400_BAD_REQUEST)
+        serializer = CourseGetDataSerializer(course_obj)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     
     def put(self, request, pk):
         """
-        Update a term
+        Update a course
         """
         
         try:
-            term_obj = Term.objects.get(id=pk)
+            course_obj = Course.objects.get(id=pk)
         except ObjectDoesNotExist:
-            return Response("This Term doesn't exist", status=status.HTTP_400_BAD_REQUEST)
+            return Response("This course doesn't exist", status=status.HTTP_400_BAD_REQUEST)
         
-        serializer = TermSerializer(data=request.data)
+        serializer = CourseSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
-            serializer.update(instance=term_obj, validated_data=serializer)
+            serializer.update(instance=course_obj, validated_data=serializer)
             return Response("Successfully updated", status=status.HTTP_200_OK)
             
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
     def delete(self, request, pk):
         """
-        Delete a term
+        Delete a course
         """
         
         try:
-            term_obj = Term.objects.get(id=pk)
+            course_obj = Course.objects.get(id=pk)
         except ObjectDoesNotExist:
-            return Response("This Term doesn't exist", status=status.HTTP_400_BAD_REQUEST)
-        term_obj.delete()
+            return Response("This course doesn't exist", status=status.HTTP_400_BAD_REQUEST)
+        course_obj.delete()
         return Response("Successfully deleted", status=status.HTTP_200_OK)

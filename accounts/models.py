@@ -48,8 +48,8 @@ class Professor(models.Model):
     national_code = models.CharField(max_length=11, unique=True, verbose_name='کد ملی')
     faculty = models.ForeignKey("faculty.Faculty", on_delete=models.CASCADE, related_name='professor_faculty',
                                 verbose_name='انتخاب دانشکده')
-    major = models.OneToOneField("faculty.Major", on_delete=models.CASCADE, related_name='professor_major',
-                                 verbose_name='رشته') #BUG
+    major = models.ForeignKey("faculty.Major", on_delete=models.CASCADE, related_name='professor_major',
+                              verbose_name='رشته')
     expertise = models.CharField(max_length=256, verbose_name='تخصص')
     degree = models.CharField(max_length=256, verbose_name='مرتبه یا درجه')
     past_teaching_lessons = models.ManyToManyField("course.Course", verbose_name='دروس تدریس شده', null=True,

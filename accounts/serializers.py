@@ -218,7 +218,6 @@ class UserRoleGetDataSerializer(serializers.ModelSerializer):
 class ProfessorGetDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = Professor
-        # TODO : ask required fields from leader
         fields = '__all__'
 
 

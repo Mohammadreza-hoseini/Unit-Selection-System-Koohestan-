@@ -18,7 +18,7 @@ class TermView(APIView):
     """
     
     def post(self, request):
-        serializer = TermSerializer(request.data)
+        serializer = TermSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -29,7 +29,7 @@ class GetAll_terms(ListAPIView):
         Return list of all terms
     """
     
-    serializer_class = TermSerializer
+    serializer_class = TermGetDataSerializer
     queryset = Term.objects.all()
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = TermModelFilter
@@ -57,7 +57,7 @@ class TermWithPK(APIView):
         except ObjectDoesNotExist:
             return Response("This Term doesn't exist", status=status.HTTP_400_BAD_REQUEST)
         
-        serializer = TermSerializer(request.data)
+        serializer = TermSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.update(instance=term_obj, validated_data=serializer)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

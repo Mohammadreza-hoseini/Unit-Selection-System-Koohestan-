@@ -47,10 +47,18 @@ class TermSerializer(serializers.Serializer):
     
     @transaction.atomic
     def create(self, validated_data):
-        #TODO
-        ...
+        return super().create(validated_data) 
     
     @transaction.atomic
     def update(self, instance, validated_data):
-        # TODO
-        ...
+        instance.name = validated_data.data.get('name', instance.name)
+        if Term.objects.exclude(id=instance.id).filter(name=instance.name).exists():
+            raise ValidationError("There is already a term with this name")
+        instance.save()
+        return super().update(instance, validated_data)
+    
+class TermGetDataSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Term
+        fields = "__all__"

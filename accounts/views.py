@@ -150,7 +150,7 @@ class EducationalAssistantWithPK(APIView):
         if serializer.is_valid(raise_exception=True):
             
             serializer.update(instance=EA_obj, validated_data=serializer)
-            return Response("Invalid data", status=status.HTTP_200_OK)
+            return Response("Successfully updated", status=status.HTTP_200_OK)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     

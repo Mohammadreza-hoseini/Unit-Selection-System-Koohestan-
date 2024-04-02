@@ -1,10 +1,12 @@
 from django.core.exceptions import ObjectDoesNotExist
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django_filters import rest_framework as filters
 from rest_framework.generics import ListAPIView
 
+from koohestan.utils.permission_handler import ITManagerPermission
 from .FilterSet import StudentModelFilter, EA_ModelFilter
 from .models import Student, EducationalAssistant, UserRole
 from .serializers import (
@@ -19,6 +21,7 @@ class StudentCreate(APIView):
     """
     API endpoint that allows student to be created.
     """
+    permission_classes = (IsAuthenticated, ITManagerPermission,)
 
     def post(self, request, format=None):
         """
@@ -32,6 +35,7 @@ class StudentCreate(APIView):
 
 
 class GetAllStudents(ListAPIView):
+    permission_classes = (IsAuthenticated, ITManagerPermission,)
     """
     Return a list of all students.
     """
@@ -42,6 +46,7 @@ class GetAllStudents(ListAPIView):
 
 
 class StudentGetUpdateDelete(APIView):
+    permission_classes = (IsAuthenticated, ITManagerPermission)
     """
     API endpoint that allows student to be updated.
     """
@@ -90,9 +95,8 @@ class StudentGetUpdateDelete(APIView):
         return Response("Successfully delete", status=status.HTTP_200_OK)
 
 
-
 class EducationalAssistantView(APIView):
-    
+
     def post(self, request):
         """
         Create a new EA -> Select from Professors
@@ -106,20 +110,20 @@ class EducationalAssistantView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 class GetAll_EAs(ListAPIView):
     """
         Return list of all EAs
     """
-    
+
     serializer_class = EA_GetDataSerializer
     queryset = EducationalAssistant.objects.all()
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = EA_ModelFilter
-    
+
 
 class EducationalAssistantWithPK(APIView):
 
-    
     def get(self, request, pk):
         """
         Return an EA
@@ -128,10 +132,9 @@ class EducationalAssistantWithPK(APIView):
             EA_obj = EducationalAssistant.objects.get(id=pk)
         except ObjectDoesNotExist:
             return Response("This EA doesn't exist", status=status.HTTP_400_BAD_REQUEST)
-        
+
         serializer = EA_GetDataSerializer(EA_obj)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
 
     def put(self, request, pk):
         """
@@ -148,12 +151,11 @@ class EducationalAssistantWithPK(APIView):
 
         serializer = EducationalAssistantSerializer(request.data)
         if serializer.is_valid(raise_exception=True):
-            
             serializer.update(instance=EA_obj, validated_data=serializer)
             return Response("Invalid data", status=status.HTTP_200_OK)
-        
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
     def delete(self, request, pk):
         """
         Delete an EA
@@ -161,14 +163,13 @@ class EducationalAssistantWithPK(APIView):
         try:
             EA_obj = EducationalAssistant.objects.get(id=pk)
             user_obj = UserRole.objects.get(id=EA_obj.assistant.professor.id)
-            
+
         except ObjectDoesNotExist:
             return Response("This EA doesn't exist", status=status.HTTP_400_BAD_REQUEST)
 
-        
         EA_obj.delete()
-                
+
         user_obj.role = 2
         user_obj.save()
-        
+
         return Response("Successfully deleted", status=status.HTTP_200_OK)

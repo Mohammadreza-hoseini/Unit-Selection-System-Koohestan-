@@ -14,6 +14,7 @@ from rest_framework import status
 from django.db import transaction
 from course.models import Course
 from faculty.models import Faculty, Major
+from term.models import Term
 from .models import Student, Professor, UserRole, EducationalAssistant
 
 
@@ -31,10 +32,11 @@ class StudentSerializer(serializers.Serializer):
     entry_year = serializers.DateField()
     incoming_semester = serializers.ChoiceField(choices=[1, 2], default=1)
     average = serializers.FloatField(read_only=True)
+    term = serializers.PrimaryKeyRelatedField(queryset=Term.objects.all())
     faculty = serializers.PrimaryKeyRelatedField(queryset=Faculty.objects.all())
     major = serializers.PrimaryKeyRelatedField(queryset=Major.objects.all())
     passed_lessons = serializers.ListField(required=False)
-    lessons_in_progress = serializers.ListField()
+    lessons_in_progress = serializers.ListField(required=False)
     supervisor = serializers.PrimaryKeyRelatedField(queryset=Professor.objects.all())
     military_service_status = serializers.ChoiceField(choices=[1, 2, 3])
     years = serializers.IntegerField(default=1, required=False)
@@ -78,6 +80,7 @@ class StudentSerializer(serializers.Serializer):
             'role': 1,
             'username': f"st_{validated_data['national_code']}",
             'password': make_password(validated_data['national_code']),
+            'email': validated_data['email'],
         }
         create_role = UserRole.objects.create(**user_data)
 
@@ -108,6 +111,7 @@ class StudentSerializer(serializers.Serializer):
         instance.entry_year = validated_data.data.get('entry_year', instance.entry_year)
         instance.incoming_semester = validated_data.data.get('incoming_semester', instance.incoming_semester)
         instance.average = validated_data.data.get('average', instance.average)
+        instance.term_id = validated_data.data.get('term', instance.term)
         instance.faculty_id = validated_data.data.get('faculty', instance.faculty)  # Assign Faculty instance directly
         instance.major_id = validated_data.data.get('major', instance.major)  # Assign Faculty instance directly
         instance.supervisor_id = validated_data.data.get('supervisor',
@@ -133,6 +137,8 @@ class StudentSerializer(serializers.Serializer):
 
         instance.lessons_in_progress.set(lessons_in_progress)
         instance.save()
+        instance.student.email = instance.email
+        instance.student.save()
         return instance
 
 
@@ -141,24 +147,29 @@ class StudentGetDataSerializer(serializers.ModelSerializer):
         model = Student
         fields = (
             'id', 'firstname', 'lastname', 'student_number', 'email', 'phone', 'national_code', 'gender', 'birth_date',
-            'entry_year', 'incoming_semester', 'average', 'faculty', 'major', 'passed_lessons', 'lessons_in_progress',
+            'entry_year', 'incoming_semester', 'average', 'term', 'faculty', 'major', 'passed_lessons',
+            'lessons_in_progress',
             'supervisor', 'military_service_status', 'years',)
+
 
 class UserRoleGetDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserRole
         fields = ('id', 'username', 'role')
 
+
 class ProfessorGetDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = Professor
-        #TODO : ask required fields from leader
+        # TODO : ask required fields from leader
         fields = '__all__'
+
 
 def validate_assistant(value):
     prof_obj = Professor.objects.filter(pk=value).first()
     if not prof_obj:
         raise ValidationError("Professor doesn't exist")
+
 
 def validate_faculty(value):
     faculty_obj = Faculty.objects.filter(pk=value).first()
@@ -167,10 +178,8 @@ def validate_faculty(value):
 
 
 class EducationalAssistantSerializer(serializers.Serializer):
-    
-    assistant = serializers.UUIDField(validators = [validate_assistant],required=True)
-    faculty = serializers.UUIDField(validators = [validate_faculty], required=True)
-
+    assistant = serializers.UUIDField(validators=[validate_assistant], required=True)
+    faculty = serializers.UUIDField(validators=[validate_faculty], required=True)
 
     @transaction.atomic
     def create(self, validated_data):
@@ -181,7 +190,7 @@ class EducationalAssistantSerializer(serializers.Serializer):
 
         prof_obj = Professor.objects.filter(pk=A_id).first()
         faculty_obj = Faculty.objects.filter(pk=faculty_id).first()
-        
+
         user_obj = prof_obj.professor
 
         if user_obj.role == 4:
@@ -202,46 +211,41 @@ class EducationalAssistantSerializer(serializers.Serializer):
 
         return EA_object
 
-
     @transaction.atomic
     def update(self, instance, validated_data):
-        
+
         # NOTE//////////////////////
         # possible #BUG
-        
+
         A_id = validated_data.data.get("assistant", instance.assistant)
         faculty_id = validated_data.data.get("faculty", instance.faculty)
-        
-        
+
         # if the professor changes and faculty remains the same
         if A_id != instance.assistant:
             new_EA_candidate = Professor.objects.get(pk=A_id)
-            
+
             if new_EA_candidate.faculty.id != faculty_id:
                 raise ValidationError("Professor and Faculty don't match")
-            
-            
+
             # change role of previous EA to 'professor'
             user_of_preEA = instance.assistant.professor
             user_of_preEA.role = 2
             user_of_preEA.save()
-            
-            
+
             # delete the previous EA
             instance.delete()
-            
-            
+
             data_for_newEA = {'assistant': A_id, "faculty": faculty_id}
-            
+
             return data_for_newEA
-            
+
         else:
             raise ValidationError('Assistant_id should be different.')
-    
+
 
 class EA_GetDataSerializer(serializers.ModelSerializer):
     professor_detail = ProfessorGetDataSerializer(source='assistant')
-    
+
     class Meta:
         model = EducationalAssistant
         fields = ('id', 'professor_detail')

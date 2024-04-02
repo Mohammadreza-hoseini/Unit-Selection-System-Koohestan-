@@ -7,7 +7,6 @@ from rest_framework.views import APIView
 
 from django_filters import rest_framework as filters
 
-import course
 from course.models import Course
 
 from .FilterSet import CourseModelFilter

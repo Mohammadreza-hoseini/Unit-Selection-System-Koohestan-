@@ -1,0 +1,252 @@
+[
+    {
+        "model": "accounts.userrole",
+        "pk": "43ccecd3-38f1-47c4-bb3f-9a5c8cfce96e",
+        "fields": {
+            "password": "pbkdf2_sha256$600000$UEXnI61ktFiyMyXxL0MInT$uXoxwE39V6GUX5F63hUR55Bajg+jSDrthfyJcU+NSgI=",
+            "last_login": "2024-03-31T13:05:31Z",
+            "is_superuser": false,
+            "username": "Arman_pr",
+            "first_name": "Arman",
+            "last_name": "Shakerian",
+            "email": "a@b.com",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2024-03-31T13:04:38Z",
+            "role": 4,
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "accounts.userrole",
+        "pk": "97d88f30-4ec4-42cd-82eb-62186e792720",
+        "fields": {
+            "password": "pbkdf2_sha256$600000$hrNUL0fTTGKyU8Z5xQgZSs$pTiWh7zRMD2qFRo6qBq8gXxhxNpt6CTQTox1TIZyzWQ=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "hoseini_pr",
+            "first_name": "",
+            "last_name": "",
+            "email": "",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2024-04-02T11:31:27Z",
+            "role": 2,
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "accounts.userrole",
+        "pk": "b7430f5a-4511-4d5e-9580-1171df16bec1",
+        "fields": {
+            "password": "pbkdf2_sha256$600000$KkPH04JTRwkt4hLEaaMADm$P6VOGhzjj9igbAYtWdjsrgD3RVUBtfEf22/Y3/I/y84=",
+            "last_login": null,
+            "is_superuser": true,
+            "username": "admin",
+            "first_name": "",
+            "last_name": "",
+            "email": "zahra@ebrahimi.com",
+            "is_staff": true,
+            "is_active": true,
+            "date_joined": "2024-03-26T19:37:51.881Z",
+            "role": 1,
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "accounts.userrole",
+        "pk": "c253f257-b04b-4968-abfc-3548bb49fb8e",
+        "fields": {
+            "password": "pbkdf2_sha256$600000$DdpiMrsu5T2MXgWfBqwX18$EOffLH3DiGkPk4qYCtml3lE8ZOvvURwx4eXtJ7hhCkI=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "st_0590408100",
+            "first_name": "",
+            "last_name": "",
+            "email": "mohammadrezahoseini937@gmail.com",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2024-04-02T11:45:54.669Z",
+            "role": 1,
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "accounts.userrole",
+        "pk": "c72ada0c-f7d2-4080-b9e8-285df2de4664",
+        "fields": {
+            "password": "pbkdf2_sha256$600000$5PGT2PphSBHKzoXsi9TUQs$M2RKtOl1CWNyxVmSOGPtMOq++5jdgAayKDn632dAPN0=",
+            "last_login": "2024-03-28T23:38:22.620Z",
+            "is_superuser": true,
+            "username": "root",
+            "first_name": "",
+            "last_name": "",
+            "email": "root@gmail.com",
+            "is_staff": true,
+            "is_active": true,
+            "date_joined": "2024-03-26T15:17:52Z",
+            "role": 3,
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "accounts.userrole",
+        "pk": "cb6743a5-73fb-4159-b581-637fe1bf3d95",
+        "fields": {
+            "password": "pbkdf2_sha256$600000$4RXuM6hasQoXFR8kyMa5fU$mJvdDJCnJMEKiOzkwKRt2kAakAzP27iJPAedenf+4Q8=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "pr_0200408100",
+            "first_name": "",
+            "last_name": "",
+            "email": "",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2024-04-02T15:05:27.325Z",
+            "role": 2,
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "accounts.userrole",
+        "pk": "ecf40620-b55e-465d-8017-17481be39846",
+        "fields": {
+            "password": "pbkdf2_sha256$600000$8pru5rkpSLrmFnrF2bRYUu$lMjQszT51VE7cRAFVE2rYxQ4n7d1TYdGjMPhm0W2FeI=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "pr_3860792067",
+            "first_name": "",
+            "last_name": "",
+            "email": "",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2024-04-02T15:08:30.172Z",
+            "role": 2,
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "accounts.professor",
+        "pk": "9bdd434d-0b83-4fe0-9d84-74335d39ee00",
+        "fields": {
+            "professor": "97d88f30-4ec4-42cd-82eb-62186e792720",
+            "firstname": "محمد",
+            "lastname": "حسینی",
+            "professor_number": "pr_0123456789",
+            "password": "Momali_937",
+            "email": "8585@gmail.com",
+            "national_code": "0590408100",
+            "term": "aa95d526-d0c2-4968-91df-038a25d48033",
+            "faculty": "cdccce33-d43b-498d-a421-6e50c8c7281a",
+            "major": "32ca20b5-6a51-4197-84da-50c1e1c7a431",
+            "expertise": "نرم افزار",
+            "degree": "دکترا",
+            "past_teaching_lessons": []
+        }
+    },
+    {
+        "model": "accounts.student",
+        "pk": "8fee8811-be73-4888-bde0-9116a5f50a5d",
+        "fields": {
+            "student": "c253f257-b04b-4968-abfc-3548bb49fb8e",
+            "firstname": "reza",
+            "lastname": "mohammadi",
+            "student_number": "st_0590408100",
+            "password": "pbkdf2_sha256$600000$58URAOEyTnxcXt2NoQpkLi$pV6yen8QtqYmupR8fodeTydRiiNAl4Z9SEPQ3ZJaplA=",
+            "avatar": null,
+            "email": "mohammadrezahoseini937@gmail.com",
+            "phone": "09128585543",
+            "national_code": "0200408100",
+            "gender": 1,
+            "birth_date": "1997-02-14",
+            "entry_year": "2020-02-14",
+            "incoming_semester": 1,
+            "average": null,
+            "term": "aa95d526-d0c2-4968-91df-038a25d48033",
+            "faculty": "cdccce33-d43b-498d-a421-6e50c8c7281a",
+            "major": "32ca20b5-6a51-4197-84da-50c1e1c7a431",
+            "supervisor": "9bdd434d-0b83-4fe0-9d84-74335d39ee00",
+            "military_service_status": 2,
+            "years": 1,
+            "passed_lessons": [],
+            "lessons_in_progress": []
+        }
+    },
+    {
+        "model": "accounts.itmanager",
+        "pk": "e8577dfa-f19b-4721-af4d-1f2193ede4a1",
+        "fields": {
+            "IT_manager": "c72ada0c-f7d2-4080-b9e8-285df2de4664",
+            "firstname": "mohammadreza",
+            "lastname": "hoseini",
+            "it_manager_number": "it_0123456789",
+            "password": "root",
+            "email": "mohammadrezahoseini937@gmail.com",
+            "national_code": "0590408100"
+        }
+    },
+    {
+        "model": "accounts.university",
+        "pk": "435d05aa-e6b0-4224-a904-567cc02db780",
+        "fields": {
+            "address": "تهران پونک",
+            "phone": "0214507474",
+            "email": "uni@gmail.com",
+            "educational_assistant": null,
+            "university_president": null
+        }
+    },
+    {
+        "model": "accounts.otpcode",
+        "pk": "b578a64c-61d3-4a0f-8d90-2568fc501e00",
+        "fields": {
+            "code": "167721",
+            "email": "mohammadrezahoseini937@gmail.com",
+            "code_expire": "2024-04-02T15:55:21.598Z"
+        }
+    },
+    {
+        "model": "faculty.faculty",
+        "pk": "cdccce33-d43b-498d-a421-6e50c8c7281a",
+        "fields": {
+            "name": "دانشکده کامپیوتر",
+            "phone": "0214507474",
+            "address": "تهران صادقیه",
+            "university": "435d05aa-e6b0-4224-a904-567cc02db780"
+        }
+    },
+    {
+        "model": "faculty.major",
+        "pk": "32ca20b5-6a51-4197-84da-50c1e1c7a431",
+        "fields": {
+            "faculty": "cdccce33-d43b-498d-a421-6e50c8c7281a",
+            "name": "مهندسی نرم افزار",
+            "department": "کامپیوتر",
+            "number_of_units": 146,
+            "education_level": "کارشناسی"
+        }
+    },
+    {
+        "model": "term.term",
+        "pk": "aa95d526-d0c2-4968-91df-038a25d48033",
+        "fields": {
+            "name": "ترم اول",
+            "start_selection_time": "2024-04-02T11:29:52Z",
+            "end_selection_time": "2024-04-02T11:29:53Z",
+            "class_start_time": "2024-04-02T11:29:55Z",
+            "class_end_time": "2024-04-02T11:29:57Z",
+            "doped_added_start_time": "2024-04-02T11:29:59Z",
+            "doped_added_end_time": "2024-04-02T11:30:00Z",
+            "emergency_removal_end_time": "2024-04-02T11:30:02Z",
+            "exam_start_time": "2024-04-02T11:30:04Z",
+            "term_end_time": "2024-04-02T11:30:05Z"
+        }
+    }
+]

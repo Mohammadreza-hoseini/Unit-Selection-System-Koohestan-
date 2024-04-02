@@ -21,9 +21,6 @@ def validate_times(attrs):
 
 class TermSerializer(serializers.Serializer):
     name = serializers.CharField()
-    students = serializers.PrimaryKeyRelatedField(queryset=Student.objects.all())
-    professors = serializers.PrimaryKeyRelatedField(queryset=Professor.objects.all())
-    course_lists = serializers.ListField()
     start_selection_time = serializers.DateTimeField()
     end_selection_time = serializers.DateTimeField()
     class_start_time = serializers.DateTimeField()

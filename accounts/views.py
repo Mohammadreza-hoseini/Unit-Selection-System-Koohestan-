@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django_filters import rest_framework as filters
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, CreateAPIView
 
 from koohestan.utils.permission_handler import ITManagerPermission
 from .FilterSet import StudentModelFilter, EA_ModelFilter
@@ -13,10 +13,11 @@ from .serializers import (
     StudentSerializer,
     StudentGetDataSerializer,
     EducationalAssistantSerializer,
-    EA_GetDataSerializer
+    EA_GetDataSerializer, RequestOTPSerializer
 )
 
 
+# Start code of Mohammadreza hoseini
 class StudentCreate(APIView):
     """
     API endpoint that allows student to be created.
@@ -95,6 +96,17 @@ class StudentGetUpdateDelete(APIView):
         return Response("Successfully delete", status=status.HTTP_200_OK)
 
 
+class RequestOTPView(CreateAPIView):
+    """
+    API endpoint that send otp code for user email.
+    """
+    serializer_class = RequestOTPSerializer
+
+    def perform_create(self, serializer):
+        pass
+
+
+# End code of Mohammadreza hoseini
 class EducationalAssistantView(APIView):
 
     def post(self, request):

@@ -151,6 +151,7 @@ class OTPCode(models.Model):
     id = models.CharField(default=uuid.uuid4, editable=False, primary_key=True)
     code = models.CharField(max_length=6, verbose_name='کد یکبار مصرف')
     email = models.EmailField(verbose_name='ایمیل')
+    code_expire = models.DateTimeField(blank=True, null=True, verbose_name='زمان منقضی شدن کد یکبار مصرف')
 
     def __str__(self):
         return f"{self.email}"

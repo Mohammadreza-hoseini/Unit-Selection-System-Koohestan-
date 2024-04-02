@@ -37,6 +37,7 @@ class TermSerializer(serializers.Serializer):
         Object-level validation
         """
         validate_times(attrs)
+        return attrs
     
     @transaction.atomic
     def create(self, validated_data):
@@ -48,7 +49,7 @@ class TermSerializer(serializers.Serializer):
         if Term.objects.exclude(id=instance.id).filter(name=instance.name).exists():
             raise ValidationError("There is already a term with this name")
         instance.save()
-        return super().update(instance, validated_data)
+        return instance
     
 class TermGetDataSerializer(serializers.ModelSerializer):
     

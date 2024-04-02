@@ -7,4 +7,4 @@ from .models import Term
 class TermModelFilter(django_filters.FilterSet):
     class Meta:
         model = Term
-        fields = ("name", )
+        fields = ["name", ]

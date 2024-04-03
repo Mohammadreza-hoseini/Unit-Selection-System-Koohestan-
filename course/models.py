@@ -8,6 +8,11 @@ class ChooseCourseType(models.IntegerChoices):
     general = 3, "general"
 
 
+class ChooseMandatory(models.IntegerChoices):
+    yes = 1, "yes"
+    no = 2, "no"
+
+
 class Subject(models.Model):
     id = models.CharField(default=uuid.uuid4, editable=False, primary_key=True)
     name = models.CharField(max_length=256)
@@ -22,7 +27,9 @@ class Subject(models.Model):
     course_type = models.PositiveSmallIntegerField(
         default=ChooseCourseType.basic, choices=ChooseCourseType.choices, verbose_name="نوع درس"
     )
-    mandatory = models.IntegerField(default=1, verbose_name='وضعیت اجباری بودن یا نبودن درس')
+    mandatory = models.PositiveSmallIntegerField(
+        default=ChooseMandatory.yes, choices=ChooseMandatory.choices, verbose_name='وضعیت اجباری بودن یا نبودن درس'
+    )
 
     def __str__(self):
         return self.name

@@ -16,8 +16,10 @@ from django.db import transaction
 from accounts import queryset
 from course.models import Course
 from faculty.models import Faculty, Major
+from faculty.serializers import FacultyGetDataSerializer, MajorGetDataSerializer
 from koohestan.tasks import send_email_task
 from term.models import Term
+from term.serializers import TermGetDataSerializer
 from .models import Student, Professor, UserRole, EducationalAssistant, OTPCode
 
 
@@ -306,9 +308,16 @@ class ProfessorSerializer(serializers.Serializer):
 
 
 class ProfessorGetDataSerializer(serializers.ModelSerializer):
+    term_detail = TermGetDataSerializer(source='term')
+    faculty_detail = FacultyGetDataSerializer(source='faculty')
+    major_detail = MajorGetDataSerializer(source='major')
+
+
     class Meta:
         model = Professor
-        exclude = ('password',)
+        fields = (
+            'firstname', 'lastname', 'professor_number', 'email', 'national_code', 'term_detail', 'faculty_detail', 'major_detail',
+            'expertise', 'degree', 'past_teaching_lessons',)
 
 
 class EducationalAssistantSerializer(serializers.Serializer):

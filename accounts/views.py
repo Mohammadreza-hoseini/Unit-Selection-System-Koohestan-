@@ -7,7 +7,7 @@ from django_filters import rest_framework as filters
 from rest_framework.generics import ListAPIView, CreateAPIView
 
 from koohestan.utils.permission_handler import ITManagerPermission
-from .FilterSet import StudentModelFilter, EA_ModelFilter
+from .FilterSet import StudentModelFilter, EA_ModelFilter, ProfessorModelFilter
 from .models import Student, EducationalAssistant, UserRole, Professor
 from .serializers import (
     StudentSerializer,
@@ -37,7 +37,7 @@ class StudentCreate(APIView):
 
 
 class GetAllStudents(ListAPIView):
-    # permission_classes = (IsAuthenticated, ITManagerPermission,)
+    permission_classes = (IsAuthenticated, ITManagerPermission,)
     """
     Return a list of all students.
     """
@@ -173,6 +173,14 @@ class ProfessorGetUpdateDelete(APIView):
             )
         get_professor.professor.delete()
         return Response('Successfully delete', status=status.HTTP_200_OK)
+
+
+class GetAllProfessors(ListAPIView):
+    permission_classes = (IsAuthenticated, ITManagerPermission)
+    serializer_class = ProfessorGetDataSerializer
+    queryset = Professor.objects.all()
+    filter_backends = (filters.DjangoFilterBackend,)
+    filter_fields = ProfessorModelFilter
 
 
 class EducationalAssistantView(APIView):

@@ -13,7 +13,7 @@ from .serializers import (
     StudentSerializer,
     StudentGetDataSerializer,
     EducationalAssistantSerializer,
-    EA_GetDataSerializer, RequestOTPSerializer, ChangePasswordAction
+    EA_GetDataSerializer, RequestOTPSerializer, ChangePasswordAction, ProfessorSerializer
 )
 
 
@@ -119,6 +119,18 @@ class ChangePassword(APIView):
 
 
 # End code of Mohammadreza hoseini
+
+class ProfessorCreate(APIView):
+    permission_classes = (IsAuthenticated, ITManagerPermission,)
+
+    def post(self, request, format=None):
+        serializer = ProfessorSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response("Successfully create", status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 class EducationalAssistantView(APIView):
 
     def post(self, request):

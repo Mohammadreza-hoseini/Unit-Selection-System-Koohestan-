@@ -212,6 +212,71 @@ class UserRoleGetDataSerializer(serializers.ModelSerializer):
         fields = ('id', 'username', 'role')
 
 
+class ProfessorSerializer(serializers.Serializer):
+    id = serializers.CharField(read_only=True)
+    firstname = serializers.CharField()
+    lastname = serializers.CharField()
+    professor_number = serializers.CharField(read_only=True)
+    password = serializers.CharField(read_only=True)
+    email = serializers.EmailField()
+    national_code = serializers.CharField()
+    term = serializers.PrimaryKeyRelatedField(queryset=Term.objects.all())
+    faculty = serializers.PrimaryKeyRelatedField(queryset=Faculty.objects.all())
+    major = serializers.PrimaryKeyRelatedField(queryset=Major.objects.all())
+    expertise = serializers.CharField()
+    degree = serializers.CharField()
+    past_teaching_lessons = serializers.ListField(required=False)
+
+    def validate_email(self, value):
+        pattern = re.compile(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")
+        if not pattern.match(value):
+            raise serializers.ValidationError("email format is wrong")
+        return value
+
+    def validate_national_code(self, value):
+        val_str = str(value)
+        if len(str(val_str)) != 10:
+            raise ValidationError('national code is 10 digits')
+        s = sum([int(val_str[i]) * (10 - i) for i in range(9)])
+        d, m = divmod(s, 11)
+        if m < 2:
+            if int(val_str[-1]) != m:
+                raise ValidationError('invalid national code')
+        else:
+            if int(val_str[-1]) != 11 - m:
+                raise ValidationError('invalid national code')
+        return value
+
+    @transaction.atomic
+    def create(self, validated_data):
+        if Professor.objects.filter(email=validated_data['email']).exists():
+            raise serializers.ValidationError("This email exist")
+        if Professor.objects.filter(national_code=validated_data['national_code']).exists():
+            raise ValidationError('This national code exist')
+        user_data = {
+            'role': 2,
+            'username': f"pr_{validated_data['national_code']}",
+            'password': make_password(validated_data['national_code']),
+            'email': validated_data['email'],
+        }
+        create_role = UserRole.objects.create(**user_data)
+
+        professor_data = {
+            'professor': create_role,
+            'professor_number': f"pr_{validated_data['national_code']}",
+            'password': make_password(validated_data['national_code']),
+            **validated_data
+        }
+        past_teaching_lessons = professor_data.pop('past_teaching_lessons', [])
+        professor = Professor.objects.create(**professor_data)
+
+        for lesson_id in past_teaching_lessons:
+            if not Course.objects.filter(id=lesson_id).exists():
+                raise serializers.ValidationError("This lesson does not exist")
+        professor.past_teaching_lessons.set(past_teaching_lessons)
+        return professor
+
+
 class ProfessorGetDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = Professor

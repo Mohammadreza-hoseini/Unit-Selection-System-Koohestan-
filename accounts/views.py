@@ -13,6 +13,7 @@ from .serializers import (
     StudentSerializer,
     StudentGetDataSerializer,
     EducationalAssistantSerializer,
+    ProfessorGetDataSerializer,
     EA_GetDataSerializer, RequestOTPSerializer, ChangePasswordAction, ProfessorSerializer
 )
 
@@ -151,6 +152,17 @@ class ProfessorGetUpdateDelete(APIView):
             get_professor_serializer.errors, status=status.HTTP_400_BAD_REQUEST
         )
 
+    def get(self, request, pk):
+
+        try:
+            get_professor = Professor.objects.get(id=pk)
+
+        except ObjectDoesNotExist:
+            return Response(
+                "This Professor does not exist", status=status.HTTP_400_BAD_REQUEST
+            )
+        get_professor_serializer = ProfessorGetDataSerializer(get_professor)
+        return Response(get_professor_serializer.data, status=status.HTTP_200_OK)
 
 
 class EducationalAssistantView(APIView):

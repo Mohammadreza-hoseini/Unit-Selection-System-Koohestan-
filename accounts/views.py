@@ -103,7 +103,7 @@ class RequestOTPView(CreateAPIView):
     serializer_class = RequestOTPSerializer
 
     def perform_create(self, serializer):
-        pass
+        return Response("Code sent to your email address", status=status.HTTP_200_OK)
 
 
 class ChangePassword(APIView):
@@ -177,7 +177,7 @@ class EducationalAssistantWithPK(APIView):
         if serializer.is_valid(raise_exception=True):
             serializer.update(instance=EA_obj, validated_data=serializer)
             return Response("Successfully updated", status=status.HTTP_200_OK)
-        
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk):

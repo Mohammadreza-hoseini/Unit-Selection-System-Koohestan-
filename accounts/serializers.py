@@ -16,6 +16,7 @@ from django.db import transaction
 from accounts import queryset
 from course.models import Course
 from faculty.models import Faculty, Major
+from koohestan.tasks import send_email_task
 from term.models import Term
 from .models import Student, Professor, UserRole, EducationalAssistant, OTPCode
 
@@ -174,12 +175,7 @@ class RequestOTPSerializer(serializers.Serializer):
         OTPCode.objects.create(code=code, email=email, code_expire=expire_time)
 
         # send email
-        send_mail(
-            'Change Password OTP Code',
-            f'Dear user,\nyour otp to login is {code}',
-            from_email=EMAIL_HOST,
-            recipient_list=[email]
-        )
+        send_email_task.delay(email, code)
         return attrs
 
 
@@ -221,8 +217,8 @@ class ProfessorGetDataSerializer(serializers.ModelSerializer):
         model = Professor
         fields = '__all__'
 
-class EducationalAssistantSerializer(serializers.Serializer):
 
+class EducationalAssistantSerializer(serializers.Serializer):
     assistant = serializers.PrimaryKeyRelatedField(queryset=Professor.objects.all())
     faculty = serializers.PrimaryKeyRelatedField(queryset=Faculty.objects.all())
 

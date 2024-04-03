@@ -13,6 +13,7 @@ from rest_framework_simplejwt.settings import api_settings
 from rest_framework.response import Response
 from rest_framework import status
 from django.db import transaction
+from accounts import queryset
 from course.models import Course
 from faculty.models import Faculty, Major
 from term.models import Term
@@ -218,25 +219,12 @@ class UserRoleGetDataSerializer(serializers.ModelSerializer):
 class ProfessorGetDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = Professor
-        # TODO : ask required fields from leader
         fields = '__all__'
 
-
-def validate_assistant(value):
-    prof_obj = Professor.objects.filter(pk=value).first()
-    if not prof_obj:
-        raise ValidationError("Professor doesn't exist")
-
-
-def validate_faculty(value):
-    faculty_obj = Faculty.objects.filter(pk=value).first()
-    if not faculty_obj:
-        raise ValidationError("Faculty doesn't exist")
-
-
 class EducationalAssistantSerializer(serializers.Serializer):
-    assistant = serializers.UUIDField(validators=[validate_assistant], required=True)
-    faculty = serializers.UUIDField(validators=[validate_faculty], required=True)
+
+    assistant = serializers.PrimaryKeyRelatedField(queryset=Professor.objects.all())
+    faculty = serializers.PrimaryKeyRelatedField(queryset=Faculty.objects.all())
 
     @transaction.atomic
     def create(self, validated_data):

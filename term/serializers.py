@@ -46,6 +46,11 @@ class TermSerializer(serializers.Serializer):
     @transaction.atomic
     def update(self, instance, validated_data):
         instance.name = validated_data.data.get('name', instance.name)
+        
+        #IMPORTANT
+        #add other fields too #TODO
+        
+        
         if Term.objects.exclude(id=instance.id).filter(name=instance.name).exists():
             raise ValidationError("There is already a term with this name")
         instance.save()

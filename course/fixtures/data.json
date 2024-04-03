@@ -1,0 +1,486 @@
+[
+    {
+        "model": "accounts.userrole",
+        "pk": "08e295ac-c826-411d-bb20-c5678e88b660",
+        "fields": {
+            "password": "pbkdf2_sha256$600000$PhFJdXgHxQi8di09F5YzH0$7VH23fmDKElUix9S0jjonFp1yHYxqpIfigRLmNy3xXQ=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "pr_0200408100",
+            "first_name": "",
+            "last_name": "",
+            "email": "",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2024-04-01T01:49:28.990Z",
+            "role": 2,
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "accounts.userrole",
+        "pk": "2e79e862-3c1b-401f-b10c-53ee902bdaba",
+        "fields": {
+            "password": "pbkdf2_sha256$600000$YlOSmdFpAb3nHEk8PbVQk7$vbNFInWoGxzkLd/QE7cSunCUGoCgcl1FxJ/GCOF1lY0=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "st_0200408100",
+            "first_name": "",
+            "last_name": "",
+            "email": "4872@gmail.com",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2024-03-31T12:18:25.873Z",
+            "role": 1,
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "accounts.userrole",
+        "pk": "43ccecd3-38f1-47c4-bb3f-9a5c8cfce96e",
+        "fields": {
+            "password": "pbkdf2_sha256$600000$UEXnI61ktFiyMyXxL0MInT$uXoxwE39V6GUX5F63hUR55Bajg+jSDrthfyJcU+NSgI=",
+            "last_login": "2024-03-31T13:05:31Z",
+            "is_superuser": false,
+            "username": "Arman_pr",
+            "first_name": "Arman",
+            "last_name": "Shakerian",
+            "email": "a@b.com",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2024-03-31T13:04:38Z",
+            "role": 4,
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "accounts.userrole",
+        "pk": "702b9384-3baa-49eb-b801-9f4f25e515e3",
+        "fields": {
+            "password": "pbkdf2_sha256$600000$HTn3QdqumtzmUAZ1Bic54w$HfSDfRJZTK+6+NTS8+EWanL4kWJRL12rItjXqHTp1h4=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "Jafar",
+            "first_name": "",
+            "last_name": "",
+            "email": "",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2024-03-29T09:00:19Z",
+            "role": 1,
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "accounts.userrole",
+        "pk": "a29b7735-a27d-4947-b938-3fc995277cc2",
+        "fields": {
+            "password": "pbkdf2_sha256$600000$VxHlMya4JVcAc73XDPJXMR$EHiHz5AnDHxlv5SD+lvgu1YC92pUK8ZUYR/0viWExJY=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "st_0590408100",
+            "first_name": "",
+            "last_name": "",
+            "email": "",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2024-03-31T14:25:32.960Z",
+            "role": 1,
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "accounts.userrole",
+        "pk": "b3a2b78f-6742-4f01-a2c9-63cf1df1d956",
+        "fields": {
+            "password": "pbkdf2_sha256$600000$wMHGR3Ou0sxY5OglmX3cjb$Y8b5d4ba5P0ddtxCxQzFke4+qjiTsSbLE6cq3A7CCJ4=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "hoseini-professor",
+            "first_name": "",
+            "last_name": "",
+            "email": "",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2024-03-28T09:57:34Z",
+            "role": 2,
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "accounts.userrole",
+        "pk": "b7430f5a-4511-4d5e-9580-1171df16bec1",
+        "fields": {
+            "password": "pbkdf2_sha256$600000$KkPH04JTRwkt4hLEaaMADm$P6VOGhzjj9igbAYtWdjsrgD3RVUBtfEf22/Y3/I/y84=",
+            "last_login": null,
+            "is_superuser": true,
+            "username": "admin",
+            "first_name": "",
+            "last_name": "",
+            "email": "zahra@ebrahimi.com",
+            "is_staff": true,
+            "is_active": true,
+            "date_joined": "2024-03-26T19:37:51.881Z",
+            "role": 1,
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "accounts.userrole",
+        "pk": "c72ada0c-f7d2-4080-b9e8-285df2de4664",
+        "fields": {
+            "password": "pbkdf2_sha256$600000$5PGT2PphSBHKzoXsi9TUQs$M2RKtOl1CWNyxVmSOGPtMOq++5jdgAayKDn632dAPN0=",
+            "last_login": "2024-03-28T23:38:22.620Z",
+            "is_superuser": true,
+            "username": "root",
+            "first_name": "",
+            "last_name": "",
+            "email": "root@gmail.com",
+            "is_staff": true,
+            "is_active": true,
+            "date_joined": "2024-03-26T15:17:52Z",
+            "role": 3,
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "accounts.userrole",
+        "pk": "dbde44ee-bc20-41e2-8fad-f6eedb06dad1",
+        "fields": {
+            "password": "pbkdf2_sha256$600000$k8Ex9LBy92A66xH5kfQ9f0$n8kcWoXRLPmMblE0MSiXi6gG2/y+s3tHE8M+xHwYk04=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "pr_3860792067",
+            "first_name": "",
+            "last_name": "",
+            "email": "",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2024-04-01T01:36:57.287Z",
+            "role": 2,
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "accounts.professor",
+        "pk": "61e407a4-6ff3-4ad8-aee3-07e06b69bab1",
+        "fields": {
+            "professor": "b3a2b78f-6742-4f01-a2c9-63cf1df1d956",
+            "firstname": "محمد",
+            "lastname": "حسینی",
+            "professor_number": "pr_0123456789",
+            "password": "Momali_937",
+            "email": "123@gmail.com",
+            "national_code": "0590408100",
+            "faculty": "0cba684b-58c9-4727-8a17-c51efbd847be",
+            "major": "1b33fc3a-7c99-4d9e-a35d-bef481ca28eb",
+            "expertise": "نرم افزار",
+            "degree": "دکترا",
+            "past_teaching_lessons": []
+        }
+    },
+    {
+        "model": "accounts.professor",
+        "pk": "89038592-53d4-44ea-bf87-667a1d1421c3",
+        "fields": {
+            "professor": "08e295ac-c826-411d-bb20-c5678e88b660",
+            "firstname": "ali",
+            "lastname": "ahmadi",
+            "professor_number": "1239148",
+            "password": "Momali@#",
+            "email": "c@b.com",
+            "national_code": "1234567890",
+            "faculty": "0cba684b-58c9-4727-8a17-c51efbd847be",
+            "major": "b526eaed-c9ca-4f5e-b347-f966f99e33b7",
+            "expertise": "آز زیست",
+            "degree": "32",
+            "past_teaching_lessons": ["217f6d45-b051-4791-ae80-f25a246ab804"]
+        }
+    },
+    {
+        "model": "accounts.professor",
+        "pk": "99c9a225-a9a8-448d-903d-119c61f619ac",
+        "fields": {
+            "professor": "43ccecd3-38f1-47c4-bb3f-9a5c8cfce96e",
+            "firstname": "Arman",
+            "lastname": "Shakerian",
+            "professor_number": "18213789",
+            "password": "Momali@#",
+            "email": "a@b.com",
+            "national_code": "0150446896",
+            "faculty": "66971b0d-c482-46cd-ab6f-73a45322685d",
+            "major": "8cdff2a5-436d-4488-9e34-69e94a3dac8c",
+            "expertise": "مکانیک کوانتوم",
+            "degree": "2",
+            "past_teaching_lessons": ["217f6d45-b051-4791-ae80-f25a246ab804"]
+        }
+    },
+    {
+        "model": "accounts.student",
+        "pk": "7d8d7374-7fa9-43df-a0c5-a4407083199b",
+        "fields": {
+            "student": "a29b7735-a27d-4947-b938-3fc995277cc2",
+            "firstname": "ali",
+            "lastname": "mohammadi",
+            "student_number": "st_0590408100",
+            "password": "pbkdf2_sha256$600000$ccMaNLK1PuAS1jEzvPV0km$IfaPdSgGK660x2PfbQkR+T0jiiwKo/8/3lPPQY4S+d8=",
+            "avatar": null,
+            "email": "4872@gmail.com",
+            "phone": "09128585585",
+            "national_code": "0590408100",
+            "gender": 1,
+            "birth_date": "1997-02-14",
+            "entry_year": "2020-02-14",
+            "incoming_semester": 1,
+            "average": null,
+            "faculty": "0cba684b-58c9-4727-8a17-c51efbd847be",
+            "major": "1b33fc3a-7c99-4d9e-a35d-bef481ca28eb",
+            "supervisor": "61e407a4-6ff3-4ad8-aee3-07e06b69bab1",
+            "military_service_status": 2,
+            "years": 1,
+            "passed_lessons": [],
+            "lessons_in_progress": ["4e2816f0-2645-46be-9bcc-303a5a1d4759"]
+        }
+    },
+    {
+        "model": "accounts.student",
+        "pk": "d1ba9a3a-74b8-4a26-80d2-ea466bd45d84",
+        "fields": {
+            "student": "2e79e862-3c1b-401f-b10c-53ee902bdaba",
+            "firstname": "reza",
+            "lastname": "mohammadi",
+            "student_number": "st_0200408100",
+            "password": "pbkdf2_sha256$600000$1usZnKWTODCgDdEhN5Urm0$5qLTfrJnBJM2EwS56EAps5QgXa4WKHp+/Zd0qrsF3HQ=",
+            "avatar": null,
+            "email": "reza@gmail.com",
+            "phone": "09128585543",
+            "national_code": "0200408100",
+            "gender": 1,
+            "birth_date": "1997-02-14",
+            "entry_year": "2020-02-14",
+            "incoming_semester": 1,
+            "average": null,
+            "faculty": "0cba684b-58c9-4727-8a17-c51efbd847be",
+            "major": "1b33fc3a-7c99-4d9e-a35d-bef481ca28eb",
+            "supervisor": "61e407a4-6ff3-4ad8-aee3-07e06b69bab1",
+            "military_service_status": 2,
+            "years": 1,
+            "passed_lessons": [],
+            "lessons_in_progress": ["4e2816f0-2645-46be-9bcc-303a5a1d4759"]
+        }
+    },
+    {
+        "model": "accounts.itmanager",
+        "pk": "e8577dfa-f19b-4721-af4d-1f2193ede4a1",
+        "fields": {
+            "IT_manager": "c72ada0c-f7d2-4080-b9e8-285df2de4664",
+            "firstname": "mohammadreza",
+            "lastname": "hoseini",
+            "it_manager_number": "it_0123456789",
+            "password": "root",
+            "email": "mohammadrezahoseini937@gmail.com",
+            "national_code": "0590408100"
+        }
+    },
+    {
+        "model": "accounts.educationalassistant",
+        "pk": "5e81b4c1-9cf7-485d-9a32-e3684169c899",
+        "fields": {
+            "assistant": "99c9a225-a9a8-448d-903d-119c61f619ac",
+            "faculty": "66971b0d-c482-46cd-ab6f-73a45322685d"
+        }
+    },
+    {
+        "model": "accounts.educationalassistant",
+        "pk": "ed1c658b-13ed-4f62-87e7-dd15b5bc040f",
+        "fields": {
+            "assistant": "89038592-53d4-44ea-bf87-667a1d1421c3",
+            "faculty": "0cba684b-58c9-4727-8a17-c51efbd847be"
+        }
+    },
+    {
+        "model": "accounts.university",
+        "pk": "0b9647d3-9159-453d-8e92-7281e0047d58",
+        "fields": {
+            "address": "پونک بلوار میرزابابایی",
+            "phone": "0214507474",
+            "email": "123@gmail.com",
+            "educational_assistant": null,
+            "university_president": null
+        }
+    },
+    {
+        "model": "accounts.university",
+        "pk": "ecb3b155-459f-4ce2-959a-13a52bca1b65",
+        "fields": {
+            "address": "تهران صادقیه",
+            "phone": "0217654321",
+            "email": "Uni1@gmail.com",
+            "educational_assistant": "61e407a4-6ff3-4ad8-aee3-07e06b69bab1",
+            "university_president": "61e407a4-6ff3-4ad8-aee3-07e06b69bab1"
+        }
+    },
+    {
+        "model": "course.subject",
+        "pk": "73010baf-56a0-4eea-a4f1-3c193ae1ea24",
+        "fields": {
+            "name": "درس مصوب ۱",
+            "provider_faculty": "0cba684b-58c9-4727-8a17-c51efbd847be",
+            "number_of_course": 3,
+            "course_type": 1,
+            "mandatory": 1,
+            "prerequisite": ["c5a953ef-3c6b-4b28-84ae-214a3573b2cc"],
+            "corequisite": []
+        }
+    },
+    {
+        "model": "course.subject",
+        "pk": "c5a953ef-3c6b-4b28-84ae-214a3573b2cc",
+        "fields": {
+            "name": "Subject_A1",
+            "provider_faculty": "66971b0d-c482-46cd-ab6f-73a45322685d",
+            "number_of_course": 3,
+            "course_type": 2,
+            "mandatory": 1,
+            "prerequisite": ["73010baf-56a0-4eea-a4f1-3c193ae1ea24"],
+            "corequisite": []
+        }
+    },
+    {
+        "model": "course.course",
+        "pk": "217f6d45-b051-4791-ae80-f25a246ab804",
+        "fields": {
+            "subject": "73010baf-56a0-4eea-a4f1-3c193ae1ea24",
+            "class_id": 400,
+            "day": 2,
+            "time": "12:07:04",
+            "professor": "61e407a4-6ff3-4ad8-aee3-07e06b69bab1",
+            "capacity": 10,
+            "term": "0ac965db-2381-4a6f-9a5c-2ae53d4abaff",
+            "exam_time": "2024-03-28T12:07:11Z",
+            "exam_class_id": 800
+        }
+    },
+    {
+        "model": "course.course",
+        "pk": "4e2816f0-2645-46be-9bcc-303a5a1d4759",
+        "fields": {
+            "subject": "73010baf-56a0-4eea-a4f1-3c193ae1ea24",
+            "class_id": 300,
+            "day": 1,
+            "time": "12:06:12",
+            "professor": "61e407a4-6ff3-4ad8-aee3-07e06b69bab1",
+            "capacity": 20,
+            "term": "0ac965db-2381-4a6f-9a5c-2ae53d4abaff",
+            "exam_time": "2024-03-28T12:06:22Z",
+            "exam_class_id": 500
+        }
+    },
+    {
+        "model": "course.course",
+        "pk": "7e4efbae-7781-4b19-829e-6e5d00415871",
+        "fields": {
+            "subject": "c5a953ef-3c6b-4b28-84ae-214a3573b2cc",
+            "class_id": 700,
+            "day": 1,
+            "time": "08:55:41",
+            "professor": "61e407a4-6ff3-4ad8-aee3-07e06b69bab1",
+            "capacity": 35,
+            "term": "0ac965db-2381-4a6f-9a5c-2ae53d4abaff",
+            "exam_time": "2024-03-29T08:56:06Z",
+            "exam_class_id": 191
+        }
+    },
+    {
+        "model": "faculty.faculty",
+        "pk": "0cba684b-58c9-4727-8a17-c51efbd847be",
+        "fields": {
+            "name": "دانشکده کامپیوتر",
+            "phone": "0218504444",
+            "address": "ساختمان شماره ۲",
+            "university": "0b9647d3-9159-453d-8e92-7281e0047d58"
+        }
+    },
+    {
+        "model": "faculty.faculty",
+        "pk": "66971b0d-c482-46cd-ab6f-73a45322685d",
+        "fields": {
+            "name": "Faculty_A1",
+            "phone": "1923810",
+            "address": "ساختمان شماره 3",
+            "university": "ecb3b155-459f-4ce2-959a-13a52bca1b65"
+        }
+    },
+    {
+        "model": "faculty.major",
+        "pk": "1b33fc3a-7c99-4d9e-a35d-bef481ca28eb",
+        "fields": {
+            "faculty": "0cba684b-58c9-4727-8a17-c51efbd847be",
+            "name": "مهندسی نرم افزار",
+            "department": "کامپیوتر",
+            "number_of_units": 142,
+            "education_level": "کارشناسی"
+        }
+    },
+    {
+        "model": "faculty.major",
+        "pk": "4ee4b800-e0ec-4468-9113-a8871d57b1af",
+        "fields": {
+            "faculty": "66971b0d-c482-46cd-ab6f-73a45322685d",
+            "name": "علوم آز",
+            "department": "آز",
+            "number_of_units": 3,
+            "education_level": "کارشناسی"
+        }
+    },
+    {
+        "model": "faculty.major",
+        "pk": "8cdff2a5-436d-4488-9e34-69e94a3dac8c",
+        "fields": {
+            "faculty": "66971b0d-c482-46cd-ab6f-73a45322685d",
+            "name": "مکانیک",
+            "department": "مکانیک",
+            "number_of_units": 136,
+            "education_level": "کارشناسی"
+        }
+    },
+    {
+        "model": "faculty.major",
+        "pk": "b526eaed-c9ca-4f5e-b347-f966f99e33b7",
+        "fields": {
+            "faculty": "0cba684b-58c9-4727-8a17-c51efbd847be",
+            "name": "مهندسی سخت افزار",
+            "department": "1231",
+            "number_of_units": 132,
+            "education_level": "کارشناسی"
+        }
+    },
+    {
+        "model": "term.term",
+        "pk": "0ac965db-2381-4a6f-9a5c-2ae53d4abaff",
+        "fields": {
+            "name": "ترم اول",
+            "students": null,
+            "professors": "61e407a4-6ff3-4ad8-aee3-07e06b69bab1",
+            "start_selection_time": "2024-03-28T12:05:38Z",
+            "end_selection_time": "2024-03-28T12:05:40Z",
+            "class_start_time": "2024-03-28T12:05:41Z",
+            "class_end_time": "2024-03-28T12:05:43Z",
+            "doped_added_start_time": "2024-03-28T12:05:44Z",
+            "doped_added_end_time": "2024-03-28T12:05:45Z",
+            "emergency_removal_end_time": "2024-03-28T12:05:47Z",
+            "exam_start_time": "2024-03-28T12:05:49Z",
+            "term_end_time": "2024-03-28T12:05:51Z",
+            "course_lists": []
+        }
+    }
+]

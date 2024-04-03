@@ -48,7 +48,7 @@ class GetAllStudents(ListAPIView):
 
 
 class StudentGetUpdateDelete(APIView):
-    permission_classes = (IsAuthenticated, ITManagerPermission)
+    permission_classes = (IsAuthenticated, ITManagerPermission,)
     """
     API endpoint that allows student to be updated.
     """
@@ -176,11 +176,11 @@ class ProfessorGetUpdateDelete(APIView):
 
 
 class GetAllProfessors(ListAPIView):
-    permission_classes = (IsAuthenticated, ITManagerPermission)
+    permission_classes = (IsAuthenticated, ITManagerPermission,)
     serializer_class = ProfessorGetDataSerializer
     queryset = Professor.objects.all()
     filter_backends = (filters.DjangoFilterBackend,)
-    filter_fields = ProfessorModelFilter
+    filterset_class = ProfessorModelFilter
 
 
 class EducationalAssistantView(APIView):

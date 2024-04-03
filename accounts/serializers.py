@@ -276,6 +276,34 @@ class ProfessorSerializer(serializers.Serializer):
         professor.past_teaching_lessons.set(past_teaching_lessons)
         return professor
 
+    @transaction.atomic
+    def update(self, instance, validated_data):
+        instance.firstname = validated_data.data.get('firstname', instance.firstname)
+        instance.lastname = validated_data.data.get('lastname', instance.lastname)
+        instance.email = validated_data.data.get('email', instance.email)
+        instance.national_code = validated_data.data.get('national_code', instance.national_code)
+        instance.term_id = validated_data.data.get('term', instance.term)
+        instance.faculty_id = validated_data.data.get('faculty', instance.faculty)
+        instance.major_id = validated_data.data.get('major', instance.major)
+        instance.expertise = validated_data.data.get('expertise', instance.firstname)
+        instance.degree = validated_data.data.get('degree', instance.degree)
+
+        email = validated_data.data.get('email', instance.email)
+        if Professor.objects.exclude(id=instance.id).filter(email=email).exists():
+            raise ValidationError("This email exist")
+        national_code = validated_data.data.get('national_code', instance.national_code)
+        if Professor.objects.exclude(id=instance.id).filter(national_code=national_code).exists():
+            raise ValidationError("This national_code exist")
+        past_teaching_lessons = validated_data.data.get('past_teaching_lessons', [])
+        for lesson_id in past_teaching_lessons:
+            if not Course.objects.filter(id=lesson_id).exists():
+                raise ValidationError('This lesson does not exist')
+        instance.past_teaching_lessons.set(past_teaching_lessons)
+        instance.save()
+        instance.professor.email = instance.email
+        instance.professor.save()
+        return instance
+
 
 class ProfessorGetDataSerializer(serializers.ModelSerializer):
     class Meta:

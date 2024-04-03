@@ -1,11 +1,15 @@
 from django.urls import path
-from .views import CourseView, GetAll_courses, CourseWithPK
+from .views import CourseView, GetAll_courses, CourseWithPK, SubjectCreate
+
 # from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 app_name = 'courses'
 urlpatterns = [
     # path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     # path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path(
+        "subject_create/", SubjectCreate.as_view(), name="subject_create"
+    ),
     path(
         "courses/", CourseView.as_view(), name="course_create"
     ),

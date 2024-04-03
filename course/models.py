@@ -6,6 +6,7 @@ class ChooseCourseType(models.IntegerChoices):
     basic = 1, "basic"
     specialized = 2, "specialized"
     general = 3, "general"
+    practical = 4, "practical"
 
 
 class ChooseMandatory(models.IntegerChoices):

@@ -308,7 +308,7 @@ class ProfessorSerializer(serializers.Serializer):
 class ProfessorGetDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = Professor
-        fields = '__all__'
+        exclude = ('password',)
 
 
 class EducationalAssistantSerializer(serializers.Serializer):

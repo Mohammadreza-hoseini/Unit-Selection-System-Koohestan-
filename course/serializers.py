@@ -52,7 +52,6 @@ class SubjectSerializer(serializers.Serializer):
 # 2) class with 'class_id' should be empty in that 'day' and 'time' 
 # 3) 'exam_time' should be between 'term.exam_start_time' and 'term.exam_end_time' #DONE
 # 4) class with 'exam_class_id' should be empty in that 'exam_time' #DONE
-# 5) optional: classModel.capacity >= course.capacity
 
 def validate_time(attrs):
     """
@@ -98,6 +97,42 @@ def validate_exam_time(attrs):
         raise ValidationError("Times should be: term.exams_start_time <= exam_time <= term.term_end_time")
     
 
+def validate_class_id(attrs):
+    """
+        Validation 4
+        -) check intervening course time
+    """
+    class_id = attrs['class_id']
+    day_of_class = attrs['day']
+    time_of_class = attrs['time']
+    
+    intervening_class = Course.objects.filter(class_id= class_id, day=day_of_class, time=time_of_class).exists()
+    if intervening_class:
+        raise ValidationError("There is already a course with the same 'day' & 'time' in class with this 'class_id'")
+
+def validate_exam_class_id(attrs):
+    """
+        Validation 5
+        -) check intervening exam time
+    """
+    exam_time = attrs['exam_time']
+    exam_class_id = attrs['exam_class_id']
+    intervening_exam = Course.objects.filter(exam_time=exam_time, exam_class_id=exam_class_id).exists()
+    if intervening_exam:
+        raise ValidationError("There is already an exam with the same 'exam_time' in class with this 'class_id'")
+            
+
+
+def validate_professor_term(attrs):
+    """
+        Validation 6
+        -) course.professor.term & course.term must match
+    """
+    course_term = attrs['term'].id
+    prof_term = attrs['professor'].term.id
+    if course_term != prof_term:
+        raise ValidationError('Professor is not for this Term')
+
 
 class CourseSerializer(serializers.Serializer):
     subject = serializers.PrimaryKeyRelatedField(queryset=Subject.objects.all())
@@ -113,10 +148,12 @@ class CourseSerializer(serializers.Serializer):
     exam_time = serializers.DateTimeField(required=False)
     exam_class_id = serializers.IntegerField()
 
-    # TODO
+
     def validate(self, attrs):
         
         validate_time(attrs)
+        
+        validate_professor_term(attrs)
 
         validate_professorFaculty_subject(attrs)
 
@@ -126,20 +163,44 @@ class CourseSerializer(serializers.Serializer):
             # default exam_time for practical subjects (which don't have exam)
             attrs['exam_time'] = "1111-11-11 11:11:11.000000 +00:00"
 
+
         return attrs
 
-    # TODO
     @transaction.atomic
     def create(self, validated_data):
-        # "only IT_Manager & related_EA can create a course -> in view?"
-
+        
+        validate_class_id(validated_data)
+        
+        validate_exam_class_id(validated_data)
+        
         return Course.objects.create(**validated_data)
+    
+    
 
-    # TODO
     @transaction.atomic
     def update(self, instance, validated_data):
-        # TODO
-        # IMPORTANT
+        
+        instance.subject = validated_data.data.get('subject', instance.subject)
+        instance.class_id = validated_data.data.get('class_id', instance.class_id)
+        instance.day = validated_data.data.get('day', instance.day)
+        instance.time = validated_data.data.get('time', instance.time)
+        instance.professor = validated_data.data.get('professor', instance.professor)
+        instance.capacity = validated_data.data.get('capacity', instance.capacity)
+        instance.term = validated_data.data.get('term', instance.term)
+        instance.exam_time = validated_data.data.get('exam_time', instance.exam_time)
+        instance.exam_class_time = validated_data.data.get('exam_class_time', instance.exam_class_time)
+        
+        intervening_class = Course.objects.exclude(instance).filter(class_id=instance.class_id, day=instance.day, time=instance.time).exists()
+        if intervening_class:
+            raise ValidationError("There is already a course with the same 'day' & 'time' in class with this 'class_id'")
+        
+        intervening_exam = Course.objects.filter(exam_time=instance.exam_time, exam_class_id=instance.exam_class_id).exists()
+        if intervening_exam:
+            raise ValidationError("There is already an exam with the same 'exam_time' in class with this 'class_id'")
+            
+            
+        instance.save()
+        
         return instance
 
 

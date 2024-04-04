@@ -2,10 +2,12 @@ import django_filters
 from .models import Course
 
 
-#TODO:
-
 class CourseModelFilter(django_filters.FilterSet):
+    
+    subject_name = django_filters.CharFilter(field_name='subject__name')
+    faculty_name = django_filters.CharFilter(field_name="subject__provider_faculty__name")
+    term = django_filters.CharFilter(field_name='term__name')
+    
     class Meta:
-        #TODO
         model = Course
-        fields = "__all__"
+        fields = ['subject_name', 'faculty_name', 'term']

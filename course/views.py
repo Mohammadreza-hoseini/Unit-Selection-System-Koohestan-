@@ -8,10 +8,10 @@ from rest_framework.views import APIView
 
 from django_filters import rest_framework as filters
 
-from course.models import Course
+from course.models import Course, Subject
 from koohestan.utils.permission_handler import ITManagerPermission, EducationalAssistantPermission
-from .FilterSet import CourseModelFilter
-from .serializers import CourseSerializer, CourseGetDataSerializer, SubjectSerializer
+from .FilterSet import CourseModelFilter, SubjectModelFilter
+from .serializers import CourseSerializer, CourseGetDataSerializer, SubjectSerializer, SubjectGetDataSerializer
 
 
 # Start code of Mohammadreza hoseini
@@ -30,6 +30,15 @@ class SubjectCreate(APIView):
             serializer.save()
             return Response("Successfully create", status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class GetAllSubjects(APIView):
+    permission_classes = (IsAuthenticated, ITManagerPermission,)
+    serializer_class = SubjectGetDataSerializer
+    queryset = Subject.objects.all()
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = SubjectModelFilter
+
 
 
 # End code of Mohammadreza hoseini

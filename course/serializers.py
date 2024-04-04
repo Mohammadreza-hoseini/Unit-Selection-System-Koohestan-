@@ -12,6 +12,7 @@ from .models import Course, Subject
 from term.models import Term
 from accounts.models import Professor
 
+
 # Start code of Mohammadreza hoseini
 class SubjectSerializer(serializers.Serializer):
     id = serializers.CharField(read_only=True)
@@ -43,6 +44,8 @@ class SubjectSerializer(serializers.Serializer):
                 raise ValidationError("This subject does not exist")
         subject.corequisite.set(corequisite)
         return subject
+
+
 # End code of Mohammadreza hoseini
 # validations:
 # 1) 'professor.faculty' matches 'subject.provider_faculty' #DONE
@@ -122,4 +125,10 @@ class CourseSerializer(serializers.Serializer):
 class CourseGetDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
+        fields = "__all__"
+
+
+class SubjectGetDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Subject
         fields = "__all__"

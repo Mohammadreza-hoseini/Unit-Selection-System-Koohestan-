@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import CourseView, GetAll_courses, CourseWithPK, SubjectCreate
+from .views import CourseView, GetAll_courses, CourseWithPK, SubjectCreate, GetAllSubjects, SubjectGetUpdateDelete
 
 # from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
@@ -13,6 +13,8 @@ urlpatterns = [
     path(
         "courses/", CourseView.as_view(), name="course_create"
     ),
+    path("subjects/", GetAllSubjects.as_view(), name="subject_get_all"),
+    # path("subjects/<int:pk>/", SubjectGetUpdateDelete),
     path('courses_get_all/', GetAll_courses.as_view(), name="courses_get_all"),
     path(
         "courses/<uuid:pk>", CourseWithPK.as_view(), name="course_withPK"

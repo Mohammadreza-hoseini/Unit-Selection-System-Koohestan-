@@ -20,7 +20,7 @@ class SubjectSerializer(serializers.Serializer):
     prerequisite = serializers.ListField(required=False)
     corequisite = serializers.ListField(required=False)
     number_of_course = serializers.IntegerField()
-    course_type = serializers.ChoiceField(choices=[1, 2, 3], required=True)
+    course_type = serializers.ChoiceField(choices=[1, 2, 3, 4], required=True)
     mandatory = serializers.ChoiceField(choices=[1, 2], required=True)
 
     @transaction.atomic

@@ -362,7 +362,7 @@ class EducationalAssistantSerializer(serializers.Serializer):
 
         A_id = validated_data.data.get("assistant", instance.assistant)
         faculty_id = validated_data.data.get("faculty", instance.faculty)
-
+        
         # if the professor changes and faculty remains the same
         if A_id != instance.assistant:
             new_EA_candidate = Professor.objects.get(pk=A_id)
@@ -382,7 +382,9 @@ class EducationalAssistantSerializer(serializers.Serializer):
 
             return data_for_newEA
 
+        # the professor remains the same but faculty changes
         else:
+            
             raise ValidationError('Assistant_id should be different.')
 
 

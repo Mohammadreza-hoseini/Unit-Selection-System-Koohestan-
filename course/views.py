@@ -5,6 +5,7 @@ from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework import permissions
 
 from django_filters import rest_framework as filters
 
@@ -39,7 +40,9 @@ class CourseView(APIView):
     Create new course
     """
     
-    # "only IT_Manager & related_EA can create a course"
+    #it should be its related educational assistant #BUG -> 
+    permission_classes = (IsAuthenticated, ITManagerPermission, EducationalAssistantPermission)
+    
     def post(self, request):
         serializer = CourseSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
@@ -53,6 +56,8 @@ class GetAll_courses(ListAPIView):
         Return list of all courses
     """
     
+    permission_classes = (IsAuthenticated,)
+    
     # everyone has access to it
     
 
@@ -63,6 +68,14 @@ class GetAll_courses(ListAPIView):
 
 
 class CourseWithPK(APIView):
+    
+    permission_classes = (IsAuthenticated,)
+    
+    
+    def get_permissions(self):
+        if self.request.method in ['PUT', "DELETE"]:
+            return [ITManagerPermission, EducationalAssistantPermission]
+        return super().get_permissions()
     
     # everyone has access to it
     def get(self, request, pk):
@@ -78,7 +91,9 @@ class CourseWithPK(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+
     # "only IT_Manager & related_EA can update a course"
+    
     def put(self, request, pk):
         """
         Update a course

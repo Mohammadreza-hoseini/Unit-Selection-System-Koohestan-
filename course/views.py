@@ -32,12 +32,23 @@ class SubjectCreate(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class GetAllSubjects(APIView):
-    permission_classes = (IsAuthenticated, ITManagerPermission,)
+class GetAllSubjects(ListAPIView):
+    # permission_classes = (IsAuthenticated, ITManagerPermission,)
     serializer_class = SubjectGetDataSerializer
     queryset = Subject.objects.all()
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = SubjectModelFilter
+
+
+class SubjectGetUpdateDelete(APIView):
+    def get(self, request, pk):
+        try:
+            subject = Subject.objects.get(pk=pk)
+        except ObjectDoesNotExist:
+            return Response(
+                "The subject does not exist", status=status.HTTP_404_NOT_FOUND
+            )
+
 
 
 

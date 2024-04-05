@@ -20,6 +20,26 @@ class Term(models.Model):
     emergency_removal_end_time = models.DateTimeField(verbose_name='زمان پایان حذف اضطراری')
     exam_start_time = models.DateTimeField(verbose_name='زمان شروع امتحانات')
     term_end_time = models.DateTimeField(verbose_name='زمان اتمام ترم')
+    year = models.DateField(auto_now_add=True, verbose_name='سال جاری')
 
     def __str__(self):
         return f"{self.name}"
+
+
+class ChooseRequestState(models.IntegerChoices):
+    pending = 1, "pending"
+    accepted = 2, "accepted"
+    rejected = 3, "rejected"
+
+
+class UnitRegisterRequest(models.Model):
+    id = models.CharField(default=uuid.uuid4, editable=False, primary_key=True)
+    student = models.ForeignKey("accounts.Student", on_delete=models.CASCADE,
+                                related_name='unit_register_request_student', verbose_name='دانشجو')
+    course = models.ManyToManyField("course.Course", related_name='unit_register_request_course', verbose_name='دروس')
+    request_state = models.PositiveSmallIntegerField(
+        default=ChooseRequestState.pending, choices=ChooseRequestState.choices, verbose_name='وضعیت درخواست'
+    )
+
+    def __str__(self):
+        return f"req: {self.student.national_code} - {self.request_state}"

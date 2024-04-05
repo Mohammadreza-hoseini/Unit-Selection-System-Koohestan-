@@ -47,14 +47,31 @@ class SubjectSerializer(serializers.Serializer):
         subject.corequisite.set(corequisite)
         return subject
 
+    @transaction.atomic
+    def update(self, instance, validated_data):
+        instance.name = validated_data.data.get('name', instance.name)
+        instance.provider_faculty_id = validated_data.data.get('provider_faculty', instance.provider_faculty)
+        instance.number_of_course = validated_data.data.get('number_of_course', instance.number_of_course)
+        instance.course_type = validated_data.data.get('course_type', instance.course_type)
+        instance.mandatory = validated_data.data.get('mandatory', instance.mandatory)
 
-# End code of Mohammadreza hoseini
-# validations:
-# 1) 'professor.faculty' matches 'subject.provider_faculty' #DONE
-# 2) class with 'class_id' should be empty in that 'day' and 'time' #DONE
-# 3) 'exam_time' should be between 'term.exam_start_time' and 'term.exam_end_time' #DONE
-# 4) class with 'exam_class_id' should be empty in that 'exam_time'
-# 5) optional: classModel.capacity >= course.capacity
+        name = validated_data.data.get('name', instance.name)
+        if Subject.objects.exclude(id=instance.id).filter(name=name).exists():
+            raise ValidationError("This name exist")
+
+        prerequisite = validated_data.data.get('prerequisite', [])
+        for item in prerequisite:
+            if not Subject.objects.filter(id=item).exists():
+                raise ValidationError("This prerequisite does not exist")
+        instance.prerequisite.set(prerequisite)
+        corequisite = validated_data.data.get('corequisite', [])
+        for course in corequisite:
+            if not Subject.objects.filter(id=course).exists():
+                raise ValidationError("This corequisite does not exist")
+        instance.corequisite.set(corequisite)
+        instance.save()
+        return instance
+
 
 def validate_time(attrs):
     # Validation 1
@@ -133,7 +150,7 @@ class CourseGetDataSerializer(serializers.ModelSerializer):
 class PrerequisiteSubjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subject
-        exclude = ('prerequisite', )
+        exclude = ('prerequisite',)
 
 
 class SubjectGetDataSerializer(serializers.ModelSerializer):

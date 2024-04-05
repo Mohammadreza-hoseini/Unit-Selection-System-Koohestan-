@@ -19,7 +19,7 @@ class SubjectCreate(APIView):
     """
     API endpoint that allows subject to be created.
     """
-    permission_classes = (IsAuthenticated, ITManagerPermission, EducationalAssistantPermission,)
+    permission_classes = (IsAuthenticated, ITManagerPermission,)
 
     def post(self, request):
         """
@@ -41,15 +41,44 @@ class GetAllSubjects(ListAPIView):
 
 
 class SubjectGetUpdateDelete(APIView):
-    def get(self, request, pk):
+
+    def put(self, request, pk):
         try:
-            subject = Subject.objects.get(pk=pk)
+            get_subject = Subject.objects.get(id=pk)
         except ObjectDoesNotExist:
             return Response(
                 "The subject does not exist", status=status.HTTP_404_NOT_FOUND
             )
+        get_subject_serializer = SubjectSerializer(data=request.data)
+        if get_subject_serializer.is_valid(raise_exception=True):
+            get_subject_serializer.update(
+                instance=get_subject, validated_data=get_subject_serializer
+            )
 
+            return Response(get_subject_serializer.data, status=status.HTTP_200_OK)
+        return Response(
+            get_subject_serializer.errors, status=status.HTTP_400_BAD_REQUEST
+        )
 
+    def get(self, request, pk):
+        try:
+            get_subject = Subject.objects.get(id=pk)
+        except ObjectDoesNotExist:
+            return Response(
+                "The subject does not exist", status=status.HTTP_400_BAD_REQUEST
+            )
+        get_subject_serializer = SubjectGetDataSerializer(get_subject)
+        return Response(get_subject_serializer.data, status=status.HTTP_200_OK)
+
+    def delete(self, request, pk):
+        try:
+            get_subject = Subject.objects.get(id=pk)
+        except ObjectDoesNotExist:
+            return Response(
+                "The subject does not exist", status=status.HTTP_400_BAD_REQUEST
+            )
+        get_subject.delete()
+        return Response("Successfully delete", status=status.HTTP_200_OK)
 
 
 # End code of Mohammadreza hoseini

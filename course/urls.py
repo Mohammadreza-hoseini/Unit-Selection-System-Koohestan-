@@ -14,7 +14,7 @@ urlpatterns = [
         "courses/", CourseView.as_view(), name="course_create"
     ),
     path("subjects/", GetAllSubjects.as_view(), name="subject_get_all"),
-    # path("subjects/<int:pk>/", SubjectGetUpdateDelete),
+    path("subjects/<uuid:pk>/", SubjectGetUpdateDelete.as_view(), name="subject_create"),
     path('courses_get_all/', GetAll_courses.as_view(), name="courses_get_all"),
     path(
         "courses/<uuid:pk>", CourseWithPK.as_view(), name="course_withPK"

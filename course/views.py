@@ -5,6 +5,7 @@ from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework import permissions
 
 from django_filters import rest_framework as filters
 
@@ -87,7 +88,10 @@ class CourseView(APIView):
     """
     Create new course
     """
-
+    
+    #it should be its related educational assistant #BUG -> 
+    permission_classes = (IsAuthenticated, ITManagerPermission, EducationalAssistantPermission)
+    
     def post(self, request):
         serializer = CourseSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
@@ -100,6 +104,11 @@ class GetAll_courses(ListAPIView):
     """
         Return list of all courses
     """
+    
+    permission_classes = (IsAuthenticated,)
+    
+    # everyone has access to it
+    
 
     serializer_class = CourseGetDataSerializer
     queryset = Course.objects.all()
@@ -108,10 +117,21 @@ class GetAll_courses(ListAPIView):
 
 
 class CourseWithPK(APIView):
+    
+    permission_classes = (IsAuthenticated,)
+    
+    
+    def get_permissions(self):
+        if self.request.method in ['PUT', "DELETE"]:
+            return [ITManagerPermission, EducationalAssistantPermission]
+        return super().get_permissions()
+    
+    # everyone has access to it
     def get(self, request, pk):
         """
         Return a course
         """
+                
         try:
             course_obj = Course.objects.get(id=pk)
         except ObjectDoesNotExist:
@@ -119,6 +139,10 @@ class CourseWithPK(APIView):
         serializer = CourseGetDataSerializer(course_obj)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
+
+    # "only IT_Manager & related_EA can update a course"
+    
     def put(self, request, pk):
         """
         Update a course
@@ -136,6 +160,8 @@ class CourseWithPK(APIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+    # "only IT_Manager & related_EA can delete a course"
     def delete(self, request, pk):
         """
         Delete a course

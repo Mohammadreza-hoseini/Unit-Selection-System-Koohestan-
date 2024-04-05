@@ -12,7 +12,7 @@ from .serializers import (
 
 
 class FacultyCreate(APIView):
-    # permission_classes = (IsAuthenticated, ITManagerPermission,)
+    permission_classes = (IsAuthenticated, ITManagerPermission,)
 
     def post(self, request):
         serializer = FacultySerializer(data=request.data)
@@ -23,13 +23,13 @@ class FacultyCreate(APIView):
 
 
 class GetAllFaculty(ListAPIView):
-    # permission_classes = (IsAuthenticated, ITManagerPermission,)
+    permission_classes = (IsAuthenticated, ITManagerPermission,)
     serializer_class = FacultyGetDataSerializer
     queryset = Faculty.objects.all()
 
 
 class FacultyGetUpdateDelete(APIView):
-    # permission_classes = (IsAuthenticated, ITManagerPermission)
+    permission_classes = (IsAuthenticated, ITManagerPermission,)
 
     def put(self, request, pk):
         try:

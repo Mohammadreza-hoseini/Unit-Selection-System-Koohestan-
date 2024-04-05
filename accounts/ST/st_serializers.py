@@ -17,7 +17,7 @@ from accounts.models import Student
 from course.models import Subject
 from course.serializers import SubjectGetDataSerializer
 
-class ST_Passed_Courses_GET(serializers.ModelSerializer):
+class ST_Passed_Courses_Serializer(serializers.ModelSerializer):
     """
     Student's passed courses
     """

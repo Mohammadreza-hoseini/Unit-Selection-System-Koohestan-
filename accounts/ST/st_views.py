@@ -5,16 +5,16 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.generics import ListAPIView, CreateAPIView
+from rest_framework.generics import ListAPIView
 
 
 from koohestan.utils.permission_handler import StudentSelfPermission, ITManagerPermission
 
 
-from ..models import Student
-from .st_serializers import StudentSerializer,StudentGetDataSerializer, ST_Passed_Courses_Serializer
+from accounts.models import Student
+from accounts.St.st_serializers import StudentSerializer,StudentGetDataSerializer, ST_Passed_Courses_Serializer
 
-from ..FilterSet import StudentModelFilter
+from accounts.FilterSet import StudentModelFilter
 
 
 

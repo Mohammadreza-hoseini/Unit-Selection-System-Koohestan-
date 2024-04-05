@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 
 from django_filters import rest_framework as filters
 
-from koohestan.utils.permission_handler import ITManagerPermission, StudentPermission, ProfessorPermission
+from koohestan.utils.permission_handler import ITManagerPermission
 
 from rest_framework.permissions import IsAuthenticated
 

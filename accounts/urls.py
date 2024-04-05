@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import StudentCreate, StudentGetUpdateDelete, EducationalAssistantView, EducationalAssistantWithPK, \
-    GetAllStudents, GetAll_EAs, RequestOTPView, ChangePassword, ProfessorCreate, ProfessorGetUpdateDelete,GetAllProfessors
+    GetAllStudents, GetAll_EAs, RequestOTPView, ChangePassword, ProfessorCreate, ProfessorGetUpdateDelete,GetAllProfessors, Student_pass_courses_report
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 app_name = 'accounts'
@@ -21,5 +21,6 @@ urlpatterns = [
     path('assistants_get_all/', GetAll_EAs.as_view(), name="assistants_get_all"),
     path(
         "assistants/<uuid:pk>", EducationalAssistantWithPK.as_view(), name="EA_withPK"
-    )
+    ),
+    path("student/<uuid:pk>/pass-courses-report/", Student_pass_courses_report.as_view(), name="Student_pass_courses_report"),
 ]

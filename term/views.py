@@ -22,7 +22,7 @@ class TermView(APIView):
     Create new Term
     """
 
-    permission_classes = (IsAuthenticated, ITManagerPermission)
+    permission_classes = (IsAuthenticated, ITManagerPermission,)
     
     def post(self, request):
         serializer = TermSerializer(data=request.data)
@@ -36,7 +36,7 @@ class GetAll_terms(ListAPIView):
     """
         Return list of all terms
     """
-    permission_classes = (IsAuthenticated)
+    permission_classes = (IsAuthenticated, )
     
     serializer_class = TermGetDataSerializer
     queryset = Term.objects.all()
@@ -48,11 +48,13 @@ class TermWithPK(APIView):
     
     
     def get_permissions(self):
+        print(self.request.user.username)
         if self.request.method in ['PUT', 'DELETE']:
-            return (IsAuthenticated, ITManagerPermission, )
-        return (IsAuthenticated,)
+            return (IsAuthenticated(), ITManagerPermission(), )
+        return (IsAuthenticated(), )
     
     def get(self, request, pk):
+        print("rrrrrrrrrrrrrrrrrrr")
         """
         Return a term
         """

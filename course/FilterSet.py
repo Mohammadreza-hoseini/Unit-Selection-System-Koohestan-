@@ -1,5 +1,5 @@
 import django_filters
-from .models import Course
+from .models import Course, Subject
 
 
 class CourseModelFilter(django_filters.FilterSet):
@@ -11,3 +11,12 @@ class CourseModelFilter(django_filters.FilterSet):
     class Meta:
         model = Course
         fields = ['subject_name', 'faculty_name', 'term']
+
+
+class SubjectModelFilter(django_filters.FilterSet):
+    class Meta:
+        model = Subject
+        fields = {
+            'name': ['exact'],
+            'provider_faculty': ['exact'],
+        }

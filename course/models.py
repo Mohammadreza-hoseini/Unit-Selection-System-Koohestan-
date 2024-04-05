@@ -20,7 +20,7 @@ class Subject(models.Model):
     provider_faculty = models.ForeignKey("faculty.Faculty", on_delete=models.CASCADE,
                                          related_name='subject_faculty',
                                          verbose_name='دانشکده ارائه دهنده')
-    prerequisite = models.ManyToManyField('self', symmetrical=False, verbose_name='دروس پیش نیاز', related_name='subject_prerequisite',
+    prerequisite = models.ManyToManyField('self',symmetrical=False, verbose_name='دروس پیش نیاز', related_name='subject_prerequisite',
                                           null=True, blank=True)
     corequisite = models.ManyToManyField('self',verbose_name='دروس همنیاز', related_name='subject_corequisite',
                                          null=True, blank=True)

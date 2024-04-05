@@ -6,7 +6,7 @@ from rest_framework import status
 from django_filters import rest_framework as filters
 from rest_framework.generics import ListAPIView, CreateAPIView
 
-from koohestan.utils.permission_handler import ITManagerPermission
+from koohestan.utils.permission_handler import ITManagerPermission, StudentPermission,ProfessorPermission
 from .FilterSet import StudentModelFilter, EA_ModelFilter, ProfessorModelFilter
 from .models import Student, EducationalAssistant, UserRole, Professor
 from .serializers import (
@@ -261,3 +261,73 @@ class EducationalAssistantWithPK(APIView):
         user_obj.save()
 
         return Response("Successfully deleted", status=status.HTTP_200_OK)
+
+
+class StudentGetUpdate(APIView):
+    # permission_classes = (IsAuthenticated, StudentPermission,)
+    """
+    API endpoint that allows student to be updated.
+    """
+
+    def put(self, request, pk):
+        try:
+            get_student = Student.objects.get(id=pk)
+        except ObjectDoesNotExist:
+            return Response(
+                "This student does not exist", status=status.HTTP_400_BAD_REQUEST
+            )
+        get_student_serializer = StudentSerializer(data=request.data)
+        if get_student_serializer.is_valid(raise_exception=True):
+            get_student_serializer.update(
+                instance=get_student, validated_data=get_student_serializer
+            )
+            return Response(get_student_serializer.data, status=status.HTTP_200_OK)
+        return Response(
+            get_student_serializer.errors, status=status.HTTP_400_BAD_REQUEST
+        )
+
+    def get(self, request, pk):
+        """
+        Return a student.
+        """
+        try:
+            get_student = Student.objects.get(id=pk)
+        except ObjectDoesNotExist:
+            return Response(
+                "This student does not exist", status=status.HTTP_400_BAD_REQUEST
+            )
+        get_student_serializer = StudentGetDataSerializer(get_student)
+        return Response(get_student_serializer.data, status=status.HTTP_200_OK)
+
+
+class ProfessorGetUpdate(APIView):
+    # permission_classes = (IsAuthenticated, ProfessorPermission,)
+
+    def put(self, request, pk):
+        try:
+            get_professor = Professor.objects.get(id=pk)
+        except ObjectDoesNotExist:
+            return Response(
+                "This Professor does not exist", status=status.HTTP_404_NOT_FOUND
+            )
+        get_professor_serializer = ProfessorSerializer(data=request.data)
+        if get_professor_serializer.is_valid(raise_exception=True):
+            get_professor_serializer.update(
+                instance=get_professor, validated_data=get_professor_serializer
+            )
+            return Response(get_professor_serializer.data, status=status.HTTP_200_OK)
+        return Response(
+            get_professor_serializer.errors, status=status.HTTP_400_BAD_REQUEST
+        )
+
+    def get(self, request, pk):
+
+        try:
+            get_professor = Professor.objects.get(id=pk)
+
+        except ObjectDoesNotExist:
+            return Response(
+                "This Professor does not exist", status=status.HTTP_400_BAD_REQUEST
+            )
+        get_professor_serializer = ProfessorGetDataSerializer(get_professor)
+        return Response(get_professor_serializer.data, status=status.HTTP_200_OK)

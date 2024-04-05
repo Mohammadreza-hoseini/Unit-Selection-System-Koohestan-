@@ -6,7 +6,6 @@ from django.utils import timezone
 
 from django.db import transaction
 
-from accounts.serializers import StudentGetDataSerializer
 from faculty.models import Faculty
 from .models import Course, Subject
 

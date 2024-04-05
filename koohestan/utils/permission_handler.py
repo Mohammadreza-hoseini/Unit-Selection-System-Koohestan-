@@ -4,6 +4,7 @@ from rest_framework.permissions import BasePermission
 class ITManagerPermission(BasePermission):
     def has_permission(self, request, view):
         if request.user.role == 3:
+            print("fgjhkvt")
             return request.user and request.user.is_authenticated
 
 
@@ -40,4 +41,9 @@ class EASelfPermission(BasePermission):
 class ProfessorSelfPermission(BasePermission):
     def has_permission(self, request, view):
         if request.user.role == 2 and request.user.id == str(view.kwargs['pk']):
+            return request.user and request.user.is_authenticated
+
+class ProfessorSelf_ITPermission(BasePermission):
+    def has_permission(self, request, view):
+        if (request.user.role == 2 and request.user.professor_user_role.id == str(view.kwargs['pk'])) or (request.user.role == 3):
             return request.user and request.user.is_authenticated

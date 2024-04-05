@@ -7,15 +7,22 @@ from rest_framework.views import APIView
 
 from django_filters import rest_framework as filters
 
+from koohestan.utils.permission_handler import ITManagerPermission, StudentPermission, ProfessorPermission
+
+from rest_framework.permissions import IsAuthenticated
+
 from .FilterSet import TermModelFilter
 from .models import Term
 from .serializers import TermSerializer, TermGetDataSerializer
 
 
+# IT-admin access
 class TermView(APIView):
     """
     Create new Term
     """
+
+    permission_classes = (IsAuthenticated, ITManagerPermission)
     
     def post(self, request):
         serializer = TermSerializer(data=request.data)
@@ -24,17 +31,27 @@ class TermView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+# IT-admin access
 class GetAll_terms(ListAPIView):
     """
         Return list of all terms
     """
+    permission_classes = (IsAuthenticated)
     
     serializer_class = TermGetDataSerializer
     queryset = Term.objects.all()
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = TermModelFilter
 
+# IT-admin access
 class TermWithPK(APIView):
+    
+    
+    def get_permissions(self):
+        if self.request.method in ['PUT', 'DELETE']:
+            return (IsAuthenticated, ITManagerPermission, )
+        return (IsAuthenticated,)
+    
     def get(self, request, pk):
         """
         Return a term

@@ -358,7 +358,7 @@ class EducationalAssistantSerializer(serializers.Serializer):
     def update(self, instance, validated_data):
 
         # NOTE//////////////////////
-        # possible #BUG
+        # TODO
 
         A_id = validated_data.data.get("assistant", instance.assistant)
         faculty_id = validated_data.data.get("faculty", instance.faculty)

@@ -6,11 +6,14 @@ from django.utils import timezone
 
 from django.db import transaction
 
+from accounts.serializers import StudentGetDataSerializer
 from faculty.models import Faculty
 from .models import Course, Subject
 
 from term.models import Term
 from accounts.models import Professor
+from faculty.serializers import FacultyGetDataSerializer
+
 
 # Start code of Mohammadreza hoseini
 class SubjectSerializer(serializers.Serializer):
@@ -43,6 +46,8 @@ class SubjectSerializer(serializers.Serializer):
                 raise ValidationError("This subject does not exist")
         subject.corequisite.set(corequisite)
         return subject
+
+
 # End code of Mohammadreza hoseini
 
 #------- Start code Arman Shakerian ----------
@@ -210,3 +215,19 @@ class CourseGetDataSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 #------- End code Arman Shakerian ----------
+
+
+class PrerequisiteSubjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Subject
+        exclude = ('prerequisite', )
+
+
+class SubjectGetDataSerializer(serializers.ModelSerializer):
+    faculty_detail = FacultyGetDataSerializer(source='provider_faculty')
+    prerequisite_detail = PrerequisiteSubjectSerializer(many=True, read_only=True, source='prerequisite')
+
+    class Meta:
+        model = Subject
+        fields = ['id', 'name', 'number_of_course', 'course_type', 'mandatory', 'faculty_detail',
+                  'corequisite', 'prerequisite_detail']

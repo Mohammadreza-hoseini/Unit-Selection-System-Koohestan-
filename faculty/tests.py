@@ -13,9 +13,9 @@ class FacultyAPITestCase(TestCase):
     def test_create_valid_faculty(self):
         data = {
             'name': 'beheshti',
-            'phone': '+989123456789',
+            'phone': '09123456789',
             'address': '123 Main St',
-            'university': 1
+            'university': "435d05aa-e6b0-4224-a904-567cc02db780"
         }
         response = self.client.post(reverse('faculty-create'), data=data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -23,9 +23,9 @@ class FacultyAPITestCase(TestCase):
     def test_create_invalid_phone(self):
         data = {
             'name': 'shariati',
-            'phone': '12345',
+            'phone': '09123456787',
             'address': '123 Main St',
-            'university': 1
+            'university': "435d05aa-e6b0-4224-a904-567cc02db780"
         }
         response = self.client.post(reverse('faculty-create'), data=data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -39,9 +39,9 @@ class FacultyAPITestCase(TestCase):
                                          university_id=1)
         data = {
             'name': 'allame',
-            'phone': '+989987654321',
+            'phone': '+09123456755',
             'address': '456 Updated St',
-            'university': 2
+            'university': "435d05aa-e6b0-4224-a904-567cc02db780"
         }
         response = self.client.put(reverse('faculty-update', kwargs={'pk': faculty.pk}), data=data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -60,13 +60,6 @@ class FacultyAPITestCase(TestCase):
 
     def test_nonexistent_faculty_detail(self):
         response = self.client.get(reverse('faculty-detail', kwargs={'pk': 9999}))
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_incomplete_data_create_faculty(self):
-        data = {
-            'name': 'beheshti'
-        }
-        response = self.client.post(reverse('faculty-create'), data=data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 

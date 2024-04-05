@@ -6,7 +6,7 @@ from rest_framework import status
 from django_filters import rest_framework as filters
 from rest_framework.generics import ListAPIView, CreateAPIView
 
-from koohestan.utils.permission_handler import ITManagerPermission
+from koohestan.utils.permission_handler import ITManagerPermission, StudentPermission
 from .FilterSet import StudentModelFilter, EA_ModelFilter, ProfessorModelFilter
 from .models import Student, EducationalAssistant, UserRole, Professor
 from .serializers import (
@@ -261,3 +261,26 @@ class EducationalAssistantWithPK(APIView):
         user_obj.save()
 
         return Response("Successfully deleted", status=status.HTTP_200_OK)
+
+
+
+class Student_pass_courses_report(APIView):
+    
+    permission_classes = (IsAuthenticated, StudentPermission, )
+    
+    def get(self, request, pk):
+        """
+        Return passed courses of student
+        """
+        
+        print("Salam")
+        print(request.user.id)
+        
+        try:
+            get_student = Student.objects.get(id=pk)
+        except ObjectDoesNotExist:
+            return Response(
+                "This student does not exist", status=status.HTTP_400_BAD_REQUEST
+            )
+        return Response(status=status.HTTP_200_OK)
+    ...

@@ -4,16 +4,21 @@ from django_filters import rest_framework as filters
 
 from rest_framework import status
 from rest_framework.generics import ListAPIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from accounts.FilterSet import EA_ModelFilter
+
+from koohestan.utils.permission_handler import StudentSelfPermission, ITManagerPermission
 
 from accounts.models import  EducationalAssistant, UserRole
 from accounts.EA.ea_serializers import EducationalAssistantSerializer, EA_GetDataSerializer
 
 
 class EducationalAssistantView(APIView):
+    
+    permission_classes = (IsAuthenticated, ITManagerPermission, )
     
     def post(self, request):
         """
@@ -33,7 +38,7 @@ class GetAll_EAs(ListAPIView):
     """
         Return list of all EAs
     """
-
+    permission_classes = (IsAuthenticated, ITManagerPermission, )
     serializer_class = EA_GetDataSerializer
     queryset = EducationalAssistant.objects.all()
     filter_backends = (filters.DjangoFilterBackend,)
@@ -41,6 +46,8 @@ class GetAll_EAs(ListAPIView):
 
 
 class EducationalAssistantWithPK(APIView):
+
+
 
     def get(self, request, pk):
         """

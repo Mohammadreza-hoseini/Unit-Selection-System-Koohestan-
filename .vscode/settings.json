@@ -1,6 +1,0 @@
-{
-    "[python]": {
-        // Configure Python settings
-        "editor.formatOnSave": false // Disable format on save for Python specifically
-    }
-}

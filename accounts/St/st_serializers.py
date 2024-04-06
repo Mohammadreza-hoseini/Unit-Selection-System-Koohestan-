@@ -6,16 +6,15 @@ from django.db import transaction
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-
 from term.models import Term
 from faculty.models import Faculty, Major
 from course.models import Course
 from accounts.models import UserRole, Professor, Student
 
-
 from accounts.models import Student
 from course.models import Subject
 from course.serializers import SubjectGetDataSerializer
+
 
 class ST_Passed_Courses_Serializer(serializers.ModelSerializer):
     """
@@ -23,10 +22,19 @@ class ST_Passed_Courses_Serializer(serializers.ModelSerializer):
     """
     ...
     passed_lessons = SubjectGetDataSerializer(many=True, source='passed_lessons')
+
     class Meta:
         model = Student
-        fields = ("passed_lessons", )
+        fields = ("passed_lessons",)
 
+
+class ST_Progress_Courses_Serializer(serializers.ModelSerializer):
+    lessons_in_progress = SubjectGetDataSerializer(many=True)
+
+    class Meta:
+        model = Student
+        fields = ("lessons_in_progress",)
+        # fields = '__all__'
 
 
 # Start code of Mohammadreza hoseini

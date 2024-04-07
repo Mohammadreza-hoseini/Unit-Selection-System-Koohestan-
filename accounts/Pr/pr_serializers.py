@@ -12,7 +12,7 @@ from course.models import Course
 from faculty.models import Faculty, Major
 
 from faculty.serializers import FacultyGetDataSerializer, MajorGetDataSerializer
-from term.serializers import TermGetDataSerializer
+from term.Tr.tr_serializers import TermGetDataSerializer
 from term.models import Term
 
 class ProfessorSerializer(serializers.Serializer):

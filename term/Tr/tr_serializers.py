@@ -4,7 +4,7 @@ from rest_framework.exceptions import ValidationError
 
 from django.db import transaction
 
-from .models import Term
+from term.models import Term
 
 from accounts.models import Student, Professor
 

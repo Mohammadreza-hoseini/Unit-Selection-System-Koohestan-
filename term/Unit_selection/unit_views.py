@@ -1,20 +1,14 @@
-from turtle import st
 from django.core.exceptions import ObjectDoesNotExist
-from django.shortcuts import render
 from rest_framework import status
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework import permissions
 
 from django_filters import rest_framework as filters
 
 from accounts.models import Student
-from course import views
-from course.models import Course, Subject
 from koohestan.utils.permission_handler import ITManagerPermission, EducationalAssistantPermission, StudentSelfPermission
-from term.models import UnitRegisterRequest
 from term.Unit_selection.unit_serializers import UR_Form_Serializer
 
 # UR -> UnitRegister

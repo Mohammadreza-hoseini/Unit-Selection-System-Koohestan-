@@ -69,7 +69,7 @@ class Student(models.Model):
     lastname = models.CharField(max_length=256, verbose_name='نام خانوادگی')
     student_number = models.CharField(max_length=256, unique=True, verbose_name='شماره دانشجویی')
     password = models.CharField(max_length=256, verbose_name='رمز عبور')
-    avatar = models.URLField(max_length=256, verbose_name='تصویر پروفایل', null=True, blank=True)
+    avatar = models.ImageField(upload_to='avatars/', verbose_name='تصویر پروفایل', null=True, blank=True)
     email = models.EmailField(unique=True, verbose_name='ایمیل')
     phone = models.CharField(max_length=11, unique=True, verbose_name='شماره تلفن')
     national_code = models.CharField(max_length=11, unique=True, verbose_name='کد ملی')

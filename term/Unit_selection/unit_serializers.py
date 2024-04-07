@@ -1,14 +1,8 @@
 from django.db import transaction
 
-from django.http import QueryDict
 from rest_framework import serializers
 
-
-from accounts.models import Student
-import course
-from term.models import Term, UnitRegisterRequest
-
-from course.serializers import CourseGetDataSerializer
+from term.models import UnitRegisterRequest
 
 class UR_Form_Serializer(serializers.Serializer):
     course = serializers.ListField()

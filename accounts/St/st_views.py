@@ -7,24 +7,36 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.generics import ListAPIView
 
-
 from koohestan.utils.permission_handler import StudentSelfPermission, ITManagerPermission
 
-
 from accounts.models import Student
-from accounts.St.st_serializers import StudentSerializer,StudentGetDataSerializer, ST_Passed_Courses_Serializer
+from accounts.St.st_serializers import StudentSerializer, StudentGetDataSerializer, ST_Passed_Courses_Serializer, \
+    ST_Progress_Courses_Serializer
 
 from accounts.FilterSet import StudentModelFilter
 
+
+class StudentTermCourses(APIView):
+    permission_classes = (IsAuthenticated, StudentSelfPermission,)
+
+    def get(self, request, pk):
+        try:
+            get_student = Student.objects.get(id=pk)
+        except ObjectDoesNotExist:
+            return Response(
+                "There is no student", status=status.HTTP_400_BAD_REQUEST
+            )
+        serializer = ST_Progress_Courses_Serializer(get_student)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class StudentPassedCourses_PK(APIView):
     """
     Return student's passed_courses
     """
-    
-    permission_classes = (IsAuthenticated, StudentSelfPermission, )
-    
+
+    permission_classes = (IsAuthenticated, StudentSelfPermission,)
+
     def get(self, request, pk):
         try:
             get_student = Student.objects.get(id=pk)

@@ -6,16 +6,15 @@ from django.db import transaction
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-
 from term.models import Term
 from faculty.models import Faculty, Major
 from course.models import Course
 from accounts.models import UserRole, Professor, Student
 
-
 from accounts.models import Student
 from course.models import Subject
 from course.serializers import SubjectGetDataSerializer
+
 
 class ST_Passed_Courses_Serializer(serializers.ModelSerializer):
     """
@@ -23,10 +22,19 @@ class ST_Passed_Courses_Serializer(serializers.ModelSerializer):
     """
     ...
     passed_lessons = SubjectGetDataSerializer(many=True, source='passed_lessons')
+
     class Meta:
         model = Student
-        fields = ("passed_lessons", )
+        fields = ("passed_lessons",)
 
+
+class ST_Progress_Courses_Serializer(serializers.ModelSerializer):
+    lessons_in_progress = SubjectGetDataSerializer(many=True)
+
+    class Meta:
+        model = Student
+        fields = ("lessons_in_progress",)
+        # fields = '__all__'
 
 
 # Start code of Mohammadreza hoseini
@@ -48,10 +56,11 @@ class StudentSerializer(serializers.Serializer):
     faculty = serializers.PrimaryKeyRelatedField(queryset=Faculty.objects.all())
     major = serializers.PrimaryKeyRelatedField(queryset=Major.objects.all())
     passed_lessons = serializers.ListField(required=False)
-    lessons_in_progress = serializers.ListField(required=False)
+    lessons_in_progress = serializers.ListField(required=True)
     supervisor = serializers.PrimaryKeyRelatedField(queryset=Professor.objects.all())
     military_service_status = serializers.ChoiceField(choices=[1, 2, 3])
     years = serializers.IntegerField(default=1, required=False)
+    avatar = serializers.ImageField(required=False)
 
     def validate_phone(self, value):
         pattern = '^(\+98|0)?9\d{9}$'
@@ -106,7 +115,7 @@ class StudentSerializer(serializers.Serializer):
         student = Student.objects.create(**student_data)
 
         for lesson_id in lessons_in_progress:
-            if not Course.objects.filter(id=lesson_id).exists():
+            if not Subject.objects.filter(id=lesson_id).exists():
                 raise serializers.ValidationError("This lesson does not exist")
         student.lessons_in_progress.set(lessons_in_progress)
         return student
@@ -131,6 +140,7 @@ class StudentSerializer(serializers.Serializer):
         instance.military_service_status = validated_data.data.get('military_service_status',
                                                                    instance.military_service_status)
         instance.years = validated_data.data.get('years', instance.years)
+        instance.avatar = self.initial_data['avatar']
 
         # Check email uniqueness, excluding the current student being updated
         email = validated_data.data.get('email', instance.email)
@@ -144,7 +154,7 @@ class StudentSerializer(serializers.Serializer):
             raise ValidationError('This national_code exist')
         lessons_in_progress = validated_data.data.get('lessons_in_progress', [])
         for lesson_id in lessons_in_progress:
-            if not Course.objects.filter(id=lesson_id).exists():
+            if not Subject.objects.filter(id=lesson_id).exists():
                 raise ValidationError("This lesson does not exist")
 
         instance.lessons_in_progress.set(lessons_in_progress)
@@ -158,7 +168,8 @@ class StudentGetDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
         fields = (
-            'id', 'firstname', 'lastname', 'student_number', 'email', 'phone', 'national_code', 'gender', 'birth_date',
+            'id', 'firstname', 'lastname', 'avatar', 'student_number', 'email', 'phone', 'national_code', 'gender',
+            'birth_date',
             'entry_year', 'incoming_semester', 'average', 'term', 'faculty', 'major', 'passed_lessons',
             'lessons_in_progress',
             'supervisor', 'military_service_status', 'years',)

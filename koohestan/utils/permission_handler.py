@@ -4,7 +4,6 @@ from rest_framework.permissions import BasePermission
 class ITManagerPermission(BasePermission):
     def has_permission(self, request, view):
         if request.user.role == 3:
-            print("fgjhkvt")
             return request.user and request.user.is_authenticated
 
 

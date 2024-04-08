@@ -69,7 +69,7 @@ class Student(models.Model):
     lastname = models.CharField(max_length=256, verbose_name='نام خانوادگی')
     student_number = models.CharField(max_length=256, unique=True, verbose_name='شماره دانشجویی')
     password = models.CharField(max_length=256, verbose_name='رمز عبور')
-    avatar = models.URLField(max_length=256, verbose_name='تصویر پروفایل', null=True, blank=True)
+    avatar = models.ImageField(upload_to='avatars/', verbose_name='تصویر پروفایل', null=True, blank=True)
     email = models.EmailField(unique=True, verbose_name='ایمیل')
     phone = models.CharField(max_length=11, unique=True, verbose_name='شماره تلفن')
     national_code = models.CharField(max_length=11, unique=True, verbose_name='کد ملی')
@@ -81,7 +81,7 @@ class Student(models.Model):
     incoming_semester = models.PositiveSmallIntegerField(
         default=ChooseSemester.first, choices=ChooseSemester.choices, verbose_name='ترم ورودی'
     )
-    average = models.FloatField(verbose_name='معدل', null=True, blank=True)
+    average = models.FloatField(verbose_name='معدل کل', null=True, blank=True)
     term = models.ForeignKey("term.Term", on_delete=models.CASCADE, related_name='student_term',
                              verbose_name='ترم جاری')
     faculty = models.ForeignKey("faculty.Faculty", on_delete=models.CASCADE, related_name='student_faculty',
@@ -155,3 +155,17 @@ class OTPCode(models.Model):
 
     def __str__(self):
         return f"{self.email} - {self.code} - {self.code_expire}"
+
+
+class StudentTermAverage(models.Model):
+    id = models.CharField(default=uuid.uuid4, editable=False, primary_key=True)
+    student = models.ForeignKey("accounts.Student", on_delete=models.CASCADE,
+                                related_name='student_term_average_student', verbose_name='دانشجو', null=True,
+                                blank=True)
+    term = models.ForeignKey("term.Term", on_delete=models.CASCADE, related_name='student_term_average_term',
+                             verbose_name='ترم')
+    average = models.FloatField(verbose_name='معدل ترم', null=True, blank=True)
+    term_number = models.PositiveIntegerField(default=0, verbose_name='شماره ترم')
+
+    def __str__(self):
+        return f"{self.term.name} - {self.average}"

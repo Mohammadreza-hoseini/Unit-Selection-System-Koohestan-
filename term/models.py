@@ -1,10 +1,14 @@
 from django.db import models
 import uuid
+from django.dispatch import receiver
+from django.db.models.signals import post_save
+
+from accounts.models import StudentTermAverage
 
 
 class Term(models.Model):
     id = models.CharField(default=uuid.uuid4, editable=False, primary_key=True)
-    name = models.CharField(max_length=256, verbose_name='نام ترم')
+    name = models.CharField(max_length=256, verbose_name='نام ترم', null=True, blank=True)
     # students = models.ForeignKey("accounts.Student", on_delete=models.CASCADE, related_name='term_students',
     #                              verbose_name='دانشجوها', null=True, blank=True)
     # professors = models.ForeignKey("accounts.Professor", on_delete=models.CASCADE, related_name='term_professor',
@@ -26,6 +30,14 @@ class Term(models.Model):
         return f"{self.name}"
 
 
+@receiver(post_save, sender=Term)
+def student_term_number(sender, instance, **kwargs):
+    create_std_term_avg = StudentTermAverage()
+    create_std_term_avg.term_id = instance.id
+    create_std_term_avg.term_number += 1
+    create_std_term_avg.save()
+
+
 class ChooseRequestState(models.IntegerChoices):
     pending = 1, "pending"
     accepted = 2, "accepted"
@@ -43,3 +55,19 @@ class UnitRegisterRequest(models.Model):
 
     def __str__(self):
         return f"req: {self.student.national_code} - {self.request_state}"
+
+
+class BusyStudyingRequest(models.Model):
+    id = models.CharField(default=uuid.uuid4, editable=False, primary_key=True)
+    student = models.ForeignKey("accounts.Student", on_delete=models.CASCADE,
+                                related_name='busy_studying_request_student', verbose_name='دانشجو')
+    assistant = models.ForeignKey("accounts.EducationalAssistant", on_delete=models.CASCADE,
+                                  related_name='busy_studying_request_assistant', verbose_name='معاون آموزشی')
+
+    request_state = models.PositiveSmallIntegerField(
+        default=ChooseRequestState.pending, choices=ChooseRequestState.choices, verbose_name='وضعیت درخواست'
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"st_{self.student.student_number} - ea_{self.assistant.assistant.professor_number}"

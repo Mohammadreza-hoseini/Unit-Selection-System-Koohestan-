@@ -11,9 +11,9 @@ from koohestan.utils.permission_handler import ITManagerPermission
 
 from rest_framework.permissions import IsAuthenticated
 
-from .FilterSet import TermModelFilter
-from .models import Term
-from .serializers import TermSerializer, TermGetDataSerializer
+from term.FilterSet import TermModelFilter
+from term.models import Term
+from term.Tr.tr_serializers import TermSerializer, TermGetDataSerializer
 
 
 # IT-admin access

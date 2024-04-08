@@ -86,3 +86,5 @@ def validate_prerequisite_subject_passed(attrs, student_obj):
             raise ValidationError(f'Prerequisites of {course_id} course is not satisfied \
                                     not_passed_subjects: subjects: {not_passed_subjects}'
                                     )
+            
+# corequisite delete validation -> symmetrical = False in 'Subject' model? #TODO

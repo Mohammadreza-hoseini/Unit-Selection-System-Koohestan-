@@ -10,12 +10,17 @@ def validate_passed_course(attrs, student_obj):
 
     for course_id in course:
 
-        # TEST it
-        # possible #BUG
-        if course_id in passed_lessons:
-            raise ("This course has already been passed")
+        get_course = Course.objects.filter(id=course_id).first()
+        if not get_course:
+            raise ValidationError("this course doesn't exist")
+        
 
-    print(passed_lessons)
+        subject_id = get_course.subject.id
+        subject_name = get_course.subject.name
+        
+        if passed_lessons.filter(id=subject_id).exists():
+            raise ValidationError(f'{subject_name} has been passed -> course_id: {course_id}')
+
 
 
 def validate_course_capacity(attrs):

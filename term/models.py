@@ -32,9 +32,10 @@ class Term(models.Model):
 
 @receiver(post_save, sender=Term)
 def student_term_number(sender, instance, **kwargs):
+    all_terms = Term.objects.all().count()
     create_std_term_avg = StudentTermAverage()
     create_std_term_avg.term_id = instance.id
-    create_std_term_avg.term_number += 1
+    create_std_term_avg.term_number = all_terms
     create_std_term_avg.save()
 
 
@@ -55,14 +56,6 @@ class UnitRegisterRequest(models.Model):
 
     def __str__(self):
         return f"req: {self.student.national_code} - {self.request_state}"
-
-@receiver(post_save, sender=UnitRegisterRequest)
-def reduce_course_capacity(sender, instance, created, **kwargs):
-    courses = instance.course.all()
-
-    for course in courses:
-        course.capacity -= 1
-        course.save()
 
 
 class BusyStudyingRequest(models.Model):

@@ -5,6 +5,9 @@ from django.db.models import F
 
 
 def validate_passed_course(attrs, student_obj):
+    """
+    Check if course's subject has already been passed
+    """
     passed_lessons = student_obj.passed_lessons
     course = attrs["course"]
 
@@ -54,3 +57,32 @@ def validate_student_add_unit_average(attrs, student_obj):
         raise ValidationError(
             "The number of your course units is more than the allowed limit"
         )
+
+
+def subject_prerequisites(subject, passed_lessons):
+    """
+    check prerequisites for specific course's subject
+    """
+    
+    
+    prerequisite = subject.prerequisite.all()
+    not_passed_subjects = []
+    for pre_subject in prerequisite:
+        # check passed or not
+        passed = passed_lessons.filter(id=pre_subject.id).exists()
+        if not passed:
+            not_passed_subjects.append(pre_subject.name)
+    return not_passed_subjects
+
+def validate_prerequisite_subject_passed(attrs, student_obj):
+    passed_lessons = student_obj.passed_lessons
+    course = attrs["course"]
+    
+    for course_id in course:
+        get_course = Course.objects.get(id=course_id)
+        get_subject = get_course.subject
+        not_passed_subjects = subject_prerequisites(get_subject, passed_lessons)
+        if len(not_passed_subjects) != 0:
+            raise ValidationError(f'Prerequisites of {course_id} course is not satisfied \
+                                    not_passed_subjects: subjects: {not_passed_subjects}'
+                                    )

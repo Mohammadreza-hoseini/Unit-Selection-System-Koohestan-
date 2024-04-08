@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from accounts.models import UserRole, Student, ITManager, University, Professor, EducationalAssistant, OTPCode
+from accounts.models import UserRole, Student, ITManager, University, Professor, EducationalAssistant, OTPCode, \
+    StudentTermAverage
 
 
 class CustomUserAdmin(UserAdmin):
@@ -58,3 +59,4 @@ admin.site.register(University)
 admin.site.register(Professor)
 admin.site.register(EducationalAssistant)
 admin.site.register(OTPCode)
+admin.site.register(StudentTermAverage)

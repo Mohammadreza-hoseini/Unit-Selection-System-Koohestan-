@@ -1,5 +1,9 @@
 from django.db import models
 import uuid
+from django.dispatch import receiver
+from django.db.models.signals import post_save
+
+from accounts.models import StudentTermAverage
 
 
 class Term(models.Model):
@@ -24,6 +28,14 @@ class Term(models.Model):
 
     def __str__(self):
         return f"{self.name}"
+
+
+@receiver(post_save, sender=Term)
+def student_term_number(sender, instance, **kwargs):
+    create_std_term_avg = StudentTermAverage()
+    create_std_term_avg.term_id = instance.id
+    create_std_term_avg.term_number += 1
+    create_std_term_avg.save()
 
 
 class ChooseRequestState(models.IntegerChoices):

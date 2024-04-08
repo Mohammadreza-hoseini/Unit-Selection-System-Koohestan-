@@ -6,7 +6,7 @@ from rest_framework.exceptions import ValidationError
 from course.models import Course
 from term.models import UnitRegisterRequest
 
-from .unit_validations import validate_passed_course, validate_student_add_unit_average
+from .unit_validations import validate_passed_course, validate_student_add_unit_average, validate_course_capacity
 
 
 class URFormSerializer(serializers.Serializer):
@@ -17,6 +17,7 @@ class URFormSerializer(serializers.Serializer):
         student_obj = self.context.get('student_obj')
 
         validate_passed_course(attrs, student_obj)
+        validate_course_capacity(attrs)
         validate_student_add_unit_average(attrs, student_obj)
 
 

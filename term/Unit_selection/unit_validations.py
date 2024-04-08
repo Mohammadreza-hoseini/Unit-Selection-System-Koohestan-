@@ -101,3 +101,4 @@ def validate_prerequisite_subject_passed(attrs, student_obj):
                                     )
             
 # corequisite delete validation -> symmetrical = False in 'Subject' model? #TODO
+# course delete method in UR #TODO 

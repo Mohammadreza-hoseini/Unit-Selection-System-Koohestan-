@@ -57,6 +57,20 @@ def validate_student_add_unit_average(attrs, student_obj):
             "The number of your course units is more than the allowed limit"
         )
 
+def validate_exam_and_class_time_interference(attrs):
+    course = attrs["course"]
+    for item in course:
+        get_course = Course.objects.filter(id=item).first()
+        if get_course.time == get_course.exam_time.time():
+            raise ValidationError('Class time interferes with exam time')
+
+
+def validate_courses_related_to_the_field(attrs, student_obj):
+    course = attrs["course"]
+    for item in course:
+        get_course = Course.objects.filter(id=item).first().subject.provider_faculty.id
+        if get_course != student_obj.faculty.id:
+            raise ValidationError('The selected course is not related to the faculty')
 
 def subject_prerequisites(subject, passed_lessons):
     """

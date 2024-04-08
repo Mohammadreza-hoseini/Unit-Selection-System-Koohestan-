@@ -7,7 +7,7 @@ from course.models import Course
 from term.models import UnitRegisterRequest
 
 from .unit_validations import validate_passed_course, validate_student_add_unit_average, \
-    validate_exam_and_class_time_interference, validate_courses_related_to_the_field, validate_prerequisite_subject_passed
+    validate_exam_and_class_time_interference, validate_courses_related_to_the_field, validate_prerequisite_subject_passed, validate_course_capacity
 
 
 class URFormSerializer(serializers.Serializer):
@@ -21,6 +21,8 @@ class URFormSerializer(serializers.Serializer):
         validate_course_capacity(attrs)
         validate_prerequisite_subject_passed(attrs, student_obj)
         validate_student_add_unit_average(attrs, student_obj)
+        validate_exam_and_class_time_interference(attrs)
+        validate_courses_related_to_the_field(attrs, student_obj)
 
 
 

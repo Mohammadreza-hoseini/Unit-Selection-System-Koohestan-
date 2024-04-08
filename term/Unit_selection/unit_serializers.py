@@ -1,23 +1,23 @@
 from django.db import transaction
 
-from django.http import QueryDict
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 
 
-from accounts.models import Student
-import course
-from term.models import Term, UnitRegisterRequest
+from course.models import Course
+from term.models import UnitRegisterRequest
 
-from course.serializers import CourseGetDataSerializer
+from .unit_validations import validate_passed_course
 
 class UR_Form_Serializer(serializers.Serializer):
     course = serializers.ListField()
     
 
     def validate(self, attrs):
+
+        student_obj = self.context.get('student_obj')
         
-        # validations
-        # #TODO
+        validate_passed_course(attrs, student_obj)
 
         return attrs
 
@@ -31,8 +31,15 @@ class UR_Form_Serializer(serializers.Serializer):
         
         UR_form_obj = UnitRegisterRequest(student=student_obj)        
         
+        
+        for course in courses:
+            if not Course.objects.filter(id=course).exists():
+                raise serializers.ValidationError("This course does not exist")
+                
+        
         # set M2M field
         UR_form_obj.course.set(courses)
+        
         UR_form_obj.save()
         
         return UR_form_obj

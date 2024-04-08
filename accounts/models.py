@@ -81,7 +81,7 @@ class Student(models.Model):
     incoming_semester = models.PositiveSmallIntegerField(
         default=ChooseSemester.first, choices=ChooseSemester.choices, verbose_name='ترم ورودی'
     )
-    average = models.FloatField(verbose_name='معدل', null=True, blank=True)
+    average = models.FloatField(verbose_name='معدل کل', null=True, blank=True)
     term = models.ForeignKey("term.Term", on_delete=models.CASCADE, related_name='student_term',
                              verbose_name='ترم جاری')
     faculty = models.ForeignKey("faculty.Faculty", on_delete=models.CASCADE, related_name='student_faculty',
@@ -155,3 +155,15 @@ class OTPCode(models.Model):
 
     def __str__(self):
         return f"{self.email} - {self.code} - {self.code_expire}"
+
+
+class StudentTermAverage(models.Model):
+    id = models.CharField(default=uuid.uuid4, editable=False, primary_key=True)
+    student = models.ForeignKey("accounts.Student", on_delete=models.CASCADE,
+                                related_name='student_term_average_student', verbose_name='دانشجو')
+    term = models.ForeignKey("term.Term", on_delete=models.CASCADE, related_name='student_term_average_term',
+                             verbose_name='ترم')
+    average = models.FloatField(verbose_name='معدل ترم', null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.student.student_number} - {self.term.name} - {self.average}"

@@ -4,7 +4,7 @@ import uuid
 
 class Term(models.Model):
     id = models.CharField(default=uuid.uuid4, editable=False, primary_key=True)
-    name = models.CharField(max_length=256, verbose_name='نام ترم')
+    name = models.CharField(max_length=256, verbose_name='نام ترم', null=True, blank=True)
     # students = models.ForeignKey("accounts.Student", on_delete=models.CASCADE, related_name='term_students',
     #                              verbose_name='دانشجوها', null=True, blank=True)
     # professors = models.ForeignKey("accounts.Professor", on_delete=models.CASCADE, related_name='term_professor',

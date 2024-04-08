@@ -45,3 +45,21 @@ class URGetView(ListAPIView):
     Get UR form of st_pk
     """
     ...
+
+class URGetUpdateDelete(APIView):
+    
+    def get_permissions(self):
+        # override it #TODO
+        ...
+        # return super().get_permissions()
+    def put(self, request, pk):
+        #TODO
+        ...
+
+    def get(self, request, pk):
+        #TODO
+        ...
+
+    def delete(self, request, pk):
+       #TODO 
+        ...

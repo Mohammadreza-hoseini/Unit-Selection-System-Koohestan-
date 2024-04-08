@@ -160,10 +160,12 @@ class OTPCode(models.Model):
 class StudentTermAverage(models.Model):
     id = models.CharField(default=uuid.uuid4, editable=False, primary_key=True)
     student = models.ForeignKey("accounts.Student", on_delete=models.CASCADE,
-                                related_name='student_term_average_student', verbose_name='دانشجو')
+                                related_name='student_term_average_student', verbose_name='دانشجو', null=True,
+                                blank=True)
     term = models.ForeignKey("term.Term", on_delete=models.CASCADE, related_name='student_term_average_term',
                              verbose_name='ترم')
     average = models.FloatField(verbose_name='معدل ترم', null=True, blank=True)
+    term_number = models.PositiveIntegerField(default=0, verbose_name='شماره ترم')
 
     def __str__(self):
-        return f"{self.student.student_number} - {self.term.name} - {self.average}"
+        return f"{self.term.name} - {self.average}"

@@ -56,6 +56,14 @@ class UnitRegisterRequest(models.Model):
     def __str__(self):
         return f"req: {self.student.national_code} - {self.request_state}"
 
+@receiver(post_save, sender=UnitRegisterRequest)
+def reduce_course_capacity(sender, instance, created, **kwargs):
+    courses = instance.course.all()
+
+    for course in courses:
+        course.capacity -= 1
+        course.save()
+
 
 class BusyStudyingRequest(models.Model):
     id = models.CharField(default=uuid.uuid4, editable=False, primary_key=True)

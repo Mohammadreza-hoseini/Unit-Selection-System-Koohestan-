@@ -25,14 +25,13 @@ def validate_passed_course(attrs, student_obj):
                 f"{subject_name} has been passed -> course_id: {course_id}"
             )
 
-
 def validate_course_capacity(attrs):
     course = attrs["course"]
 
     for course_id in course:
-        course_obj = Course.objects.get(id=course_id)
+        course_obj = Course.objects.filter(id=course_id)
         if course_obj.capacity <= 0:
-            raise ValidationError(f"No more capacity for {course_id} course")
+            raise ("No more capacity for this course")
 
 
 def validate_student_add_unit_average(attrs, student_obj):
@@ -40,7 +39,7 @@ def validate_student_add_unit_average(attrs, student_obj):
     get_student = StudentTermAverage.objects.filter(student=student_obj)
     max_units_selection = 0
     if get_student.exists():
-        get_student_average = get_student.order_by(F("id").desc()).last()
+        get_student_average = get_student.order_by(F('id').desc()).last()
         if get_student_average.average >= 17:
             max_units_selection = 24
         elif get_student_average.average < 17:
@@ -51,7 +50,7 @@ def validate_student_add_unit_average(attrs, student_obj):
     for item in course:
         get_course = Course.objects.filter(id=item).first()
         if not get_course:
-            raise ValidationError("This Course id is not exist")
+            raise ValidationError('This Course id is not exist')
         sum_units_selection += get_course.subject.number_of_course
     if sum_units_selection > max_units_selection:
         raise ValidationError(

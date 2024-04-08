@@ -43,3 +43,19 @@ class UnitRegisterRequest(models.Model):
 
     def __str__(self):
         return f"req: {self.student.national_code} - {self.request_state}"
+
+
+class BusyStudyingRequest(models.Model):
+    id = models.CharField(default=uuid.uuid4, editable=False, primary_key=True)
+    student = models.ForeignKey("accounts.Student", on_delete=models.CASCADE,
+                                related_name='busy_studying_request_student', verbose_name='دانشجو')
+    assistant = models.ForeignKey("accounts.EducationalAssistant", on_delete=models.CASCADE,
+                                  related_name='busy_studying_request_assistant', verbose_name='معاون آموزشی')
+
+    request_state = models.PositiveSmallIntegerField(
+        default=ChooseRequestState.pending, choices=ChooseRequestState.choices, verbose_name='وضعیت درخواست'
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"st_{self.student.student_number} - ea_{self.assistant.assistant.professor_number}"

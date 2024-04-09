@@ -3,7 +3,7 @@ import uuid
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 
-from accounts.models import StudentTermAverage
+from accounts.models import StudentTermAverage, Student
 
 
 class Term(models.Model):
@@ -32,10 +32,14 @@ class Term(models.Model):
 
 @receiver(post_save, sender=Term)
 def student_term_number(sender, instance, **kwargs):
-    create_std_term_avg = StudentTermAverage()
-    create_std_term_avg.term_id = instance.id
-    create_std_term_avg.term_number += 1
-    create_std_term_avg.save()
+    get_all_students = Student.objects.all()
+    for student in get_all_students:
+        get_student_on_term_average = StudentTermAverage.objects.filter(student=student).first()
+        create_student_term_average = StudentTermAverage()
+        create_student_term_average.term_id = instance.id
+        create_student_term_average.student = get_student_on_term_average.student
+        create_student_term_average.term_number = get_student_on_term_average.term_number + 1
+        create_student_term_average.save()
 
 
 class ChooseRequestState(models.IntegerChoices):
@@ -52,9 +56,11 @@ class UnitRegisterRequest(models.Model):
     request_state = models.PositiveSmallIntegerField(
         default=ChooseRequestState.pending, choices=ChooseRequestState.choices, verbose_name='وضعیت درخواست'
     )
-
+    term = models.ForeignKey("term.Term", on_delete=models.CASCADE, related_name='unit_request_term',
+                             verbose_name='ترم ')
+    
     def __str__(self):
-        return f"req: {self.student.national_code} - {self.request_state}"
+        return f"req: {self.student.national_code} - Term: {self.term} - Status: {self.request_state}"
 
 
 class BusyStudyingRequest(models.Model):
@@ -71,3 +77,11 @@ class BusyStudyingRequest(models.Model):
 
     def __str__(self):
         return f"st_{self.student.student_number} - ea_{self.assistant.assistant.professor_number}"
+
+@receiver(post_save, sender=UnitRegisterRequest)
+def reduce_course_capacity(sender, instance, created, **kwargs):
+    courses = instance.course.all()
+
+    for course in courses:
+        course.capacity -= 1
+        course.save()

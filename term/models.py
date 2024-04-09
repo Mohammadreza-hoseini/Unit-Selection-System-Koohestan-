@@ -3,7 +3,7 @@ import uuid
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 
-from accounts.models import StudentTermAverage
+from accounts.models import StudentTermAverage, Student
 
 
 class Term(models.Model):
@@ -32,11 +32,14 @@ class Term(models.Model):
 
 @receiver(post_save, sender=Term)
 def student_term_number(sender, instance, **kwargs):
-    all_terms = Term.objects.all().count()
-    create_std_term_avg = StudentTermAverage()
-    create_std_term_avg.term_id = instance.id
-    create_std_term_avg.term_number = all_terms
-    create_std_term_avg.save()
+    get_all_students = Student.objects.all()
+    for student in get_all_students:
+        get_student_on_term_average = StudentTermAverage.objects.filter(student=student).first()
+        create_student_term_average = StudentTermAverage()
+        create_student_term_average.term_id = instance.id
+        create_student_term_average.student = get_student_on_term_average.student
+        create_student_term_average.term_number = get_student_on_term_average.term_number + 1
+        create_student_term_average.save()
 
 
 class ChooseRequestState(models.IntegerChoices):

@@ -9,7 +9,8 @@ from term.models import Term, UnitRegisterRequest
 
 from .unit_validations import validate_passed_course, validate_student_add_unit_average, \
     validate_exam_and_class_time_interference, validate_courses_related_to_the_field, \
-    validate_prerequisite_subject_passed, validate_course_capacity, validate_Student_URForm_Term, \
+    \
+    validate_prerequisite_subject_passed, validate_course_capacity, validate_checking_student_years, validate_Student_URForm_Term, \
     UR_update_delete, validate_St_current_term_UR, validate_UR_selection_time
         
 
@@ -35,6 +36,7 @@ class URFormSerializer(serializers.Serializer):
         validate_student_add_unit_average(attrs, student_obj)
         validate_exam_and_class_time_interference(attrs)
         validate_courses_related_to_the_field(attrs, student_obj)
+        validate_checking_student_years(attrs, student_obj)
 
 
 

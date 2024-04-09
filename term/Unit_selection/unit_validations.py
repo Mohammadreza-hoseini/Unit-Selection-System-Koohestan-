@@ -2,6 +2,7 @@ from rest_framework.exceptions import ValidationError
 from accounts.models import StudentTermAverage
 from course.models import Course
 from django.db.models import F
+from django.db.models import Max
 from django.utils import timezone
 
 from term.models import UnitRegisterRequest
@@ -28,6 +29,7 @@ def validate_passed_course(attrs, student_obj):
                 f"{subject_name} has been passed -> course_id: {course_id}"
             )
 
+
 def validate_course_capacity(attrs):
     course = attrs["course"]
 
@@ -43,7 +45,7 @@ def validate_student_add_unit_average(attrs, student_obj):
     max_units_selection = 0
     if get_student.exists():
         get_student_average = get_student.order_by(F('id').desc()).last()
-        
+
         # If we don't have student's average (due to DB ...)
         if get_student_average.average is None:
             max_units_selection = 24
@@ -64,6 +66,7 @@ def validate_student_add_unit_average(attrs, student_obj):
             "The number of your course units is more than the allowed limit"
         )
 
+
 def validate_exam_and_class_time_interference(attrs):
     course = attrs["course"]
     for item in course:
@@ -79,12 +82,12 @@ def validate_courses_related_to_the_field(attrs, student_obj):
         if get_course != student_obj.faculty.id:
             raise ValidationError('The selected course is not related to the faculty')
 
+
 def subject_prerequisites(subject, passed_lessons):
     """
     check prerequisites for specific course's subject
     """
-    
-    
+
     prerequisite = subject.prerequisite.all()
     not_passed_subjects = []
     for pre_subject in prerequisite:
@@ -94,12 +97,13 @@ def subject_prerequisites(subject, passed_lessons):
             not_passed_subjects.append(pre_subject.name)
     return not_passed_subjects
 
+
 def validate_prerequisite_subject_passed(attrs, student_obj):
     # consider taking both corequisite-subject and main-subject #TODO
     
     passed_lessons = student_obj.passed_lessons
     course = attrs["course"]
-    
+
     for course_id in course:
         get_course = Course.objects.get(id=course_id)
         get_subject = get_course.subject
@@ -139,3 +143,9 @@ def validate_UR_selection_time(attrs):
         raise ValidationError('Time rule: start_selection_time < now < end_selection_time')
 
 # can't add a course in UR_form more than once #TODO
+
+
+def validate_checking_student_years(attrs, student_obj):
+    get_max_term_number = student_obj.student_term_average_student.values('term_number').aggregate(Max('term_number'))
+    if get_max_term_number['term_number__max'] > 8:
+        raise ValidationError('Your academic years are over')

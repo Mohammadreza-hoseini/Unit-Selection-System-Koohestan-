@@ -40,7 +40,11 @@ def validate_student_add_unit_average(attrs, student_obj):
     max_units_selection = 0
     if get_student.exists():
         get_student_average = get_student.order_by(F('id').desc()).last()
-        if get_student_average.average >= 17:
+        
+        # If we don't have student's average (due to DB ...)
+        if get_student_average.average is None:
+            max_units_selection = 24
+        elif get_student_average.average >= 17:
             max_units_selection = 24
         elif get_student_average.average < 17:
             max_units_selection = 20

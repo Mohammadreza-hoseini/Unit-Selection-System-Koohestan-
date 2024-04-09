@@ -60,7 +60,7 @@ class UnitRegisterRequest(models.Model):
                              verbose_name='ترم ')
     
     def __str__(self):
-        return f"req: {self.student.national_code} - {self.request_state}"
+        return f"req: {self.student.national_code} - Term: {self.term} - Status: {self.request_state}"
 
 
 class BusyStudyingRequest(models.Model):

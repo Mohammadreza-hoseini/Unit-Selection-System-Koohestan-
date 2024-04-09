@@ -56,11 +56,9 @@ class URFormSerializer(serializers.Serializer):
         ...
 
 
-class URFormGetDataSerializer(serializers.ModelSerializer):
-    # student = serializers
-    
-    request_state = serializers.IntegerField()
+class URFormGetDataSerializer(serializers.ModelSerializer):    
     UR_courses = CourseGetDataSerializer(many=True, source='course')
+    request_state = serializers.IntegerField()
 
     class Meta:
         model = UnitRegisterRequest

@@ -52,15 +52,9 @@ class URGetView(ListAPIView):
     queryset = UnitRegisterRequest.objects.all()
     
     def get_queryset(self):
-        print("here")
         st_pk = self.kwargs.get('st_pk')
-        print(st_pk)
         UR_forms_for_st_pk = self.queryset.filter(student__id=st_pk)
-        print(UR_forms_for_st_pk)
         return UR_forms_for_st_pk
-        
-        ...
-        # return super().get_queryset()
     ...
 
 class URGetUpdateDelete(APIView):

@@ -2,6 +2,9 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 import uuid
 
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
 
 class ChooseUserRole(models.IntegerChoices):
     student = 1, "student"
@@ -100,6 +103,15 @@ class Student(models.Model):
 
     def __str__(self):
         return f"st_{self.national_code}"
+
+
+@receiver(post_save, sender=Student)
+def add_student_term_average_record(sender, instance, **kwargs):
+    create_std_term_avg = StudentTermAverage()
+    create_std_term_avg.term_id = instance.term.id
+    create_std_term_avg.student_id = instance.id
+    create_std_term_avg.term_number += 1
+    create_std_term_avg.save()
 
 
 class ITManager(models.Model):

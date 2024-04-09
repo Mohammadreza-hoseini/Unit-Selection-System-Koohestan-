@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     "drf_yasg",
     "django_filters",
     "django_dump_load_utf8",
-    "storages",
+    # "storages",حواصم باشه
     # internal apps
     "accounts",
     "faculty",
@@ -167,8 +167,8 @@ SIMPLE_JWT = {
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
 
 # Minio config
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-AWS_ACCESS_KEY_ID = '1fSyq3OSDq6u3tnMxryUczaISthCzurT'
-AWS_SECRET_ACCESS_KEY = 'Tbn6YCsw1u3wktAzDLTFgolccvEup5Gq'
-AWS_STORAGE_BUCKET_NAME = 'static'
-AWS_S3_ENDPOINT_URL = 'https://koohestan.darkube.app'
+# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+# AWS_ACCESS_KEY_ID = '1fSyq3OSDq6u3tnMxryUczaISthCzurT'
+# AWS_SECRET_ACCESS_KEY = 'Tbn6YCsw1u3wktAzDLTFgolccvEup5Gq'
+# AWS_STORAGE_BUCKET_NAME = 'static'
+# AWS_S3_ENDPOINT_URL = 'https://koohestan.darkube.app'

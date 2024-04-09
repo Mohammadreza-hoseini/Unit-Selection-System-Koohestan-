@@ -2,6 +2,9 @@ from rest_framework.exceptions import ValidationError
 from accounts.models import StudentTermAverage
 from course.models import Course
 from django.db.models import F
+from django.utils import timezone
+
+from term.models import UnitRegisterRequest
 
 
 def validate_passed_course(attrs, student_obj):
@@ -92,6 +95,8 @@ def subject_prerequisites(subject, passed_lessons):
     return not_passed_subjects
 
 def validate_prerequisite_subject_passed(attrs, student_obj):
+    # consider taking both corequisite-subject and main-subject #TODO
+    
     passed_lessons = student_obj.passed_lessons
     course = attrs["course"]
     
@@ -104,6 +109,33 @@ def validate_prerequisite_subject_passed(attrs, student_obj):
                                     not_passed_subjects: subjects: {not_passed_subjects}'
                                     )
             
-# corequisite delete validation -> symmetrical = False in 'Subject' model? #TODO
-# course delete method in UR #TODO 
+def validate_Student_URForm_Term(term_id, student_id):
+    already_exist_form = UnitRegisterRequest.objects.filter(term__id=term_id, student__id=student_id).first()
+    return already_exist_form
+
+
+def UR_update_delete(pre_URForm):
+    #  add 1 capacity to already_exist_form.courses
+    pre_courses = pre_URForm.course.all()
+    for released_course in pre_courses:
+        released_course.capacity += 1
+        released_course.save()
+
+
+def validate_St_current_term_UR(attrs, student_obj):
+    """
+    Student can only make URForm for its current term
+    """
+    UR_term = attrs['term'].id
+    St_current_term = student_obj.term.id
+    if UR_term != St_current_term:
+        raise ValidationError('UR_term does not match St_current_term')
+    
+def validate_UR_selection_time(attrs):
+    term = attrs['term']
+    selection_end_time = term.end_selection_time 
+    selection_start_time = term.start_selection_time
+    if not selection_start_time < timezone.now() < selection_end_time:
+        raise ValidationError('Time rule: start_selection_time < now < end_selection_time')
+
 # can't add a course in UR_form more than once #TODO

@@ -41,7 +41,7 @@ class URFormSerializer(serializers.Serializer):
         
         #check if term.id = course.term.id #TODO 
         try:
-            term_obj = Term.objects.get(id=term_id)
+            term_obj = Term.objects.get(id=term_id.id)
         except:
             raise serializers.ValidationError('This term does not exist')    
                 

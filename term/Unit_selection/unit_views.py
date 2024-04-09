@@ -9,7 +9,8 @@ from django_filters import rest_framework as filters
 
 from accounts.models import Student
 from koohestan.utils.permission_handler import ITManagerPermission, EducationalAssistantPermission, StudentSelfPermission
-from term.Unit_selection.unit_serializers import URFormSerializer
+from term.Unit_selection.unit_serializers import URFormGetDataSerializer, URFormSerializer
+from term.models import UnitRegisterRequest
 
 
 # UR -> UnitRegister
@@ -44,6 +45,22 @@ class URGetView(ListAPIView):
     """
     Get UR form of st_pk
     """
+    
+    permission_classes = (IsAuthenticated, )
+    
+    serializer_class = URFormGetDataSerializer
+    queryset = UnitRegisterRequest.objects.all()
+    
+    def get_queryset(self):
+        print("here")
+        st_pk = self.kwargs.get('st_pk')
+        print(st_pk)
+        UR_forms_for_st_pk = self.queryset.filter(student__id=st_pk)
+        print(UR_forms_for_st_pk)
+        return UR_forms_for_st_pk
+        
+        ...
+        # return super().get_queryset()
     ...
 
 class URGetUpdateDelete(APIView):

@@ -53,7 +53,12 @@ class UnitRegisterRequest(models.Model):
     request_state = models.PositiveSmallIntegerField(
         default=ChooseRequestState.pending, choices=ChooseRequestState.choices, verbose_name='وضعیت درخواست'
     )
-
+    term = models.ForeignKey("term.Term", on_delete=models.CASCADE, related_name='student_term',
+                             verbose_name='ترم ')
+    
+    #BUG 
+        # -) term field
+        # -) give term_id in URL
     def __str__(self):
         return f"req: {self.student.national_code} - {self.request_state}"
 

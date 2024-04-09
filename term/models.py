@@ -56,9 +56,11 @@ class UnitRegisterRequest(models.Model):
     request_state = models.PositiveSmallIntegerField(
         default=ChooseRequestState.pending, choices=ChooseRequestState.choices, verbose_name='وضعیت درخواست'
     )
-
+    term = models.ForeignKey("term.Term", on_delete=models.CASCADE, related_name='unit_request_term',
+                             verbose_name='ترم ')
+    
     def __str__(self):
-        return f"req: {self.student.national_code} - {self.request_state}"
+        return f"req: {self.student.national_code} - Term: {self.term} - Status: {self.request_state}"
 
 
 class BusyStudyingRequest(models.Model):
@@ -75,3 +77,11 @@ class BusyStudyingRequest(models.Model):
 
     def __str__(self):
         return f"st_{self.student.student_number} - ea_{self.assistant.assistant.professor_number}"
+
+@receiver(post_save, sender=UnitRegisterRequest)
+def reduce_course_capacity(sender, instance, created, **kwargs):
+    courses = instance.course.all()
+
+    for course in courses:
+        course.capacity -= 1
+        course.save()

@@ -23,7 +23,7 @@ class Subject(models.Model):
     prerequisite = models.ManyToManyField('self', symmetrical=False, verbose_name='دروس پیش نیاز',
                                           related_name='subject_prerequisite',
                                           null=True, blank=True)
-    corequisite = models.ManyToManyField('self', verbose_name='دروس همنیاز', related_name='subject_corequisite',
+    corequisite = models.ManyToManyField('self', symmetrical=False, verbose_name='دروس همنیاز', related_name='subject_corequisite',
                                          null=True, blank=True)
     number_of_course = models.PositiveIntegerField(verbose_name='تعداد واحد درس')
     course_type = models.PositiveSmallIntegerField(

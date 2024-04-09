@@ -64,10 +64,11 @@ class URFormSerializer(serializers.Serializer):
         ...
 
 
-class URFormGetDataSerializer(serializers.ModelSerializer):    
+class URFormGetDataSerializer(serializers.ModelSerializer):
+    term = serializers.PrimaryKeyRelatedField(queryset = Term.objects.all())
     UR_courses = CourseGetDataSerializer(many=True, source='course')
     request_state = serializers.IntegerField()
 
     class Meta:
         model = UnitRegisterRequest
-        fields = ("UR_courses", 'request_state')
+        fields = ("term", "UR_courses", 'request_state')

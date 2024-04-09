@@ -15,7 +15,7 @@ def validate_passed_course(attrs, student_obj):
 
         get_course = Course.objects.filter(id=course_id).first()
         if not get_course:
-            raise ValidationError("this course doesn't exist")
+            raise ValidationError(f"{course_id} course doesn't exist")
 
         subject_id = get_course.subject.id
         subject_name = get_course.subject.name
@@ -29,7 +29,7 @@ def validate_course_capacity(attrs):
     course = attrs["course"]
 
     for course_id in course:
-        course_obj = Course.objects.filter(id=course_id)
+        course_obj = Course.objects.get(id=course_id)
         if course_obj.capacity <= 0:
             raise ("No more capacity for this course")
 
@@ -102,3 +102,4 @@ def validate_prerequisite_subject_passed(attrs, student_obj):
             
 # corequisite delete validation -> symmetrical = False in 'Subject' model? #TODO
 # course delete method in UR #TODO 
+# capacity signal #TODO 

@@ -53,7 +53,7 @@ class UnitRegisterRequest(models.Model):
     request_state = models.PositiveSmallIntegerField(
         default=ChooseRequestState.pending, choices=ChooseRequestState.choices, verbose_name='وضعیت درخواست'
     )
-    term = models.ForeignKey("term.Term", on_delete=models.CASCADE, related_name='student_term',
+    term = models.ForeignKey("term.Term", on_delete=models.CASCADE, related_name='unit_request_term',
                              verbose_name='ترم ')
     
     def __str__(self):

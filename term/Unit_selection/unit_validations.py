@@ -31,7 +31,7 @@ def validate_course_capacity(attrs):
     for course_id in course:
         course_obj = Course.objects.get(id=course_id)
         if course_obj.capacity <= 0:
-            raise ("No more capacity for this course")
+            raise ValidationError(f"No more capacity for {course_id} course")
 
 
 def validate_student_add_unit_average(attrs, student_obj):
@@ -106,4 +106,4 @@ def validate_prerequisite_subject_passed(attrs, student_obj):
             
 # corequisite delete validation -> symmetrical = False in 'Subject' model? #TODO
 # course delete method in UR #TODO 
-# capacity signal #TODO 
+# can't add a course in UR_form more than once #TODO

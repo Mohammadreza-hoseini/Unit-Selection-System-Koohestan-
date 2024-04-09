@@ -4,6 +4,7 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from course.models import Course
+from course.serializers import CourseGetDataSerializer
 from term.models import UnitRegisterRequest
 
 from .unit_validations import validate_passed_course, validate_student_add_unit_average, \
@@ -57,9 +58,10 @@ class URFormSerializer(serializers.Serializer):
 
 class URFormGetDataSerializer(serializers.ModelSerializer):
     # student = serializers
-
-    course = serializers.ListField()
+    
+    request_state = serializers.IntegerField()
+    UR_courses = CourseGetDataSerializer(many=True, source='course')
 
     class Meta:
         model = UnitRegisterRequest
-        fields = "__all__"
+        fields = ("UR_courses", 'request_state')

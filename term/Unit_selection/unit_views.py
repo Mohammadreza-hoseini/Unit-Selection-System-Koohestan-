@@ -32,7 +32,7 @@ class URCreateView(APIView):
             )
 
         additional_data = {'student_obj': get_student}
-
+        
         serializer = URFormSerializer(data=request.data, context=additional_data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()

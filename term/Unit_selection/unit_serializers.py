@@ -1,6 +1,7 @@
 from django.db import transaction
 from django.utils import timezone
 from rest_framework import serializers
+
 from rest_framework.exceptions import ValidationError
 
 from accounts.models import Student, Professor
@@ -13,7 +14,8 @@ from .unit_validations import validate_passed_course, validate_student_add_unit_
     validate_exam_and_class_time_interference, validate_courses_related_to_the_field, \
     \
     validate_prerequisite_subject_passed, validate_course_capacity, validate_checking_student_years, validate_Student_URForm_Term, \
-    UR_update_delete, validate_St_current_term_UR, validate_UR_selection_time
+    UR_update_delete, validate_St_current_term_UR, validate_UR_selection_time, validate_doped_AddOrDelete_UnitLimit, \
+    validate_doped_selection_time, validate_course_term
         
 
 
@@ -24,9 +26,16 @@ class URFormSerializer(serializers.Serializer):
     def validate(self, attrs):
 
         student_obj = self.context.get('student_obj')
+        URL_type = self.context.get('URL_type')
 
-        validate_UR_selection_time(attrs)
+
+        if URL_type == 'selection':
+            validate_UR_selection_time(attrs)
+        else:
+            validate_doped_selection_time(attrs)
+
         validate_St_current_term_UR(attrs, student_obj)
+        validate_course_term(attrs)
         validate_passed_course(attrs, student_obj)
         validate_course_capacity(attrs)
         
@@ -38,7 +47,9 @@ class URFormSerializer(serializers.Serializer):
         validate_student_add_unit_average(attrs, student_obj)
         validate_exam_and_class_time_interference(attrs)
         validate_courses_related_to_the_field(attrs, student_obj)
-        validate_checking_student_years(attrs, student_obj)
+        if URL_type == 'selection':
+            validate_checking_student_years(attrs, student_obj)
+
 
         return attrs
 
@@ -50,8 +61,11 @@ class URFormSerializer(serializers.Serializer):
 
         # retrieve additional_data in self.context
         student_obj = self.context.get('student_obj')
+        
+        URL_type = self.context.get('URL_type')
 
-        # check if term.id = course.term.id #TODO
+
+        #check if term.id = course.term.id #TODO
         try:
             term_obj = Term.objects.get(id=term_id)
         except:
@@ -80,6 +94,10 @@ class URFormSerializer(serializers.Serializer):
             # add 1 capacity to already_exist_form.courses + delete already_exist_form
             
             UR_update_delete(already_exist_form)
+
+            if URL_type == 'substitution':
+                validate_doped_AddOrDelete_UnitLimit(already_exist_form, UR_form_obj)
+
             already_exist_form.delete()
             
         
@@ -95,7 +113,6 @@ class URFormGetDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = UnitRegisterRequest
         fields = ("term", "UR_courses", 'request_state')
-
 
 class SendFormSerializer(serializers.Serializer):
     student = serializers.PrimaryKeyRelatedField(queryset=Student.objects.all())
@@ -134,4 +151,3 @@ class AcceptOrRejectFormSerializer(serializers.Serializer):
         if validated_data['request_state'] == 2:
             sending_weekly_schedule(self.context['student_obj'], get_form)
         return get_form
-

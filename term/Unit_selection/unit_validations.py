@@ -65,6 +65,12 @@ def validate_student_add_unit_average(attrs, student_obj):
         raise ValidationError(
             "The number of your course units is more than the allowed limit"
         )
+        
+    if sum_units_selection < 12:
+        raise ValidationError(
+            "The number of your course units should be at least 12"
+        )
+    
 
 
 def validate_exam_and_class_time_interference(attrs):
@@ -142,10 +148,75 @@ def validate_UR_selection_time(attrs):
     if not selection_start_time < timezone.now() < selection_end_time:
         raise ValidationError('Time rule: start_selection_time < now < end_selection_time')
 
-# can't add a course in UR_form more than once #TODO
-
 
 def validate_checking_student_years(attrs, student_obj):
     get_max_term_number = student_obj.student_term_average_student.values('term_number').aggregate(Max('term_number'))
     if get_max_term_number['term_number__max'] > 8:
         raise ValidationError('Your academic years are over')
+
+
+def validate_doped_AddOrDelete_UnitLimit(previous_URform, substitution_URform):
+    """
+    Substitution_URform:
+        -) At most 2 courses can be deleted and added
+        -) At most 6 number of units can be deleted and added
+    """
+    added_total_unit_number = 0
+    deleted_total_unit_number = 0
+
+
+    substitute_courses = substitution_URform.course.all()
+    previous_courses = previous_URform.course.all()
+    
+    number_of_added_courses = 0
+    number_of_deleted_courses = 0
+    
+    # Check courses that haven't been in the previous UR_form
+    for new_course_id in substitute_courses:
+        get_course = Course.objects.get(id=new_course_id)
+        course_unit_number = get_course.subject.number_of_course
+        check_new_added = previous_courses.filter(id=new_course_id).exists()
+        
+        # if the course has been added
+        if check_new_added:
+            number_of_added_courses += 1
+            added_total_unit_number +=  course_unit_number
+            
+    # Check courses that haven been in the previous UR_form but not in substitution_URform
+    for pre_course_id in previous_courses:
+        get_course = Course.objects.get(id=pre_course_id)
+        course_unit_number = get_course.subject.number_of_course
+        check_remained = substitute_courses.filter(id=pre_course_id).exists()
+        
+        # if the course has been deleted
+        if not check_remained:
+            number_of_deleted_courses += 1
+            deleted_total_unit_number +=  course_unit_number
+    
+    if number_of_added_courses > 2:
+        raise ValidationError('2 courses can Be added at most')
+    if number_of_deleted_courses > 2:
+        raise ValidationError("2 courses can Be deleted at most")
+    
+    
+    if added_total_unit_number > 6:
+        raise ValidationError('unit_number of new added subjects in substitution_form should be at most 6')
+    if deleted_total_unit_number > 6:
+        raise ValidationError('unit_number of deleted subjects in substitution_form should be at most 6')
+    
+    
+def validate_doped_selection_time(attrs):
+    term = attrs['term']
+    substitution_start_time = term.doped_added_start_time 
+    substitution_end_time = term.doped_added_end_time
+    if not substitution_start_time < timezone.now() < substitution_end_time:
+        raise ValidationError('Time rule: doped_added_start_time < now < doped_added_end_time')
+    
+def validate_course_term(attrs):
+    course = attrs["course"]
+    term_id = attrs['term'].id
+
+    for course_id in course:
+        course_obj = Course.objects.get(id=course_id)
+        if course_obj.term.id != term_id:
+            raise ValidationError(f"{course_id} course is not for this term")

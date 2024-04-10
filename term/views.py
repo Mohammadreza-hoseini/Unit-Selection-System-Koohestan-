@@ -5,8 +5,9 @@ from rest_framework import status
 from rest_framework.views import APIView
 
 from accounts.models import Student
+from course.serializers import CourseGetDataSerializer
 from koohestan.utils.permission_handler import StudentPermission
-from term.models import BusyStudyingRequest
+from term.models import BusyStudyingRequest, UnitRegisterRequest
 from term.serializers import BusyStudyingRequestSerializer, BusyStudyingRequestGetDataSerializer
 
 
@@ -45,3 +46,22 @@ class BusyStudyingRequestCreatGetUpdateDelete(APIView):
             )
         get_BusyStudyingRequest.delete()
         return Response('Successfully delete', status=status.HTTP_200_OK)
+
+
+class UnitRegisterRequestGetData(APIView):
+    permission_classes = (IsAuthenticated, StudentPermission,)
+
+    def get(self, request, pk):
+
+        try:
+            get_student = Student.objects.get(id=pk)
+        except ObjectDoesNotExist:
+            return Response("this student does not exist.", status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            get_course = UnitRegisterRequest.objects.get(student=get_student, term=get_student.term,
+                                                         request_state=2).course.all()
+        except ObjectDoesNotExist:
+            return Response('this course does not exist.', status=status.HTTP_404_NOT_FOUND)
+
+        return Response(CourseGetDataSerializer(get_course, many=True).data, status=status.HTTP_200_OK)

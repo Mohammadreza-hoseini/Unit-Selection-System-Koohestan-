@@ -110,7 +110,7 @@ class StudentGetUpdateDelete(APIView):
             return Response(
                 "This student does not exist", status=status.HTTP_400_BAD_REQUEST
             )
-        get_student_serializer = StudentGetDataSerializer(get_student)
+        get_student_serializer = StudentGetDataSerializer(get_student, many=True)
         return Response(get_student_serializer.data, status=status.HTTP_200_OK)
 
     def delete(self, request, pk):

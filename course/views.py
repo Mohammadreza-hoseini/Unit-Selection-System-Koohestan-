@@ -173,3 +173,4 @@ class CourseWithPK(APIView):
             return Response("This course doesn't exist", status=status.HTTP_400_BAD_REQUEST)
         course_obj.delete()
         return Response("Successfully deleted", status=status.HTTP_200_OK)
+

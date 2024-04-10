@@ -21,3 +21,4 @@ urlpatterns = [
     ),
     path('', include('course.appeal_requests.ApReq_urls')),
 ]
+ 

@@ -15,10 +15,12 @@ def send_email_task(email, code):
 
 @shared_task
 def sending_weekly_schedule(student, unit_form):
-    weekly_schedule = '\n'.join(
-        [f"class number: {item.class_id} - day: {item.day} - time: {item.time}" for item in unit_form.course.all()])
+    x = ""
+    for item in unit_form.course.all():
+        x += f"class number: {item.class_id} - day: {item.day} - time: {item.time}\n"
     send_mail(
-        weekly_schedule,
+        subject='weekly schedule',
+        message=x,
         from_email=EMAIL_HOST,
         recipient_list=[student.email]
     )

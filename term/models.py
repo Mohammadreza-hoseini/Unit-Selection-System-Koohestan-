@@ -53,12 +53,15 @@ class UnitRegisterRequest(models.Model):
     student = models.ForeignKey("accounts.Student", on_delete=models.CASCADE,
                                 related_name='unit_register_request_student', verbose_name='دانشجو')
     course = models.ManyToManyField("course.Course", related_name='unit_register_request_course', verbose_name='دروس')
+    supervisor = models.ForeignKey("accounts.Professor", on_delete=models.CASCADE,
+                                   related_name='unit_register_request_supervisor',
+                                   verbose_name='استاد راهنما', null=True, blank=True)
     request_state = models.PositiveSmallIntegerField(
         default=ChooseRequestState.pending, choices=ChooseRequestState.choices, verbose_name='وضعیت درخواست'
     )
     term = models.ForeignKey("term.Term", on_delete=models.CASCADE, related_name='unit_request_term',
                              verbose_name='ترم ')
-    
+
     def __str__(self):
         return f"req: {self.student.national_code} - Term: {self.term} - Status: {self.request_state}"
 

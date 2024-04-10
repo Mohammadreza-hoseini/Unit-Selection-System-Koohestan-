@@ -146,3 +146,10 @@ class AcceptOrRejectForm(APIView):
             return Response("Form Send Successfully", status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    #TODO
+    # only professor & IT-admin ? #BUG possible
+    permission_classes = (IsAuthenticated, )
+    
+    serializer_class = URFormGetDataSerializer
+    queryset = UnitRegisterRequest.objects.all()

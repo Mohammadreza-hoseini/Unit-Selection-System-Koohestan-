@@ -1,14 +1,17 @@
 from django.core.exceptions import ObjectDoesNotExist
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 
 from accounts.models import Student
+from koohestan.utils.permission_handler import StudentPermission
 from term.models import BusyStudyingRequest
 from term.serializers import BusyStudyingRequestSerializer, BusyStudyingRequestGetDataSerializer
 
 
 class BusyStudyingRequestCreatGetUpdateDelete(APIView):
+    permission_classes = (IsAuthenticated, StudentPermission,)
 
     def post(self, request, pk):
         try:

@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 
 from accounts.models import Student
 from term.models import BusyStudyingRequest
-from term.serializers import BusyStudyingRequestSerializer, busystudyingrequestGetDataSerializer
+from term.serializers import BusyStudyingRequestSerializer, BusyStudyingRequestGetDataSerializer
 
 
 class BusyStudyingRequestCreatGetUpdateDelete(APIView):
@@ -46,9 +46,9 @@ class BusyStudyingRequestCreatGetUpdateDelete(APIView):
 
         except ObjectDoesNotExist:
             return Response(
-                "This Busy Studying Request does not exist", status=status.HTTP_400_BAD_REQUEST
+                "This Busy Studying Request does not exist", status=status.HTTP_404_NOT_FOUND
             )
-        get_BusyStudyingRequestSerializer = busystudyingrequestGetDataSerializer(get_BusyStudyingRequest)
+        get_BusyStudyingRequestSerializer = BusyStudyingRequestGetDataSerializer(get_BusyStudyingRequest)
         return Response(get_BusyStudyingRequestSerializer.data, status=status.HTTP_200_OK)
 
     def delete(self, request, pk):
@@ -56,7 +56,7 @@ class BusyStudyingRequestCreatGetUpdateDelete(APIView):
             get_BusyStudyingRequest = BusyStudyingRequest.objects.get(id=pk)
         except ObjectDoesNotExist:
             return Response(
-                "This Busy Studying Request does not exist", status=status.HTTP_400_BAD_REQUEST
+                "This Busy Studying Request does not exist", status=status.HTTP_404_NOT_FOUND
             )
-        get_BusyStudyingRequest.BusyStudyingRequest.delete()
+        get_BusyStudyingRequest.delete()
         return Response('Successfully delete', status=status.HTTP_200_OK)

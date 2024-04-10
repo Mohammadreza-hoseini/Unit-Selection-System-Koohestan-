@@ -2,7 +2,6 @@ from django.db import transaction
 from rest_framework import serializers
 
 from accounts.EA.ea_serializers import EA_GetFullNameSerializer
-from accounts.Pr.pr_serializers import ProfessorGetFullNameSerializer
 from accounts.St.st_serializers import StudentGetDataSerializer
 from accounts.models import Student, EducationalAssistant
 from faculty.models import Faculty

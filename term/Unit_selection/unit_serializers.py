@@ -1,7 +1,13 @@
 from django.db import transaction
+from django.utils import timezone
 from rest_framework import serializers
+
+from rest_framework.exceptions import ValidationError
+
+from accounts.models import Student, Professor
 from course.models import Course
 from course.serializers import CourseGetDataSerializer
+from koohestan.tasks import sending_weekly_schedule
 from term.models import Term, UnitRegisterRequest
 
 from .unit_validations import validate_passed_course, validate_student_add_unit_average, \
@@ -107,3 +113,41 @@ class URFormGetDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = UnitRegisterRequest
         fields = ("term", "UR_courses", 'request_state')
+
+class SendFormSerializer(serializers.Serializer):
+    student = serializers.PrimaryKeyRelatedField(queryset=Student.objects.all())
+
+    def validate(self, attrs):
+        get_student = UnitRegisterRequest.objects.filter(student_id=attrs['student']).first()
+        if timezone.now() > get_student.term.end_selection_time:
+            raise ValidationError('The unit selection time has expired and you cannot submit the form')
+        return attrs
+
+    @transaction.atomic()
+    def create(self, validated_data):
+        get_student = UnitRegisterRequest.objects.filter(student=validated_data['student']).first()
+        get_student.supervisor_id = get_student.student.supervisor_id
+        get_student.save()
+        return get_student
+
+
+class AcceptOrRejectFormSerializer(serializers.Serializer):
+    supervisor = serializers.PrimaryKeyRelatedField(queryset=Professor.objects.all())
+    request_state = serializers.ChoiceField(choices=[1, 2, 3])
+
+    def validate(self, attrs):
+        student_obj = self.context.get('student_obj')
+        form_obj = self.context.get('get_form')
+        query_check_form_exist = UnitRegisterRequest.objects.filter(id=form_obj.id, student=student_obj,
+                                                                    supervisor=attrs['supervisor']).first()
+        if not query_check_form_exist:
+            raise ValidationError('This form does not exist')
+        return attrs
+
+    @transaction.atomic()
+    def create(self, validated_data):
+        get_form = self.context['get_form']
+        UnitRegisterRequest.objects.filter(id=get_form.id).update(request_state=validated_data['request_state'])
+        if validated_data['request_state'] == 2:
+            sending_weekly_schedule(self.context['student_obj'], get_form)
+        return get_form

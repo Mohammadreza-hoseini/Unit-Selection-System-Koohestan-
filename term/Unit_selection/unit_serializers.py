@@ -113,3 +113,4 @@ class AcceptOrRejectFormSerializer(serializers.Serializer):
         if validated_data['request_state'] == 2:
             sending_weekly_schedule(self.context['student_obj'], get_form)
         return get_form
+

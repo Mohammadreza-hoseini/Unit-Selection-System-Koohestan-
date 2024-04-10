@@ -22,3 +22,4 @@ def sending_weekly_schedule(student, unit_form):
         from_email=EMAIL_HOST,
         recipient_list=[student.email]
     )
+

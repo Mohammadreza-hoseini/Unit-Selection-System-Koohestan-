@@ -128,3 +128,4 @@ class AcceptOrRejectForm(APIView):
             return Response("Form Send Successfully", status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+

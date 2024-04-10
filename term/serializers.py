@@ -1,6 +1,8 @@
 from django.db import transaction
 from rest_framework import serializers
 
+from accounts.EA.ea_serializers import EA_GetFullNameSerializer
+from accounts.St.st_serializers import StudentGetDataSerializer
 from accounts.models import Student, EducationalAssistant
 from faculty.models import Faculty
 from term.models import BusyStudyingRequest
@@ -33,7 +35,10 @@ class BusyStudyingRequestSerializer(serializers.Serializer):
         return instance
 
 
-class busystudyingrequestGetDataSerializer(serializers.ModelSerializer):
+class BusyStudyingRequestGetDataSerializer(serializers.ModelSerializer):
+    student_detail = StudentGetDataSerializer(source='student')
+    assistant_detail = EA_GetFullNameSerializer(source='assistant')
+
     class Meta:
         model = BusyStudyingRequest
-        fields = '__all__'
+        fields = ('id', 'created_at', 'request_state', 'student_detail', 'assistant_detail')

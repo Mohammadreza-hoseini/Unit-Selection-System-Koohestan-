@@ -119,3 +119,9 @@ class ProfessorGetDataSerializer(serializers.ModelSerializer):
         fields = (
             'firstname', 'lastname', 'professor_number', 'email', 'national_code', 'term_detail', 'faculty_detail', 'major_detail',
             'expertise', 'degree', 'past_teaching_lessons',)
+
+
+class ProfessorGetFullNameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Professor
+        fields = ('firstname', 'lastname',)

@@ -6,7 +6,8 @@ from rest_framework.exceptions import ValidationError
 from faculty.models import Faculty
 from accounts.models import Professor, EducationalAssistant
 
-from accounts.Pr.pr_serializers import ProfessorGetDataSerializer
+from accounts.Pr.pr_serializers import ProfessorGetDataSerializer, ProfessorGetFullNameSerializer
+
 
 class EducationalAssistantSerializer(serializers.Serializer):
     assistant = serializers.PrimaryKeyRelatedField(queryset=Professor.objects.all())
@@ -50,7 +51,7 @@ class EducationalAssistantSerializer(serializers.Serializer):
 
         A_id = validated_data.data.get("assistant", instance.assistant)
         faculty_id = validated_data.data.get("faculty", instance.faculty)
-        
+
         # if the professor changes and faculty remains the same
         if A_id != instance.assistant:
             new_EA_candidate = Professor.objects.get(pk=A_id)
@@ -72,7 +73,7 @@ class EducationalAssistantSerializer(serializers.Serializer):
 
         # the professor remains the same but faculty changes
         else:
-            
+
             raise ValidationError('Assistant_id should be different.')
 
 
@@ -82,3 +83,11 @@ class EA_GetDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = EducationalAssistant
         fields = ('id', 'professor_detail')
+
+
+class EA_GetFullNameSerializer(serializers.ModelSerializer):
+    Professor_detail = ProfessorGetFullNameSerializer(source='assistant')
+
+    class Meta:
+        model = EducationalAssistant
+        fields = ('Professor_detail',)

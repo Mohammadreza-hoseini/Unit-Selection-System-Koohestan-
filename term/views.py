@@ -1,22 +1,26 @@
 from django.core.exceptions import ObjectDoesNotExist
-from requests import Response
+from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
 
+from accounts.models import Student
 from term.models import BusyStudyingRequest
 from term.serializers import BusyStudyingRequestSerializer, busystudyingrequestGetDataSerializer
 
 
-class busystudyingrequestCreatGetUpdateDelete(APIView):
+class BusyStudyingRequestCreatGetUpdateDelete(APIView):
 
-    def post(self, request):
+    def post(self, request, pk):
+        try:
+            get_student = Student.objects.get(id=pk)
+        except ObjectDoesNotExist:
+            return Response("this student does not exist.", status=status.HTTP_404_NOT_FOUND)
         serializer = BusyStudyingRequestSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response("Successfully create", status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
     def put(self, request, pk):
         try:
@@ -56,4 +60,3 @@ class busystudyingrequestCreatGetUpdateDelete(APIView):
             )
         get_BusyStudyingRequest.BusyStudyingRequest.delete()
         return Response('Successfully delete', status=status.HTTP_200_OK)
-

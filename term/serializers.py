@@ -10,20 +10,16 @@ class BusyStudyingRequestSerializer(serializers.Serializer):
     student = serializers.PrimaryKeyRelatedField(queryset=Student.objects.all())
 
     def validate_student(self, value):
-        get_student = Student.objects.filter(id=value).first()
-        if get_student.gender != 1:
+        if value.gender != 1:
             raise serializers.ValidationError("Only males can make requests.")
-        return get_student
+        return value
 
     @transaction.atomic
     def create(self, validated_data):
-        get_student = Student.objects.filter(id=validated_data.data['student']).first()
-        get_faculty = Faculty.objects.filter(faculty=get_student.faculty).first()
-        get_assistant = EducationalAssistant.objects.filter(faculty=get_faculty.name).first()
-        print(get_assistant)
-        validated_data.data['assistant'] = get_assistant.assistant
-        busystudyingrequest = BusyStudyingRequest.objects.create(**validated_data)
-        return busystudyingrequest
+        get_assistant = EducationalAssistant.objects.filter(faculty_id=validated_data['student'].faculty.id).first()
+        busy_studying_request = BusyStudyingRequest.objects.create(student=validated_data['student'],
+                                                                   assistant=get_assistant)
+        return busy_studying_request
 
     @transaction.atomic
     def update(self, instance, validated_data):

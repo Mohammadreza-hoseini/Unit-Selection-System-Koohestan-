@@ -18,3 +18,8 @@ def validate_courses_id(attrs):
         course_exist = Course.objects.filter(id=course_id).exists()
         if not course_exist:
             raise ValidationError(f'{course_id} course does not exist')
+
+def validate_student_has_course(attrs):
+    students = attrs['students']
+    courses = attrs['courses']
+    

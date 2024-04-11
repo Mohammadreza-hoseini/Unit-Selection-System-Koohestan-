@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 
 from django_filters import rest_framework as filters
 
-from accounts.models import Student
+from accounts.models import Professor, Student
 from course.appeal_requests.ApReq_serializers import ScoreTableSerializer
 from faculty.serializers import UniversityGetDataSerializer
 
@@ -29,11 +29,14 @@ class ScoreTableView(APIView):
 
 
     # only the actual student #TODO
-    def post(self, request):
+    def post(self, request, pr_pk, course_pk):
         
-
-        # additional_data = {'student_obj': get_student, 'URL_type': URL_type}
+        try:
+            get_pr = Professor.objects.get(id=pr)
+        except print(0):
+            pass
         
+        additional_data = {}
         print(request.data)
         serializer = ScoreTableSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):

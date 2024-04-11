@@ -6,7 +6,7 @@ from rest_framework import serializers
 from accounts.models import Student
 from course.models import ScoreTable
         
-from .ApReq_validations import validate_courses_id, validate_students_id
+from .ApReq_validations import validate_courses_id, validate_students_id, validate_student_has_course
 
 class ScoreTableSerializer(serializers.Serializer):
     students = serializers.ListField()
@@ -17,6 +17,7 @@ class ScoreTableSerializer(serializers.Serializer):
         
         validate_students_id(attrs)
         validate_courses_id(attrs)
+        validate_student_has_course(attrs)
         
 
 
@@ -24,8 +25,6 @@ class ScoreTableSerializer(serializers.Serializer):
 
     @transaction.atomic
     def create(self, validated_data):
-        print(validated_data)
-        new_score = ScoreTable()
-        return new_score
+        ...
         
 

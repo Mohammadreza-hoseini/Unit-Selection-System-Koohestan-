@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from .views import CourseView, GetAll_courses, CourseWithPK, SubjectCreate, GetAllSubjects, SubjectGetUpdateDelete
 
 # from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
@@ -18,5 +18,7 @@ urlpatterns = [
     path('courses_get_all/', GetAll_courses.as_view(), name="courses_get_all"),
     path(
         "courses/<uuid:pk>", CourseWithPK.as_view(), name="course_withPK"
-    )
+    ),
+    path('', include('course.appeal_requests.ApReq_urls')),
 ]
+ 

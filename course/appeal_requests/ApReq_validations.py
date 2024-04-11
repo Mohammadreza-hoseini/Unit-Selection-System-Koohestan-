@@ -30,7 +30,7 @@ def validate_students_id(attrs, course_obj, term_obj):
         student_has_course = UnitRegisterRequest.objects.filter(student__id=student_id, course__id=course_obj.id, request_state=2,
                                                                 term__id=term_obj.id).exists()
         if not student_has_course:
-            raise ValidationError('{student_id} student does not have this course')
+            raise ValidationError(f'{student_id} student does not have this course')
 
 def validate_prof_course_match(prof_obj, course_obj):
     if course_obj.professor.id != prof_obj.id:

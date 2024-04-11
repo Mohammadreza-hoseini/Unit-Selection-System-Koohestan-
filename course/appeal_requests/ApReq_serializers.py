@@ -52,3 +52,4 @@ class ScoreTableSerializer(serializers.Serializer):
             }
             ScoreTable.objects.create(**score_data)
             i += 1
+        # return list of instances? #TODO

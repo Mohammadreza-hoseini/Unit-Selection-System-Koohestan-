@@ -23,7 +23,8 @@ class Subject(models.Model):
     prerequisite = models.ManyToManyField('self', symmetrical=False, verbose_name='دروس پیش نیاز',
                                           related_name='subject_prerequisite',
                                           null=True, blank=True)
-    corequisite = models.ManyToManyField('self', symmetrical=False, verbose_name='دروس همنیاز', related_name='subject_corequisite',
+    corequisite = models.ManyToManyField('self', symmetrical=False, verbose_name='دروس همنیاز',
+                                         related_name='subject_corequisite',
                                          null=True, blank=True)
     number_of_course = models.PositiveIntegerField(verbose_name='تعداد واحد درس')
     course_type = models.PositiveSmallIntegerField(
@@ -66,21 +67,31 @@ class Course(models.Model):
     def __str__(self):
         return f"{self.class_id}"
 
+
 class ChooseCoursePassStatus(models.IntegerChoices):
     passed = 1, 'passed'
     failed = -1, 'failed'
     pending = 0, 'pending'
+
+
 class ChooseReconsiderationStatus(models.IntegerChoices):
     no_ApReq = 0, 'no appeal request'
     rejected = -1, 'rejected'
     accepted = 1, 'accepted'
     pending = 2, 'pending'
 
+
 class ScoreTable(models.Model):
     id = models.CharField(default=uuid.uuid4, editable=False, primary_key=True)
-    student = models.ForeignKey('accounts.Student', on_delete=models.CASCADE, related_name='student_score', verbose_name='دانشجو')
-    course = models.ForeignKey('course.Course', on_delete=models.CASCADE, related_name='score_course', verbose_name='درس ترمی')
-    score = models.IntegerField(verbose_name='نمره', default=-1) # -1 -> no score
-    course_pass_status = models.IntegerField(default=ChooseCoursePassStatus.pending, choices=ChooseCoursePassStatus.choices, verbose_name='وضعیت قبولی درس ترمی')
+    student = models.ForeignKey('accounts.Student', on_delete=models.CASCADE, related_name='student_score',
+                                verbose_name='دانشجو')
+    course = models.ForeignKey('course.Course', on_delete=models.CASCADE, related_name='score_course',
+                               verbose_name='درس ترمی')
+    score = models.IntegerField(verbose_name='نمره', default=-1)  # -1 -> no score
+    course_pass_status = models.IntegerField(default=ChooseCoursePassStatus.pending,
+                                             choices=ChooseCoursePassStatus.choices,
+                                             verbose_name='وضعیت قبولی درس ترمی')
     score_finalized_status = models.BooleanField(default=False)
-    reconsideration_status = models.IntegerField(default=ChooseReconsiderationStatus.no_ApReq, choices=ChooseReconsiderationStatus.choices, verbose_name='وضعیت درخواست تجدید نظر')
+    reconsideration_status = models.IntegerField(default=ChooseReconsiderationStatus.no_ApReq,
+                                                 choices=ChooseReconsiderationStatus.choices,
+                                                 verbose_name='وضعیت درخواست تجدید نظر')

@@ -81,6 +81,7 @@ class BusyStudyingRequest(models.Model):
     def __str__(self):
         return f"st_{self.student.student_number} - ea_{self.assistant.assistant.professor_number}"
 
+
 @receiver(post_save, sender=UnitRegisterRequest)
 def reduce_course_capacity(sender, instance, created, **kwargs):
     courses = instance.course.all()

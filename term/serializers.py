@@ -42,3 +42,14 @@ class BusyStudyingRequestGetDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = BusyStudyingRequest
         fields = ('id', 'created_at', 'request_state', 'student_detail', 'assistant_detail')
+
+
+class BusyStudyingRequestAcceptOrRejectSerializer(serializers.Serializer):
+    request_state = serializers.ChoiceField(choices=[1, 2, 3])
+
+    @transaction.atomic()
+    def create(self, validated_data):
+        busy_studying_request = self.context['busy_studying_request']
+        busy_studying_request.request_state = validated_data['request_state']
+        busy_studying_request.save()
+        return busy_studying_request

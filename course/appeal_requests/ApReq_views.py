@@ -8,21 +8,13 @@ from rest_framework.views import APIView
 from django_filters import rest_framework as filters
 
 from accounts.models import Professor, Student
-from course.appeal_requests.ApReq_serializers import ScoreTableSerializer
+from course.appeal_requests.ApReq_serializers import ApReqHandler, ScoreTableSerializer
 from course.models import Course
-from faculty.serializers import UniversityGetDataSerializer
 
-from term.Unit_selection.unit_serializers import (
-    URFormGetDataSerializer,
-    URFormSerializer,
-    SendFormSerializer,
-    AcceptOrRejectFormSerializer
-)
-from term.models import UnitRegisterRequest
+from term.models import Term
 
 
 # UR -> UnitRegister
-from .ApReq_validations import validate_students_id
 
 
 class ScoreTableView(APIView):
@@ -51,9 +43,42 @@ class ScoreTableView(APIView):
         
         serializer = ScoreTableSerializer(data=request.data, context=additional_data)
         if serializer.is_valid(raise_exception=True):
-            print("yesss")
             serializer.save()
             return Response("Score added", status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+class ApReqView(APIView):
+    permission_classes = (IsAuthenticated, )
+    
+    def put(self, request, st_pk, course_pk):
+        try:
+            get_student = Student.objects.get(id=st_pk)
+        except ObjectDoesNotExist:
+            return Response(
+                "This Student does not exist", status=status.HTTP_404_NOT_FOUND
+            )
+        
+        try:
+            get_course = Course.objects.get(id=course_pk)
+        except ObjectDoesNotExist:
+            return Response(
+                "This Course does not exist", status=status.HTTP_404_NOT_FOUND
+            )
+        
+        try:
+            get_term = Term.objects.get(id=request.data['term'])
+        except ObjectDoesNotExist:
+            return Response(
+                "This Term does not exist", status=status.HTTP_404_NOT_FOUND
+            )
+        
+        ApReq = ApReqHandler(student_obj=get_student, course_obj=get_course, term_obj=get_term)
+        res = ApReq.update()
+        
+        if isinstance(res, Exception):
+            return Response(str(res), status=status.HTTP_400_BAD_REQUEST)
+        
+        return Response("ApReq sent successfully", status=status.HTTP_200_OK)
+        

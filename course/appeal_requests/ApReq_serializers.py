@@ -9,7 +9,9 @@ from accounts.models import Student
 from course.models import ScoreTable
 from term.models import Term
         
-from .ApReq_validations import validate_students_id, validate_prof_course_match, validate_term_match, validate_time, validate_scores
+from .score_validations import validate_students_id, validate_prof_course_match, validate_term_match, validate_time, validate_scores
+
+from .ApReq_validations import validate_term, validate_student_has_course, validate_score_and_ApReq_state
 
 class ScoreTableSerializer(serializers.Serializer):
     students = serializers.ListField()
@@ -53,3 +55,34 @@ class ScoreTableSerializer(serializers.Serializer):
             ScoreTable.objects.create(**score_data)
             i += 1
         # return list of instances? #TODO
+        
+class ApReqHandler:
+    def __init__(self, student_obj, course_obj, term_obj):
+        
+        self.term_obj = term_obj
+        self.student_obj = student_obj
+        self.course_obj = course_obj
+        
+        
+    
+    # TODO
+    @transaction.atomic
+    def update(self):
+        
+        valid_term = validate_term(self.student_obj, self.course_obj, self.term_obj)
+        if isinstance(valid_term, Exception): # return raised exception
+            return valid_term
+        
+        valid_student_course = validate_student_has_course(self.student_obj, self.course_obj, self.term_obj)
+        if isinstance(valid_student_course, Exception):
+            return valid_student_course
+        
+        valid_score_ApReqState = validate_score_and_ApReq_state(self.student_obj, self.course_obj)
+        if isinstance(valid_score_ApReqState, Exception):
+            return valid_score_ApReqState
+        
+        instance = valid_score_ApReqState
+        instance.reconsideration_status = 2
+        instance.save()
+        return "ApReq added -> Reconsideration_state updated"
+        

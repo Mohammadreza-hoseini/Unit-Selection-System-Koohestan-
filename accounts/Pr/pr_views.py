@@ -31,7 +31,7 @@ class ProfessorCreate(APIView):
 
 
 class ProfessorGetUpdateDelete(APIView):
-    # permission_classes = (IsAuthenticated, ITManagerPermission,)
+    permission_classes = (IsAuthenticated, ITManagerPermission,)
 
     def get_permissions(self):
         print(self.request.method)

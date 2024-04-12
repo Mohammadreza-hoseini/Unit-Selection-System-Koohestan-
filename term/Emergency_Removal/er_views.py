@@ -16,7 +16,7 @@ class StudentEmergencyRemoval(APIView):
     Send emergency removal request
     """
 
-    # permission_classes = (IsAuthenticated, StudentPermission,)
+    permission_classes = (IsAuthenticated, StudentPermission,)
 
     def post(self, request, student_id, course_id):
         try:
@@ -70,7 +70,7 @@ class AssistantAcceptOrRejectEmergencyRemoval(APIView):
     Assistant accept or reject emergency removal request
     """
 
-    # permission_classes = (IsAuthenticated, EducationalAssistantPermission,)
+    permission_classes = (IsAuthenticated, EducationalAssistantPermission,)
 
     def post(self, request, assistant_id, emergency_removal_id):
         try:
@@ -85,3 +85,26 @@ class AssistantAcceptOrRejectEmergencyRemoval(APIView):
             return Response("Emergency removal course Send Successfully", status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self, request, assistant_id, emergency_removal_id):
+        try:
+            get_emergency_removal_request = EmergencyRemoval.objects.get(id=emergency_removal_id,
+                                                                         assistant_id=assistant_id)
+        except ObjectDoesNotExist:
+            return Response("This request does not exist", status=status.HTTP_404_NOT_FOUND)
+
+        get_student_serializer = StudentGetDataEmergencyRemovalSerializer(get_emergency_removal_request)
+        return Response(get_student_serializer.data, status=status.HTTP_200_OK)
+
+
+class AssistantGetAllAcceptOrRejectEmergencyRemoval(APIView):
+    """
+    Assistant GetAll accept or reject emergency removal request
+    """
+
+    permission_classes = (IsAuthenticated, EducationalAssistantPermission,)
+
+    def get(self, request, assistant_id):
+        get_emergency_removal_request = EmergencyRemoval.objects.filter(assistant_id=assistant_id)
+        get_student_serializer = StudentGetDataEmergencyRemovalSerializer(get_emergency_removal_request, many=True)
+        return Response(get_student_serializer.data, status=status.HTTP_200_OK)

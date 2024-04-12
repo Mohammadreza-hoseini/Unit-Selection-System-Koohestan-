@@ -34,7 +34,7 @@ class SubjectCreate(APIView):
 
 
 class GetAllSubjects(ListAPIView):
-    # permission_classes = (IsAuthenticated, ITManagerPermission,)
+    permission_classes = (IsAuthenticated, ITManagerPermission,)
     serializer_class = SubjectGetDataSerializer
     queryset = Subject.objects.all()
     filter_backends = (filters.DjangoFilterBackend,)

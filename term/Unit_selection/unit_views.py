@@ -29,13 +29,12 @@ from term.models import UnitRegisterRequest
 class URCreateView(APIView):
     permission_classes = (IsAuthenticated,)
 
-
     # only the actual student #TODO
     def post(self, request, st_pk):
         """
         Create UR_selection_form(or UR_substitution_form) for st_pk
         """
-        
+
         URL_path = request.get_full_path()
         if 'selection' in URL_path:
             URL_type = 'selection'
@@ -50,14 +49,13 @@ class URCreateView(APIView):
             )
 
         additional_data = {'student_obj': get_student, 'URL_type': URL_type}
-        
+
         serializer = URFormSerializer(data=request.data, context=additional_data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response("UR_form created", status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 
 class URGetView(ListAPIView):
@@ -98,6 +96,7 @@ class URGetStPk(APIView):
 
         serializer = URFormGetDataSerializer(UR_forms_for_st_pk, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class SendFormSelection(APIView):
     permission_classes = (IsAuthenticated, StudentPermission,)
@@ -146,10 +145,10 @@ class AcceptOrRejectForm(APIView):
             return Response("Form Send Successfully", status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-    #TODO
+
+    # TODO
     # only professor & IT-admin ? #BUG possible
-    permission_classes = (IsAuthenticated, )
-    
+    permission_classes = (IsAuthenticated,)
+
     serializer_class = URFormGetDataSerializer
     queryset = UnitRegisterRequest.objects.all()

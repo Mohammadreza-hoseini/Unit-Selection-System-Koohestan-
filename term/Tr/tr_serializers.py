@@ -5,8 +5,6 @@ from django.db import transaction
 
 from term.models import Term
 
-from accounts.models import Student, Professor
-
 
 def validate_times(attrs):
     true_order = (attrs['start_selection_time'] < attrs['end_selection_time']

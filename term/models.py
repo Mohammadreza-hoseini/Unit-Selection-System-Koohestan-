@@ -9,12 +9,6 @@ from accounts.models import StudentTermAverage, Student
 class Term(models.Model):
     id = models.CharField(default=uuid.uuid4, editable=False, primary_key=True)
     name = models.CharField(max_length=256, verbose_name='نام ترم', null=True, blank=True)
-    # students = models.ForeignKey("accounts.Student", on_delete=models.CASCADE, related_name='term_students',
-    #                              verbose_name='دانشجوها', null=True, blank=True)
-    # professors = models.ForeignKey("accounts.Professor", on_delete=models.CASCADE, related_name='term_professor',
-    #                                verbose_name='اساتید')
-    # course_lists = models.ManyToManyField("course.Course", verbose_name='لیست دروس ترمی',
-    #                                       related_name='term_course_lists', null=True, blank=True)
     start_selection_time = models.DateTimeField(verbose_name='زمان شروع انتخاب واحد')
     end_selection_time = models.DateTimeField(verbose_name='زمان پایان انتخاب واحد')
     class_start_time = models.DateTimeField(verbose_name='زمان شروع کلاس ها')
@@ -89,3 +83,23 @@ def reduce_course_capacity(sender, instance, created, **kwargs):
     for course in courses:
         course.capacity -= 1
         course.save()
+
+
+class EmergencyRemoval(models.Model):
+    id = models.CharField(default=uuid.uuid4, editable=False, primary_key=True)
+    student = models.ForeignKey("accounts.Student", on_delete=models.CASCADE,
+                                related_name='emergency_removal_student', verbose_name='دانشجو')
+    assistant = models.ForeignKey("accounts.EducationalAssistant", on_delete=models.CASCADE,
+                                  related_name='emergency_removal_assistant', verbose_name='معاون آموزشی')
+    course = models.ForeignKey("course.Course", on_delete=models.CASCADE, related_name='emergency_removal_course',
+                               verbose_name='درس')
+    term = models.ForeignKey("term.Term", on_delete=models.CASCADE, related_name='emergency_removal_term',
+                             verbose_name='ترم')
+    created_at = models.DateTimeField(auto_now_add=True)
+    request_state = models.PositiveSmallIntegerField(
+        default=ChooseRequestState.pending, choices=ChooseRequestState.choices, verbose_name='وضعیت درخواست'
+    )
+    reason_rejected = models.TextField(null=True, blank=True, verbose_name='دلیل رد درخواست')
+
+    def __str__(self):
+        return f"{self.student.student_number} - {self.course.subject.name}"

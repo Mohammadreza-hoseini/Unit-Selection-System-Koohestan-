@@ -37,3 +37,23 @@ def sending_busy_studying_pdf(busy_req_data, pdf_file):
     )
     email.attach('busy_studying_request.pdf', pdf_file, 'application/pdf')
     email.send()
+
+
+@shared_task
+def accept_emergency_removal_request(email):
+    send_mail(
+        'Emergency Removal Request',
+        f'Dear user,\nyour request accepted',
+        from_email=EMAIL_HOST,
+        recipient_list=[email]
+    )
+
+
+@shared_task
+def reject_emergency_removal_request(email, reason):
+    send_mail(
+        'Emergency Removal Request',
+        f'Dear user,\nyour request rejected\n reason is {reason}',
+        from_email=EMAIL_HOST,
+        recipient_list=[email]
+    )

@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     "django_filters",
     "django_dump_load_utf8",
     "storages",
-    "weasyprint",
+    # "weasyprint",
     # internal apps
     "accounts",
     "faculty",

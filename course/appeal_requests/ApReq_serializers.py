@@ -9,52 +9,67 @@ from accounts.models import Student
 from course.models import ScoreTable
 from term.models import Term
         
-from .score_validations import validate_students_id, validate_prof_course_match, validate_term_match, validate_time, validate_scores
+from .score_validations import validate_students_id, validate_prof_course_match, validate_term_match, validate_time, validate_scores, check_term
 
 from .ApReq_validations import validate_term, validate_student_has_course, validate_score_and_ApReq_state
 
-class ScoreTableSerializer(serializers.Serializer):
-    students = serializers.ListField()
-    scores = serializers.ListField()
-    term = serializers.PrimaryKeyRelatedField(queryset=Term.objects.all())
+class ScoreTableHandler:
+    
+    
+    def __init__(self, students, scores, term, prof_obj, course_obj):
+        self.students = students
+        self.scores = scores
+        self.term = check_term(term)
+         
+        self.prof_obj = prof_obj
+        self.course_obj = course_obj
 
 
-    def validate(self, attrs):
+    def validate(self):
         
-        
-        course_obj = self.context.get('course_obj')
-        prof_obj = self.context.get('prof_obj')
-        
-        if len(attrs['students']) != len(attrs['scores']):
+        if len(self.students) != len(self.scores):
             raise ValidationError('number of students and scores do not match')
             
-        validate_time(attrs['term'])
-        validate_term_match(course_obj, prof_obj, attrs)
-        validate_students_id(attrs, course_obj, attrs['term'])
-        validate_prof_course_match(prof_obj, course_obj)
-        validate_scores(attrs['scores'])
+        valid_time = validate_time(self.term)
+        if isinstance(valid_time, Exception): # return raised exception
+            return valid_time
+        
+        
+        valid_term_match = validate_term_match(self.course_obj, self.prof_obj, self.term)
+        if isinstance(valid_term_match, Exception): # return raised exception
+            return valid_term_match
+        
+        valid_student = validate_students_id(self.students, self.course_obj, self.term)
+        if isinstance(valid_student, Exception): # return raised exception
+            return valid_student
+        
+        
+        valid_prof_course = validate_prof_course_match(self.prof_obj, self.course_obj)
+        if isinstance(valid_prof_course, Exception): # return raised exception
+            return valid_prof_course
+        
+        
+        valid_scores = validate_scores(self.scores)
+        if isinstance(valid_scores, Exception): # return raised exception
+            return valid_scores
 
-        return attrs
+        return self.create()
 
     @transaction.atomic
-    def create(self, validated_data):
-        students = validated_data['students']
-        scores = validated_data['scores']
-        
-        course_obj = self.context.get('course_obj')
-        
+    def create(self):        
         i = 0
         
-        for student_id in students:
+        new_scores = []
+        for student_id in self.students:
             get_student = Student.objects.get(id=student_id)
             score_data = {
                 "student": get_student,
-                "course": course_obj,
-                "score": int(scores[i]),
+                "course": self.course_obj,
+                "score": int(self.scores[i]),
             }
-            ScoreTable.objects.create(**score_data)
+            new_scores.append(ScoreTable(**score_data))
             i += 1
-        # return list of instances? #TODO
+        return ScoreTable.objects.bulk_create(new_scores)
         
 class ApReqHandler:
     def __init__(self, student_obj, course_obj, term_obj):

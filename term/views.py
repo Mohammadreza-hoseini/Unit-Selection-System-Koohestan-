@@ -1,4 +1,4 @@
-from weasyprint import HTML
+# from weasyprint import HTML
 from django.core.exceptions import ObjectDoesNotExist
 from django.template.loader import render_to_string
 from rest_framework.permissions import IsAuthenticated

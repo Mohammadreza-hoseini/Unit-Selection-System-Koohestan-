@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 from django_filters import rest_framework as filters
 
 from accounts.models import Professor, Student
-from course.appeal_requests.ApReq_serializers import ApReqHandler, ScoreTableSerializer
+from course.appeal_requests.ApReq_serializers import ApReqHandler, ScoreTableHandler
 from course.models import Course
 
 from term.models import Term
@@ -38,15 +38,18 @@ class ScoreTableView(APIView):
                 "This Course does not exist", status=status.HTTP_404_NOT_FOUND
             )
         
+        students = request.data['students']
+        scores = request.data['scores']
+        term = request.data['term']
         
-        additional_data = {'prof_obj': get_prof, 'course_obj': get_course}
         
-        serializer = ScoreTableSerializer(data=request.data, context=additional_data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return Response("Score added", status=status.HTTP_200_OK)
+        scores = ScoreTableHandler(students, scores, term, get_prof, get_course)
+        res = scores.validate()
+        
+        if isinstance(res, Exception):
+            return Response(str(res), status=status.HTTP_400_BAD_REQUEST)
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(f"{res} added", status=status.HTTP_200_OK)
 
 
 class ApReqView(APIView):

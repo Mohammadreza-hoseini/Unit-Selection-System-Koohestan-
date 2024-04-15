@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 import os
+from datetime import timedelta
 from pathlib import Path
 import dj_database_url
 
@@ -37,6 +38,19 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # external apps
+    "rest_framework",
+    "rest_framework_simplejwt",
+    "drf_yasg",
+    "django_filters",
+    "django_dump_load_utf8",
+    "storages",
+    # "weasyprint",
+    # internal apps
+    "accounts",
+    "faculty",
+    "course",
+    "term",
 ]
 
 MIDDLEWARE = [
@@ -83,7 +97,7 @@ WSGI_APPLICATION = "koohestan.wsgi.application"
 # connect to database with url
 DATABASES = {
     "default": dj_database_url.config(
-        default="postgresql://root:UT5aqC8LyfyapR5YFoHAVQ0h@cho-oyu.liara.cloud:31142/postgres"
+        default="postgresql://root:5yyFDUPobdR4EccbVfQdpn8T@cho-oyu.liara.cloud:32095/postgres"
     ),
 }
 
@@ -119,9 +133,45 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
+MEDIA_URL = "/media/"
+
+STATICFILES_DIRS = [
+    BASE_DIR / "staticfiles",
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+AUTH_USER_MODEL = "accounts.UserRole"
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'koohestan.dev@gmail.com'
+EMAIL_HOST_PASSWORD = 'oxqh jwdm auty quix'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 8
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+}
+
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+
+# Minio config
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+AWS_ACCESS_KEY_ID = '1fSyq3OSDq6u3tnMxryUczaISthCzurT'
+AWS_SECRET_ACCESS_KEY = 'Tbn6YCsw1u3wktAzDLTFgolccvEup5Gq'
+AWS_STORAGE_BUCKET_NAME = 'static'
+AWS_S3_ENDPOINT_URL = 'https://koohestan.darkube.app'

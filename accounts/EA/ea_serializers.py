@@ -19,9 +19,9 @@ class EducationalAssistantSerializer(serializers.Serializer):
         # DRY principle #TODO
         A_id = validated_data["assistant"]
         faculty_id = validated_data["faculty"]
-
-        prof_obj = Professor.objects.filter(pk=A_id).first()
-        faculty_obj = Faculty.objects.filter(pk=faculty_id).first()
+        
+        prof_obj = Professor.objects.filter(pk=A_id.id).first()
+        faculty_obj = Faculty.objects.filter(pk=faculty_id.id).first()
 
         user_obj = prof_obj.professor
 
@@ -30,8 +30,9 @@ class EducationalAssistantSerializer(serializers.Serializer):
 
         if user_obj.role != 2:
             raise ValidationError("User isn't a professor")
-
-        if prof_obj.faculty_id != str(faculty_id):
+        
+                
+        if prof_obj.faculty.id != str(faculty_obj.id):
             raise ValidationError("Professor and Faculty don't match")
 
         user_obj.role = 4

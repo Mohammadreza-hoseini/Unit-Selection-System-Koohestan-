@@ -1,7 +1,6 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django_filters import rest_framework as filters
 
-
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -11,13 +10,13 @@ from rest_framework.generics import ListAPIView
 from koohestan.utils.permission_handler import ITManagerPermission, ProfessorSelfPermission, ProfessorSelf_ITPermission
 from accounts.FilterSet import ProfessorModelFilter
 
-
 from accounts.models import Professor
 
 from accounts.Pr.pr_serializers import (
     ProfessorGetDataSerializer,
     ProfessorSerializer
 )
+
 
 class ProfessorCreate(APIView):
     permission_classes = (IsAuthenticated, ITManagerPermission,)
@@ -36,10 +35,10 @@ class ProfessorGetUpdateDelete(APIView):
     def get_permissions(self):
         print(self.request.method)
         if self.request.method == 'DELETE':
-            return (IsAuthenticated(), ITManagerPermission(), )
+            return (IsAuthenticated(), ITManagerPermission(),)
         if self.request.method == 'PUT':
             return (IsAuthenticated(), ProfessorSelf_ITPermission(),)
-        return (IsAuthenticated(), )
+        return (IsAuthenticated(),)
 
     def put(self, request, pk):
         try:

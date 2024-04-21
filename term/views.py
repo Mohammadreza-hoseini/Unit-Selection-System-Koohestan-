@@ -12,7 +12,7 @@ from koohestan.tasks import sending_busy_studying_pdf
 from koohestan.utils.permission_handler import StudentPermission, EducationalAssistantPermission
 from term.models import BusyStudyingRequest, UnitRegisterRequest
 from term.serializers import BusyStudyingRequestSerializer, BusyStudyingRequestGetDataSerializer, \
-    BusyStudyingRequestAcceptOrRejectSerializer
+    BusyStudyingRequestAcceptOrRejectSerializer, UnitRegisterRequestSerializer
 
 
 class BusyStudyingRequestCreatGetUpdateDelete(APIView):
@@ -111,3 +111,26 @@ class UnitRegisterRequestGetData(APIView):
             return Response('this course does not exist.', status=status.HTTP_404_NOT_FOUND)
 
         return Response(CourseGetDataSerializer(get_course, many=True).data, status=status.HTTP_200_OK)
+
+
+class StudentDetails(APIView):
+    def get(self, request, pk):
+        get_student = UnitRegisterRequest.objects.filter(supervisor_id=pk)
+        if not get_student.exists():
+            return Response(
+                'There is no student for this professor', status=status.HTTP_404_NOT_FOUND
+            )
+        get_student_detail = UnitRegisterRequestSerializer(get_student, many=True)
+        return Response(get_student_detail.data, status=status.HTTP_200_OK)
+
+
+class GetStudentData(APIView):
+    def get(self, request, pr_pk, st_pk):
+        try:
+            get_student = UnitRegisterRequest.objects.filter(supervisor_id=pr_pk, student_id=st_pk)
+        except ObjectDoesNotExist:
+            return Response(
+                'There is no student of professor whit information like this', status=status.HTTP_404_NOT_FOUND
+            )
+        get_student = UnitRegisterRequestSerializer(get_student, many=True)
+        return Response(get_student.data, status=status.HTTP_200_OK)

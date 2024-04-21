@@ -15,6 +15,7 @@ from faculty.serializers import FacultyGetDataSerializer, MajorGetDataSerializer
 from term.Tr.tr_serializers import TermGetDataSerializer
 from term.models import Term
 
+
 class ProfessorSerializer(serializers.Serializer):
     id = serializers.CharField(read_only=True)
     firstname = serializers.CharField()
@@ -113,11 +114,11 @@ class ProfessorGetDataSerializer(serializers.ModelSerializer):
     faculty_detail = FacultyGetDataSerializer(source='faculty')
     major_detail = MajorGetDataSerializer(source='major')
 
-
     class Meta:
         model = Professor
         fields = (
-            'firstname', 'lastname', 'professor_number', 'email', 'national_code', 'term_detail', 'faculty_detail', 'major_detail',
+            'firstname', 'lastname', 'professor_number', 'email', 'national_code', 'term_detail', 'faculty_detail',
+            'major_detail',
             'expertise', 'degree', 'past_teaching_lessons',)
 
 

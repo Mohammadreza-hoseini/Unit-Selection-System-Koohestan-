@@ -12,11 +12,11 @@ from term.models import Term, UnitRegisterRequest
 
 from .unit_validations import validate_passed_course, validate_student_add_unit_average, \
     validate_exam_and_class_time_interference, validate_courses_related_to_the_field, \
-    \
-    validate_prerequisite_subject_passed, validate_course_capacity, validate_checking_student_years, validate_Student_URForm_Term, \
+ \
+    validate_prerequisite_subject_passed, validate_course_capacity, validate_checking_student_years, \
+    validate_Student_URForm_Term, \
     UR_update_delete, validate_St_current_term_UR, validate_UR_selection_time, validate_doped_AddOrDelete_UnitLimit, \
     validate_doped_selection_time, validate_course_term
-        
 
 
 class URFormSerializer(serializers.Serializer):
@@ -27,29 +27,27 @@ class URFormSerializer(serializers.Serializer):
 
         student_obj = self.context.get('student_obj')
         URL_type = self.context.get('URL_type')
-        
 
         if URL_type == 'selection':
             validate_UR_selection_time(attrs)
         else:
             validate_doped_selection_time(attrs)
-            
+
         validate_St_current_term_UR(attrs, student_obj)
         validate_course_term(attrs)
         validate_passed_course(attrs, student_obj)
         validate_course_capacity(attrs)
-        
+
         # TODO possible
-            # if Math1 should be deleted then its corequisite courses(Math2) should be deleted too #TODO
-                # otherwise raise ValidationError(corequisite subject cannot be deleted before the main subject)  
+        # if Math1 should be deleted then its corequisite courses(Math2) should be deleted too #TODO
+        # otherwise raise ValidationError(corequisite subject cannot be deleted before the main subject)
         validate_prerequisite_subject_passed(attrs, student_obj)
-        
+
         validate_student_add_unit_average(attrs, student_obj)
         validate_exam_and_class_time_interference(attrs)
         validate_courses_related_to_the_field(attrs, student_obj)
         if URL_type == 'selection':
             validate_checking_student_years(attrs, student_obj)
-
 
         return attrs
 
@@ -61,18 +59,17 @@ class URFormSerializer(serializers.Serializer):
 
         # retrieve additional_data in self.context
         student_obj = self.context.get('student_obj')
-        
+
         URL_type = self.context.get('URL_type')
-        
-        
-        #check if term.id = course.term.id #TODO 
+
+        # check if term.id = course.term.id #TODO
         try:
             term_obj = Term.objects.get(id=term_id)
         except:
-            raise serializers.ValidationError('This term does not exist')    
-                
+            raise serializers.ValidationError('This term does not exist')
+
         already_exist_form = validate_Student_URForm_Term(term_id, student_obj.id)
-        
+
         # create new UnitRegisterRequest   
         UR_form_obj = UnitRegisterRequest(student=student_obj, term=term_obj)
 
@@ -88,19 +85,16 @@ class URFormSerializer(serializers.Serializer):
         # set M2M field
         UR_form_obj.course.set(courses)
 
-        
-        
         if already_exist_form is not None:
             # add 1 capacity to already_exist_form.courses + delete already_exist_form
-            
+
             UR_update_delete(already_exist_form)
-            
+
             if URL_type == 'substitution':
                 validate_doped_AddOrDelete_UnitLimit(already_exist_form, UR_form_obj)
-            
+
             already_exist_form.delete()
-            
-        
+
         UR_form_obj.save()
         return UR_form_obj
 
@@ -113,6 +107,7 @@ class URFormGetDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = UnitRegisterRequest
         fields = ("term", "UR_courses", 'request_state')
+
 
 class SendFormSerializer(serializers.Serializer):
     student = serializers.PrimaryKeyRelatedField(queryset=Student.objects.all())

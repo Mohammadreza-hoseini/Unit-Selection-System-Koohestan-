@@ -5,7 +5,7 @@ from accounts.EA.ea_serializers import EA_GetFullNameSerializer
 from accounts.St.st_serializers import StudentGetDataSerializer
 from accounts.models import Student, EducationalAssistant
 from faculty.models import Faculty
-from term.models import BusyStudyingRequest
+from term.models import BusyStudyingRequest, UnitRegisterRequest
 
 
 class BusyStudyingRequestSerializer(serializers.Serializer):
@@ -53,3 +53,9 @@ class BusyStudyingRequestAcceptOrRejectSerializer(serializers.Serializer):
         busy_studying_request.request_state = validated_data['request_state']
         busy_studying_request.save()
         return busy_studying_request
+
+
+class UnitRegisterRequestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UnitRegisterRequest
+        fields = '__all__'
